@@ -89,9 +89,3 @@ plot2 +
   geom_text(data=ann_text,aes(y=projected_points,label=lab,size=2)) +
   geom_segment(data=ann_text,aes(x=490,xend=430,y=100,yend=110),arrow=arrow(length = unit(0.1,'cm'))) +
   geom_segment(data=ann_text,aes(x=510,xend=450,y=75,yend=65),arrow=arrow(length = unit(0.1,'cm')))
-
-#need a dataframe for annotations 
-
-  
-  #theme(legend.position = "top",legend.box="horizontal") +
-  theme(legend.text = element_text(colour=as.factor(team), size = 16, face = "bold"))
