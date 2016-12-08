@@ -1,3 +1,5 @@
+library(stringr)
+library(dplyr)
 df <- read.csv("/home/john/stats_corner/2016/shiny_apps/snake_draft/v2_1/faa_projection_data.csv",
                #df <- read.csv("/srv/shiny-server/stats-corner/2016/snake-assistant/faa_projection_data.csv",
                stringsAsFactors = FALSE,
@@ -111,28 +113,29 @@ recs <- df %>%
 
 recs_alt <- recs %>% data.frame()
   
-  recs_alt$VALUE_ADDED <- rep(0,dim(recs_alt)[1])
-  
-  for(i in 1:dim(recs_alt)[1]){
-   recs_alt$VALUE_ADDED[i] <- added_value(drafted_players_w_weeks,
-                                           recs_alt[i,] %>% data.frame(),
-                                           lineup_optimizer %>%
-                                             data.frame() %>%
-                                             mutate(ttl_points = round(ttl_points,1)) %>%
-                                             data.frame(),
-                                           1,2,3,1
-    )
-  }
-  recs_alt
-  return(recs_alt)
-  
-  hypothetical_df <- bind_rows(drafted_players_w_weeks,# %>%
-                               #                              rename(ppg = standard_points),# %>%
-                               #                               full_join(.,week_df, by = "dummy"),
-                               recs_alt[1,] %>% data.frame() %>%
-                                rename(ppg = standard_points) %>% #
-                                 mutate(dummy = 1) %>%
-                                 full_join(.,week_df, by = "dummy") %>%
-                                 mutate(ppg = ifelse(bye == week, 0, ppg)) %>% 
-                                 data.frame()
+recs_alt$VALUE_ADDED <- rep(0,dim(recs_alt)[1])
+recs_alt  
+
+for(i in 1:dim(recs_alt)[1]){
+ recs_alt$VALUE_ADDED[i] <- added_value(drafted_players_w_weeks,
+                                         recs_alt[i,] %>% data.frame(),
+                                         lineup_optimizer %>%
+                                           data.frame() %>%
+                                           mutate(ttl_points = round(ttl_points,1)) %>%
+                                         data.frame(),
+                                       1,2,3,1
   )
+}
+recs_alt
+
+recs_alt
+drafted_players_w_weeks
+added_value(drafted_players_w_weeks,
+           recs_alt %>% data.frame(),
+           lineup_optimizer %>%
+             data.frame() %>%
+             mutate(ttl_points = round(ttl_points,1)) %>%
+             data.frame(),
+           1,2,3,1
+)
+  

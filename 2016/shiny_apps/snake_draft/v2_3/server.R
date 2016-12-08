@@ -145,6 +145,7 @@ shinyServer(function(input, output) {
   })
     
   # here dp stands for drafted players. 
+  # ap stands for available players
   # 0 : current drafted players
   # 1 : anticipated drafted players by the next time you pick
   # 2 : anticipated drafted players by the time after the next time you pick  
@@ -378,3 +379,5 @@ shinyServer(function(input, output) {
 
    
 })
+
+#' What does add_value_return?
