@@ -12,8 +12,8 @@ library(reshape2)
 library(tidyr)
 library(knitr)
 library(ggplot2)
-library(shiny)
 library(DT)
+library(ggrepel)
 workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
 
 owner <- workbook %>% gs_read(ws = "Owner-Team Name")
@@ -76,6 +76,10 @@ season_summary <- games_played %>%
             pa_sum = sum(PA),
             sos = mean(opp_pw)) %>%
   ungroup() %>%
+  group_by(year) %>%
+  mutate(season_rank_points = dense_rank(-points_sum),
+         season_rank_pw = dense_rank(-pw_sum)) %>%
+  ungroup() %>%
   mutate(pw_rank = dense_rank(-pw_sum),
          pw_rank_btm = dense_rank(pw_sum),
          luck_rank_top = dense_rank(-luck_sum),
@@ -104,13 +108,13 @@ We've also likely seen the end of the Jimmy G Era in New England. It lasted long
 
 Two weeks ago RJ was 6-5, a record historically associated with a 64% chance at the playoffs. He was in a 4-way tie for **4th** in the league.  He then lost his next two games __by a combined 0.5 points!__. 
 
-This has me thinking
+This has me thinking...
 
 1. Have we ever seen anything like this? 
 
 2. Is this karma for dropping a league record 192.6 points in Round 2 of the playoffs last year despite having the worst team in the history of the league as measured by PW? 
 
-3.Which offseason Patriot storyline will inspire RJ's team name next year?
+3. Which offseason Patriot storyline will inspire RJ's team name next year?
 
 
 ```{r, echo = FALSE}
@@ -190,10 +194,95 @@ season_summary %>%
 
 ```
 
+#### Standing out among the others
+```{r, echo = FALSE}
+# Want this plot:
+# y axis year
+# x axis points
+# label owner
+plot1 <- ggplot(data = season_summary %>% mutate(year2 = 2*year),
+                aes(x = pw_sum, y = year2))
+plot1 + 
+  geom_point(size = 2) +
+  geom_abline(slope = 0, intercept = 4018) +
+  geom_abline(slope = 0, intercept = 4020) + 
+  geom_abline(slope = 0, intercept = 4022) +
+  geom_abline(slope = 0, intercept = 4024) +
+  geom_abline(slope = 0, intercept = 4026) +
+  geom_abline(slope = 0, intercept = 4028) +
+  geom_abline(slope = 0, intercept = 4030) +
+  geom_abline(slope = 0, intercept = 4032) +
+  scale_y_continuous("Year",
+                     lim = c(4016, 4033),
+                     breaks = c(4018,4020,4022,4024,4026,4028,4030,4032),
+                     labels = c("2009","2010","2011","2012","2013","2014","2015","2016")) +
+  scale_x_continuous("Total PW",breaks = c(3,3,4,5,6,7,8,9,10,11),
+                     lim = c(3,11)) +
+  # geom_label(data = season_summary %>% filter(season_rank_points %in% c(1,2)),
+  #            aes(label = owner),
+  #            nudge_y = 0.35,
+  #            size = 2,
+  #            angle = 45)+
+  geom_text(data = season_summary %>% filter(season_rank_pw %in% c(1,2)) %>% mutate(year2 = 2*year),
+            aes(label = owner),
+            nudge_y = 1,
+            size = 3,
+            angle = 15) +
+  ggtitle("Total PW By Year",subtitle = "Season PW 1st and 2nd Place Labeled")
+```
+
+What hopefully stands out is just how far ahead Hartman was of second place this year. Let's quantify this. Take the difference between Hartman (10.0 PW) and Higdon (7.8 PW) which is 2.2 PW. Subtract 2.2 PW from Higdon and we're down to 5.6 PW which would have been good for 9th place!
+
+Do this for every year (In 2009 Regan and Shokunbi tied at 9.0 PW, so go to McShane at 3rd) and this is what we have.
+
+```{r, echo = FALSE}
+season_diffs <-
+  season_summary %>%
+  filter(season_rank_pw %in% c(1,2)) %>%
+  arrange(year,season_rank_pw) %>%
+  group_by(year) %>%
+  mutate(diff = lag(pw_sum) - pw_sum) %>%
+  filter(season_rank_pw == 2) %>%
+  select(1,18)
+
+season_second_place <-
+  season_summary %>%
+  filter(season_rank_pw == 2) %>%
+  select(year, pw_sum) %>%
+  inner_join(season_diffs, by = "year") %>%
+  mutate(next_place = pw_sum - diff,
+         owner = "Next Place")
+
+hypothetical <-
+  season_summary %>%
+  select(1,2,3) %>%
+  union(season_second_place %>% select(1,5,4) %>% rename(pw_sum = next_place)) %>%
+  group_by(year) %>%
+  mutate(new_pw_rank = dense_rank(-pw_sum) - 1)
+  
+new_ranks <-
+  hypothetical %>%
+  filter(owner == "Next Place")
+
+# Now Join Them All
+season_summary %>%
+  filter(season_rank_pw == 1) %>%
+  select(1,2,3) %>%
+  inner_join(season_diffs, by = "year") %>%
+  inner_join(new_ranks %>% select(1,4), by = "year") %>%
+  arrange(year) %>%
+  `colnames<-`(c("Year","PW Leader","PW","Distance to 2nd Place","Equivalent of Distance Between 2nd And...")) %>%
+  kable(digits = 1)
+  
+```
+
+
+OK, I did it Hartman. I found a metric that said you were better than 2011 Shokunbi. As per our agreement that will be $25 in draft cash next year.
 
 #### 2016 Hartman vs. 2011 Shokunbi
 
 What if these two teams squared off against each other? Who would have won each week?
+
 ```{r, echo = FALSE}
 games_played %>%
   ungroup() %>%
@@ -211,8 +300,6 @@ games_played %>%
 ```
 
 The final tally is Shokunbi 8, Hartman 5. Better luck next year Hartman. 
-
-
 
 ## Record Chasing
 
