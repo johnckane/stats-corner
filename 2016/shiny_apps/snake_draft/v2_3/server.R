@@ -53,30 +53,34 @@ flex_op_pos <- function(nqb,nrb,nwr,nte,data){
 }
 
 #' This function calculates season per game value added:
-added_value <- function(data,new_row,compare_to,nqb,nrb,nwr,nte){
-hypothetical_df <- bind_rows(data,
-                             new_row %>%
-                              data.frame() %>%
-                              mutate(dummy = 1) %>%
-                              right_join(.,week_df, by = "dummy") %>%
-                              mutate(ppg = ifelse(bye == week, 0, PPG)) %>% 
-                              data.frame()
-)
-hypothetical_lineup <- bind_rows(lo("QB", nqb, hypothetical_df),
-                                 lo("RB", nrb, hypothetical_df),
-                                 lo("WR", nwr, hypothetical_df),
-                                 lo("TE", nte, hypothetical_df),
-                                 flex_op_pos(nqb + 1,
-                                             nrb + 1,
-                                             nwr + 1,
-                                             nte + 1,
-                                             hypothetical_df)) %>%
-  group_by(week) %>%
-  summarise(ttl_points = sum(PPG)) 
-
-points_added <- (sum(hypothetical_lineup$ttl_points) - sum(compare_to$ttl_points))/13
-
-return(points_added)
+added_value <- function(data,new_row,compare_to,nqb,nrb,nwr,nte,nk,ndst){
+  hypothetical_df <- bind_rows(data,
+                               new_row %>%
+                                 # rename(ppg = standard_points) %>% #
+                                 mutate(dummy = 1) %>%
+                                 full_join(.,week_df, by = "dummy") %>%
+                                 mutate(PPG = ifelse(bye == week, 0, PPG)) %>% 
+                                 data.frame()
+  )
+  hypothetical_lineup <- bind_rows(lo("QB",   nqb, hypothetical_df),
+                                   lo("RB",   nrb, hypothetical_df),
+                                   lo("WR",   nwr, hypothetical_df),
+                                   lo("TE",   nte, hypothetical_df),
+                                   lo("K",     nk, hypothetical_df),
+                                   lo("DST", ndst, hypothetical_df),
+                                   flex_op_pos(nqb + 1,
+                                               nrb + 1,
+                                               nwr + 1,
+                                               nte + 1,
+                                               nk  + 1,
+                                               ndst + 1,
+                                               hypothetical_df)) %>%
+    group_by(week) %>%
+    summarise(ttl_points = sum(PPG)) 
+  
+  points_added <- (sum(hypothetical_lineup$ttl_points) - sum(compare_to$ttl_points))/13
+  
+  return(points_added)
 }
 
 
@@ -272,24 +276,20 @@ shinyServer(function(input, output) {
     dfr2() %>%
       filter(player_team %in% input$your_team) %>%
       mutate(dummy = 1) %>%
+#      right_join(.,week_df,by = "dummy") %>%
       full_join(., week_df, by = "dummy") %>%
       mutate(ppg = ifelse(bye == week, 0, ppg))
   })
   
-  # drafted_players_w_weeks <- reactive({
-  #   week_df %>%
-  #     full_join(., dfr2() %>% filter(player_team %in% input$your_team) %>% mutate(dummy = 1)) %>%
-  #     mutate(ppg = ifelse(bye == week, 0, ppg))
-  # })
-  
-  
-  
+
   lineup_optimizer <- reactive({
     if(input$extra_pos == "FLEX"){
-      bind_rows(lo("QB",input$num_qb,drafted_players_w_weeks()),
-                lo("RB",input$num_rb,drafted_players_w_weeks()),
-                lo("WR",input$num_wr,drafted_players_w_weeks()),
-                lo("TE",input$num_te,drafted_players_w_weeks()),
+      bind_rows(lo("QB", input$num_qb,  drafted_players_w_weeks()),
+                lo("RB", input$num_rb,  drafted_players_w_weeks()),
+                lo("WR", input$num_wr,  drafted_players_w_weeks()),
+                lo("TE", input$num_te,  drafted_players_w_weeks()),
+                lo("K",  input$num_k,   drafted_players_w_weeks()),
+                lo("DST",input$num_dst, drafted_players_w_weeks()),
                 flex_op_pos(0,
                             input$num_rb + 1,
                             input$num_wr + 1,
@@ -300,10 +300,12 @@ shinyServer(function(input, output) {
         arrange(week)
     }
     else if(input$extra_pos == "OP"){
-      bind_rows(lo("QB",input$num_qb,drafted_players_w_weeks()),
-                lo("RB",input$num_rb,drafted_players_w_weeks()),
-                lo("WR",input$num_wr,drafted_players_w_weeks()),
-                lo("TE",input$num_te,drafted_players_w_weeks()),
+      bind_rows(lo("QB", input$num_qb,  drafted_players_w_weeks()),
+                lo("RB", input$num_rb,  drafted_players_w_weeks()),
+                lo("WR", input$num_wr,  drafted_players_w_weeks()),
+                lo("TE", input$num_te,  drafted_players_w_weeks()),
+                lo("K",  input$num_k,   drafted_players_w_weeks()),
+                lo("DST",input$num_dst, drafted_players_w_weeks()),
                 flex_op_pos(input$num_qb + 1,
                             input$num_rb + 1,
                             input$num_wr + 1,
@@ -331,37 +333,18 @@ shinyServer(function(input, output) {
       recs_alt <- recs() %>% data.frame()
       recs_alt$VALUE_ADDED <- rep(0,dim(recs_alt)[1])
       for(i in 1:dim(recs_alt)[1]){
-         recs_alt$VALUE_ADDED[i] <- added_value(drafted_players_w_weeks(),
-                                             recs_alt[i,],
-                                             lineup_optimizer() %>%
-                                               data.frame() %>%
-                                               mutate(ttl_points = round(ttl_points,1)) %>%
-                                               data.frame(),
-                                             input$num_qb,
-                                             input$num_rb,
-                                             input$num_wr,
-                                             input$num_te
-                                             )
+        recs_alt$VALUE_ADDED[i] <- added_value(drafted_players_w_weeks,
+                                               recs_alt[i,] %>% data.frame(),
+                                               lineup_optimizer %>%
+                                                 data.frame() %>%
+                                                 mutate(ttl_points = round(ttl_points,1)) %>%
+                                                 data.frame(),
+                                               1,2,3,1,1,1
+        )
       }
-
       return(recs_alt)
   })
 
-  # recs2 <- reactive({
-  #   recs() %>%
-  #     data.frame() %>%
-  #     mutate(VALUE_ADDED = added_value(drafted_players_w_weeks() %>% data.frame(),
-  #                                      .,
-  #                                      lineup_optimizer() %>%
-  #                                        mutate(ttl_points = round(ttl_points,1)) %>%
-  #                                        data.frame(),
-  #                                      input$num_qb,
-  #                                      input$num_rb,
-  #                                      input$num_wr,
-  #                                      input$num_te
-  #                                      )
-  #            )
-  # })
 
    output$rec_table <- renderDataTable({
      recs2() %>%
@@ -379,5 +362,3 @@ shinyServer(function(input, output) {
 
    
 })
-
-#' What does add_value_return?

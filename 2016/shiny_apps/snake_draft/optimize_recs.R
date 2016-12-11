@@ -40,35 +40,42 @@ lo_flex_op <- function(pos,num,data){
 }
 
 
-flex_op_pos <- function(nqb,nrb,nwr,nte,data){
-  bind_rows(lo_flex_op("QB",nqb,data),
-            lo_flex_op("RB",nrb,data),
-            lo_flex_op("WR",nwr,data),
-            lo_flex_op("TE",nte,data)) %>%
+flex_op_pos <- function(nqb,nrb,nwr,nte,nk,ndst,data){
+  bind_rows(lo_flex_op("QB",  nqb, data),
+            lo_flex_op("RB",  nrb, data),
+            lo_flex_op("WR",  nwr, data),
+            lo_flex_op("TE",  nte, data),
+            lo_flex_op("K",    nk, data),
+            lo_flex_op("DST",ndst, data)) %>%
     group_by(week) %>%
     filter(ppg == max(ppg))
 }
 
 #' This function calculates season per game value added:
-added_value <- function(data,new_row,compare_to,nqb,nrb,nwr,nte){
+added_value <- function(data,new_row,compare_to,nqb,nrb,nwr,nte,nk,ndst){
   hypothetical_df <- bind_rows(data,# %>%
                                #                              rename(ppg = standard_points),# %>%
                                #                               full_join(.,week_df, by = "dummy"),
                                new_row %>%
                                  rename(ppg = standard_points) %>% #
                                  mutate(dummy = 1) %>%
+                                 # right_join(.,week_df, by = "dummy") %>%
                                  full_join(.,week_df, by = "dummy") %>%
                                  mutate(ppg = ifelse(bye == week, 0, ppg)) %>% 
                                  data.frame()
   )
-  hypothetical_lineup <- bind_rows(lo("QB", nqb, hypothetical_df),
-                                   lo("RB", nrb, hypothetical_df),
-                                   lo("WR", nwr, hypothetical_df),
-                                   lo("TE", nte, hypothetical_df),
+  hypothetical_lineup <- bind_rows(lo("QB",   nqb, hypothetical_df),
+                                   lo("RB",   nrb, hypothetical_df),
+                                   lo("WR",   nwr, hypothetical_df),
+                                   lo("TE",   nte, hypothetical_df),
+                                   lo("K",     nk, hypothetical_df),
+                                   lo("DST", ndst, hypothetical_df),
                                    flex_op_pos(nqb + 1,
                                                nrb + 1,
                                                nwr + 1,
                                                nte + 1,
+                                               nk  + 1,
+                                               ndst + 1,
                                                hypothetical_df)) %>%
     group_by(week) %>%
     summarise(ttl_points = sum(ppg)) 
@@ -92,9 +99,13 @@ lineup_optimizer <-
               lo("RB",2,drafted_players_w_weeks),
               lo("WR",3,drafted_players_w_weeks),
               lo("TE",1,drafted_players_w_weeks),
+              lo("K", 1,drafted_players_w_weeks),
+              lo("DST",1,drafted_players_w_weeks),
               flex_op_pos(0,
                           2,
                           3,
+                          1,
+                          1,
                           1,
                           drafted_players_w_weeks)) %>%
       group_by(week) %>%
@@ -123,19 +134,7 @@ for(i in 1:dim(recs_alt)[1]){
                                            data.frame() %>%
                                            mutate(ttl_points = round(ttl_points,1)) %>%
                                          data.frame(),
-                                       1,2,3,1
+                                       1,2,3,1,1,1
   )
 }
-recs_alt
 
-recs_alt
-drafted_players_w_weeks
-added_value(drafted_players_w_weeks,
-           recs_alt %>% data.frame(),
-           lineup_optimizer %>%
-             data.frame() %>%
-             mutate(ttl_points = round(ttl_points,1)) %>%
-             data.frame(),
-           1,2,3,1
-)
-  

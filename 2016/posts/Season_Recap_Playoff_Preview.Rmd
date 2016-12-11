@@ -186,7 +186,7 @@ The answers here:
 Hartman did not set the record for the most PW, nor the most points ever. But he came close. The second ever team to over 1600 points as well as 10 PW. 
 ```{r, echo = FALSE}
 season_summary %>%
-  select(2,1,5,12,3,8) %>%
+  select(2,1,5,14,3,10) %>%
   arrange(-points_sum) %>%
   slice(1:8) %>%
   `colnames<-`(c("Owner", "Year", "Points", "Points Rank","PW","PW Rank")) %>%
@@ -194,7 +194,7 @@ season_summary %>%
 
 ```
 
-#### Standing out among the others
+#### Well Out Ahead
 ```{r, echo = FALSE}
 # Want this plot:
 # y axis year
@@ -228,7 +228,7 @@ plot1 +
             nudge_y = 1,
             size = 3,
             angle = 15) +
-  ggtitle("Total PW By Year",subtitle = "Season PW 1st and 2nd Place Labeled")
+  ggtitle("Total PW By Year",subtitle = "Season PW; 1st and 2nd Place Labeled")
 ```
 
 What hopefully stands out is just how far ahead Hartman was of second place this year. Let's quantify this. Take the difference between Hartman (10.0 PW) and Higdon (7.8 PW) which is 2.2 PW. Subtract 2.2 PW from Higdon and we're down to 5.6 PW which would have been good for 9th place!
