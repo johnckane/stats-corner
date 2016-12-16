@@ -53,15 +53,20 @@ flex_op_pos <- function(nqb,nrb,nwr,nte,data){
 }
 
 #' This function calculates season per game value added:
+#' I no longer get errors but it still doesn't work quite right. 
 added_value <- function(data,new_row,compare_to,nqb,nrb,nwr,nte,nk,ndst){
   hypothetical_df <- bind_rows(data,
                                new_row %>%
-                                 # rename(ppg = standard_points) %>% #
-                                 mutate(dummy = 1) %>%
+                                 mutate(dummy = 1,
+                                        team = str_sub(BEST_AVAILABLE, 
+                                                       start = unlist(str_locate_all(BEST_AVAILABLE,"-"))[length(unlist(str_locate_all(BEST_AVAILABLE,"-")))] + 1) %>%
+                                          str_trim()) %>%
                                  full_join(.,week_df, by = "dummy") %>%
-                                 mutate(PPG = ifelse(bye == week, 0, PPG)) %>% 
+                                 full_join(.,team_byes, by = "team") %>%
+                                 mutate(ppg = ifelse(bye == week, 0, ppg)) %>%
                                  data.frame()
   )
+  print(hypothetical_df)
   hypothetical_lineup <- bind_rows(lo("QB",   nqb, hypothetical_df),
                                    lo("RB",   nrb, hypothetical_df),
                                    lo("WR",   nwr, hypothetical_df),
@@ -72,12 +77,9 @@ added_value <- function(data,new_row,compare_to,nqb,nrb,nwr,nte,nk,ndst){
                                                nrb + 1,
                                                nwr + 1,
                                                nte + 1,
-                                               nk  + 1,
-                                               ndst + 1,
                                                hypothetical_df)) %>%
     group_by(week) %>%
-    summarise(ttl_points = sum(PPG)) 
-  
+    summarise(ttl_points = sum(ppg)) 
   points_added <- (sum(hypothetical_lineup$ttl_points) - sum(compare_to$ttl_points))/13
   
   return(points_added)
@@ -225,7 +227,7 @@ shinyServer(function(input, output) {
       by = "position") %>%
       select(1,11,2,12,3,6,9) %>%
       data.frame() %>%
-      `colnames<-`(c("POS","BEST_AVAILABLE","PPG","BANT","PPG_BANT","PCT_DROP","RAW_DROP"))
+      `colnames<-`(c("POS","BEST_AVAILABLE","ppg","BANT","ppg_BANT","PCT_DROP","RAW_DROP"))
     }
     else if(input$one_or_two == 2){
       n3() %>% 
@@ -248,9 +250,9 @@ shinyServer(function(input, output) {
           by = "position") %>%
         select(1,11,2,13,4,7,10) %>%
         data.frame() %>%
-        `colnames<-`(c("POS","BEST_AVAILABLE","PPG","BANT2","PPG_BANT2","PCT_DROP","RAW_DROP")) %>%
-        mutate(PCT_DROP = round(100*(PPG_BANT2 - PPG) / PPG,1),
-               RAW_DROP = (PPG_BANT2 - PPG))
+        `colnames<-`(c("POS","BEST_AVAILABLE","ppg","BANT2","ppg_BANT2","PCT_DROP","RAW_DROP")) %>%
+        mutate(PCT_DROP = round(100*(ppg_BANT2 - ppg) / ppg,1),
+               RAW_DROP = (ppg_BANT2 - ppg))
     }
   })
   
@@ -269,7 +271,7 @@ shinyServer(function(input, output) {
         arrange(adp) %>%
         select(1,2,4,3,5) %>%
         data.frame() %>%
-        `colnames<-`(c("Player","POS","ADP","PPG","BYE"))
+        `colnames<-`(c("Player","POS","ADP","ppg","BYE"))
   })
   
   drafted_players_w_weeks <- reactive({
@@ -333,15 +335,18 @@ shinyServer(function(input, output) {
       recs_alt <- recs() %>% data.frame()
       recs_alt$VALUE_ADDED <- rep(0,dim(recs_alt)[1])
       for(i in 1:dim(recs_alt)[1]){
-        recs_alt$VALUE_ADDED[i] <- added_value(drafted_players_w_weeks,
+        recs_alt$VALUE_ADDED[i] <- added_value(drafted_players_w_weeks(),
                                                recs_alt[i,] %>% data.frame(),
-                                               lineup_optimizer %>%
+                                               lineup_optimizer() %>%
                                                  data.frame() %>%
-                                                 mutate(ttl_points = round(ttl_points,1)) %>%
-                                                 data.frame(),
+                                                  mutate(ttl_points = round(ttl_points,1)) %>%
+                                                  data.frame(),
                                                1,2,3,1,1,1
         )
       }
+      
+      recs_alt <- recs_alt %>% rename(PPG = ppg)
+
       return(recs_alt)
   })
 
@@ -352,6 +357,11 @@ shinyServer(function(input, output) {
      #data.frame()
    },
    options = list(paging = FALSE, searching = FALSE))
+  
+  # output$rec_table <- renderDataTable({
+  #   drafted_players_w_weeks() %>%
+  #     data.frame()
+  # })
 
    # output$rec_table <- renderDataTable({
    #   recs() %>%
