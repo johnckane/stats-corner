@@ -8,7 +8,7 @@ df <- read.csv("/home/john/stats_corner/2016/shiny_apps/snake_draft/v2_1/faa_pro
 
 
 shinyUI(fixedPage(
-	titlePanel("Snake Draft Assistant 2.2"),
+	titlePanel("Snake Draft Assistant 2.3"),
 	fixedRow(
 		column(3,wellPanel(
 			numericInput("picks_made",label = h4("Picks Made"), value = 0)
@@ -104,12 +104,14 @@ shinyUI(fixedPage(
 						         p("Data last updated on 9/4"),
 						         p("Questions? Email me: StatsCorner@gmail.com"),
 						         p(""),
-						         p("What's new in version 2.2 (vs 2.0)?"),
+						         p("App Updated on 2016-12-17, version 2.3"),
+						         p("What's new in version 2.3 (vs 2.0)?"),
 						         p("1. Data update"),
 						         p("2. BYE week filters"),
 						         p("3. Position filters"),
 						         p("4. OP and FLEX recommendations"),
-						         p("5. Lineup Optimizer")
+						         p("5. Lineup Optimizer"),
+						         p("6. A 'Value Added' variable in recommendations, based on current roster and BYE Weeks")
 						)
 	      )
 			)

@@ -55,6 +55,7 @@ flex_op_pos <- function(nqb,nrb,nwr,nte,data){
 #' This function calculates season per game value added:
 #' I no longer get errors but it still doesn't work quite right. 
 added_value <- function(data,new_row,compare_to,nqb,nrb,nwr,nte,nk,ndst){
+  # print(new_row)
   hypothetical_df <- bind_rows(data,
                                new_row %>%
                                  mutate(dummy = 1,
@@ -62,11 +63,29 @@ added_value <- function(data,new_row,compare_to,nqb,nrb,nwr,nte,nk,ndst){
                                                        start = unlist(str_locate_all(BEST_AVAILABLE,"-"))[length(unlist(str_locate_all(BEST_AVAILABLE,"-")))] + 1) %>%
                                           str_trim()) %>%
                                  full_join(.,week_df, by = "dummy") %>%
-                                 full_join(.,team_byes, by = "team") %>%
-                                 mutate(ppg = ifelse(bye == week, 0, ppg)) %>%
-                                 data.frame()
+                                 inner_join(.,team_byes, by = "team") %>%
+                                 mutate(ppg = ifelse(bye == week, 0, ppg),
+                                        adp = NA) %>%
+                                 select(2,1,3,13,12,9,11) %>%
+                                 data.frame() %>%
+                                 `colnames<-`(c("player_team","position","ppg","adp","bye","dummy","week"))
   )
-  print(hypothetical_df)
+  print(
+    bind_rows(data,
+              new_row %>%
+                mutate(dummy = 1,
+                       team = str_sub(BEST_AVAILABLE, 
+                                      start = unlist(str_locate_all(BEST_AVAILABLE,"-"))[length(unlist(str_locate_all(BEST_AVAILABLE,"-")))] + 1) %>%
+                         str_trim()) %>%
+                full_join(.,week_df, by = "dummy") %>%
+                inner_join(.,team_byes, by = "team") %>%
+                mutate(ppg = ifelse(bye == week, 0, ppg),
+                       adp = NA) %>%
+                select(2,1,3,13,12,9,11) %>%
+                data.frame() %>%
+                `colnames<-`(c("player_team","position","ppg","adp","bye","dummy","week"))
+    )
+  )
   hypothetical_lineup <- bind_rows(lo("QB",   nqb, hypothetical_df),
                                    lo("RB",   nrb, hypothetical_df),
                                    lo("WR",   nwr, hypothetical_df),
@@ -82,7 +101,7 @@ added_value <- function(data,new_row,compare_to,nqb,nrb,nwr,nte,nk,ndst){
     summarise(ttl_points = sum(ppg)) 
   points_added <- (sum(hypothetical_lineup$ttl_points) - sum(compare_to$ttl_points))/13
   
-  return(points_added)
+  return(round(points_added,1))
 }
 
 
@@ -227,7 +246,7 @@ shinyServer(function(input, output) {
       by = "position") %>%
       select(1,11,2,12,3,6,9) %>%
       data.frame() %>%
-      `colnames<-`(c("POS","BEST_AVAILABLE","ppg","BANT","ppg_BANT","PCT_DROP","RAW_DROP"))
+      `colnames<-`(c("POS","BEST_AVAILABLE","ppg","BANT","PPG_BANT","PCT_DROP","RAW_DROP"))
     }
     else if(input$one_or_two == 2){
       n3() %>% 
@@ -250,9 +269,9 @@ shinyServer(function(input, output) {
           by = "position") %>%
         select(1,11,2,13,4,7,10) %>%
         data.frame() %>%
-        `colnames<-`(c("POS","BEST_AVAILABLE","ppg","BANT2","ppg_BANT2","PCT_DROP","RAW_DROP")) %>%
-        mutate(PCT_DROP = round(100*(ppg_BANT2 - ppg) / ppg,1),
-               RAW_DROP = (ppg_BANT2 - ppg))
+        `colnames<-`(c("POS","BEST_AVAILABLE","ppg","BANT2","PPG_BANT2","PCT_DROP","RAW_DROP")) %>%
+        mutate(PCT_DROP = round(100*(PPG_BANT2 - ppg) / ppg,1),
+               RAW_DROP = (PPG_BANT2 - ppg))
     }
   })
   
@@ -346,29 +365,25 @@ shinyServer(function(input, output) {
       }
       
       recs_alt <- recs_alt %>% rename(PPG = ppg)
-
+      recs_alt[,3] <- round(recs_alt[,3], digits = 1)
+      recs_alt[,5] <- round(recs_alt[,5], digits = 1)
+      # This is to differentiate the sorting variable from the display variable
+      recs_alt$PCT_DROP_numeric <- recs_alt$PCT_DROP 
+      recs_alt[,6] <- paste0(round(recs_alt[,6], digits = 0),"%")
+      ##
+      recs_alt[,7] <- round(recs_alt[,7], digits = 1)
       return(recs_alt)
   })
 
 
    output$rec_table <- renderDataTable({
      recs2() %>%
-     arrange(PCT_DROP) #%>%
+     arrange(PCT_DROP_numeric) %>%
+     select(1,2,3,4,5,6,7)
      #data.frame()
    },
    options = list(paging = FALSE, searching = FALSE))
   
-  # output$rec_table <- renderDataTable({
-  #   drafted_players_w_weeks() %>%
-  #     data.frame()
-  # })
-
-   # output$rec_table <- renderDataTable({
-   #   recs() %>%
-   #     arrange(PCT_DROP) #%>%
-   #   #data.frame()
-   # },
-   # options = list(paging = FALSE, searching = FALSE))
 
    
 })
