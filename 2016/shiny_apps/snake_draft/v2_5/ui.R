@@ -8,7 +8,7 @@ df <- read.csv("/home/john/stats_corner/2016/shiny_apps/snake_draft/v2_1/faa_pro
 
 
 shinyUI(fixedPage(
-	titlePanel("Snake Draft Assistant 2.4"),
+	titlePanel("Snake Draft Assistant 2.5"),
 	fixedRow(
 		column(3,wellPanel(
 			numericInput("picks_made",label = h4("Picks Made"), value = 0)

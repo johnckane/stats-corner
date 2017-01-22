@@ -141,6 +141,7 @@ shinyServer(function(input, output) {
   
   
   lineup_optimizer <- reactive({
+    # print("ran lineup optimizer")
     if(input$extra_pos == "FLEX"){
       bind_rows(lo("QB", input$num_qb,  drafted_players_w_weeks()),
                 lo("RB", input$num_rb,  drafted_players_w_weeks()),
