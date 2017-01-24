@@ -2,6 +2,7 @@ library(shiny)
 library(dplyr)
 library(tidyr)
 library(stringr)
+library(pryr) # for debugging
 
 df <- read.csv("/home/john/stats_corner/2016/shiny_apps/snake_draft/v2_1/faa_projection_data.csv",
 #df <- read.csv("/srv/shiny-server/stats-corner/2016/snake-assistant/faa_projection_data.csv",
@@ -83,7 +84,8 @@ added_value <- function(data,new_row,compare_to,nqb,nrb,nwr,nte,nk,ndst){
                                                hypothetical_df)) %>%
     group_by(week) %>%
     summarise(ttl_points = sum(ppg))
-  points_added <- (sum(hypothetical_lineup$ttl_points) - sum(compare_to$ttl_points))/13
+  points_added <- (sum(hypothetical_lineup$ttl_points) - compare_to)/13
+  # points_added <- (sum(hypothetical_lineup$ttl_points) - sum(compare_to$ttl_points))/13
   return(round(points_added,1))
 }
 
@@ -128,10 +130,6 @@ shinyServer(function(input, output) {
       df %>% 
       mutate(adp = ppr_adp) %>%
       select(1,2,3,8,7) %>% 
-      arrange(adp) %>%
-      mutate(obs = row_number()) %>%
-      filter(obs <= 300) %>%
-      select(-obs) %>%
       data.frame() %>% 
       `colnames<-`(c("player_team","position","ppg","adp","bye")) 
     }
@@ -139,10 +137,6 @@ shinyServer(function(input, output) {
       df %>% 
       mutate(adp = standard_adp) %>%
       select(1,2,5,8,7) %>% 
-      arrange(adp) %>%
-      mutate(obs = row_number()) %>%
-      filter(obs <= 300) %>%
-      select(-obs) %>%
       data.frame() %>% 
       `colnames<-`(c("player_team","position","ppg","adp","bye"))
     }
@@ -179,7 +173,8 @@ shinyServer(function(input, output) {
       mutate(dummy = 1) %>%
       full_join(., week_df, by = "dummy") %>%
       mutate(ppg = ifelse(bye == week, 0, ppg)) %>%
-      arrange(position)
+      arrange(position) %>%
+      mutate(VALUE_ADDED = 0)
   })
   
   
@@ -221,68 +216,33 @@ shinyServer(function(input, output) {
   })
   
 
-   # dfr3 <- reactive({
-   #   
-   #   dfr2_alt <- dfr2()
-   #   
-   #   for(i in 1:dim(dfr2_alt)[1]){
-   #     print(i)
-   #           dfr2_alt$VALUE_ADDED[i] <- added_value(drafted_players_w_weeks() %>% mutate(VALUE_ADDED = 0),
-   #                                            dfr2_alt[i,] %>%
-   #                                              data.frame(),
-   #                                            lineup_optimizer() %>%
-   #                                              data.frame() %>%
-   #                                              mutate(ttl_points = round(ttl_points,1)) %>%
-   #                                              data.frame(),
-   #                                            input$num_qb,
-   #                                            input$num_rb,
-   #                                            input$num_wr,
-   #                                            input$num_te,
-   #                                            input$num_k,
-   #                                            input$num_dst
-   # 
-   #     )
-   #   }
-   #   return(dfr2_alt)
-   # })
-  
-  dfr3 <- reactive({
-    
-    dfr2_alt <- dfr2()
-    
-    # dfr2_alt$VALUE_ADDED <- 0
-    
-    # dfr2_alt$VALUE_ADDED <- vapply(X = drafted_players_w_weeks() %>% mutate(VALUE_ADDED = 0),
-    #                                FUN = added_value,
-    #                                new_row = dfr2_alt,
-    #                                compare_to = lineup_optimizer() %>% data.frame() %>% mutate(ttl_points = round(ttl_points,1)) %>% data.frame(),
-    #                                nqb  = input$num_qb,
-    #                                nrb  = input$num_rb,
-    #                                nwr  = input$num_wr,
-    #                                nte  = input$num_te,
-    #                                nk   = input$num_k,
-    #                                ndst = input$num_dst,
-    #                                FUN.VALUE = numeric()
-    #                                )
+   dfr3 <- reactive({
 
-  
-   dfr2_alt$VALUE_ADDED <- unlist(Map(f = added_value,
-                                      data = drafted_players_w_weeks() %>% mutate(VALUE_ADDED = 0),
-                                      new_row = dfr2_alt,
-                                      compare_to = lineup_optimizer() %>% data.frame() %>% mutate(ttl_points = round(ttl_points,1)) %>% data.frame(),
-                                      nqb  = input$num_qb,
-                                      nrb  = input$num_rb,
-                                      nwr  = input$num_wr,
-                                      nte  = input$num_te,
-                                      nk   = input$num_k,
-                                      ndst = input$num_dst)
-   )
-                                      
-  
-    print(dim(dfr2_alt))
-    return(dfr2_alt)
-    
-  })
+     dfr2_alt <- dfr2() %>% data.frame()
+     print(str(dfr2_alt))
+     dfr2_alt$VALUE_ADDED = 0
+     dfr3_list <- list(dfr2_alt)
+     dpww <- drafted_players_w_weeks()
+     thelineup <- lineup_optimizer() %>% data.frame() %>% mutate(ttl_points = round(ttl_points,1)) %>% data.frame() 
+     ctp = sum(thelineup$ttl_pts)
+     start = Sys.time()
+     for(i in 1:dim(dfr2_alt)[1]){
+             dfr3_list$VALUE_ADDED[i] <- added_value(dpww,
+                                              dfr2_alt[i,],
+                                              ctp,
+                                              input$num_qb,
+                                              input$num_rb,
+                                              input$num_wr,
+                                              input$num_te,
+                                              input$num_k,
+                                              input$num_dst
+
+       )
+     }
+     end = Sys.time()
+     print(end - start)
+     return(data.frame(dfr3_list))
+   })
   
   next_pick <- reactive({
     ifelse(input$picks_made %% 2 == 0,
