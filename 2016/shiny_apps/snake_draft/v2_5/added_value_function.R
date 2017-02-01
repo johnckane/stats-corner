@@ -75,18 +75,16 @@ lineup_optimzier
 added_value <- function(data,player_num,compare_to){
   hypothetical_df <- bind_rows(data, # current team
                                df_w_weeks[(player_num - 1)*13 + 1 : player_num*13,]
-  )
-  hypothetical_lineup <- hypothetical_df %>%
+  ) %>%
     arrange(week,position,desc(ppg)) %>%
     group_by(week,position) %>%
-    mutate(obs = row_number()) %>%
+    mutate(obs = row_number())
+  
+  hypothetical_lineup <- hypothetical_df %>%
     inner_join(.,lo_df, by = c("position")) %>%
     filter(obs <= lim) %>%
     bind_rows(., 
               hypothetical_df %>%
-                arrange(week,position,desc(ppg)) %>%
-                group_by(week, position) %>%
-                mutate(obs = row_number()) %>%
                 inner_join(.,lo_flex_op_df, by = c("position")) %>%
                 filter(obs == lim) %>%
                 ungroup() %>%
@@ -182,7 +180,8 @@ lineup_optimizer <-
   library(profvis)
   start = Sys.time()
   av <- rep(0,dim(dfr2_alt)[1])
-  for(i in 1:length(av)){
+  # for(i in 1:length(av)){
+  for(i in 1:900){
   # for(i in 1:2){
     av[i] <- added_value(drafted_w_weeks,i,ctp)
   }
