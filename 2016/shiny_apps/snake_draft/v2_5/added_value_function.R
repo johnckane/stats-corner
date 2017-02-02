@@ -125,16 +125,8 @@ colnames(df)
 dfr <- df %>% data.frame()  
    
 
-dfr2 <- bind_rows(dfr,
-          dfr %>% mutate(position = ifelse(position %in% c("RB","WR","TE"),
-                                             "FLEX",
-                                             position)) %>%
-            filter(position == "FLEX")) %>%
-  data.frame() %>%
-  `colnames<-`(c("player_team","position","ppg","adp","bye","team"))
-
 drafted_players_w_weeks <- 
-  dfr2 %>%
+  dfr %>%
     filter(player_team %in% input$your_team) %>%
     mutate(dummy = 1) %>%
     full_join(., week_df, by = "dummy") %>%
