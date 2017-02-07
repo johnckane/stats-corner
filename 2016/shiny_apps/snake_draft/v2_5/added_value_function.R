@@ -50,13 +50,14 @@ lo_df <- data.frame(position = c("QB","RB","WR","TE","K","DST"),
                             input$num_dst),
                     stringsAsFactors = FALSE)
 lo_flex_op_df <- data.frame(position = c("QB","RB","WR","TE"),
-                            lim = c(input$num_qb + 1,
+                            lim_flex_op = c(input$num_qb + 1,
                                     input$num_rb + 1,
                                     input$num_wr + 1,
                                     input$num_te + 1),
                             stringsAsFactors = FALSE)
 
-
+limits_df <- inner_join(lo_df,lo_flex_op_df, by = "position")
+limits_df
 
 colnames(df)
 df_w_weeks <- df %>%
@@ -72,58 +73,146 @@ drafted_w_weeks <- df_w_weeks %>%
 
 lineup_optimzier
 
+# added_value <- function(data,player_num,compare_to){
+#   hypothetical_df <- bind_rows(data, # current team
+#                                df_w_weeks[(player_num - 1)*13 + 1 : player_num*13,]
+#   ) %>%
+#     arrange(week,position,desc(ppg)) %>%
+#     group_by(week,position) %>%
+#     mutate(obs = row_number())
+# 
+#   hypothetical_lineup <- hypothetical_df %>%
+#     inner_join(.,lo_df, by = c("position")) %>%
+#     filter(obs <= lim) %>%
+#     bind_rows(.,
+#               hypothetical_df %>%
+#                 inner_join(.,lo_flex_op_df, by = c("position")) %>%
+#                 filter(obs == lim) %>%
+#                 ungroup() %>%
+#                 group_by(week) %>%
+#                 filter(ppg == max(ppg))) %>%
+#     group_by(week) %>%
+#     summarise(ttl_points = sum(ppg))
+#   hypothetical_points <- hypothetical_lineup %>% ungroup() %>% summarise(total_ppg = sum(ttl_points))
+#   points_added <- (hypothetical_points - compare_to)/13
+#   return(round(points_added,1))
+# }
+
+colnames(drafted_players_w_weeks)
+colnames(df_w_weeks)
+
+# added_value <- function(data,player_num,compare_to){
+#   hypothetical_df <- bind_rows(data %>% select(position,ppg,week), # current team
+#                                df_w_weeks[(player_num - 1)*13 + 1 : player_num*13,c(2,3,7)]
+#   ) %>%
+#     arrange(week,position,desc(ppg)) %>%
+#     group_by(week,position) %>%
+#     mutate(obs = row_number())
+# 
+#   hypothetical_lineup <- hypothetical_df %>%
+#     inner_join(.,lo_df, by = c("position")) %>%
+#     filter(obs <= lim) %>%
+#     bind_rows(.,
+#               hypothetical_df %>%
+#                 inner_join(.,lo_flex_op_df, by = c("position")) %>%
+#                 filter(obs == lim) %>%
+#                 ungroup() %>%
+#                 group_by(week) %>%
+#                 filter(ppg == max(ppg))) %>%
+#     group_by(week) %>%
+#     summarise(ttl_points = sum(ppg))
+#   hypothetical_points <- hypothetical_lineup %>% ungroup() %>% summarise(total_ppg = sum(ttl_points))
+#   points_added <- (hypothetical_points - compare_to)/13
+#   return(round(points_added,1))
+# }
+
+df_w_weeks2 <- df_w_weeks[,c(2,3,7)]
+
+drafted_w_weeks2 <- drafted_players_w_weeks %>% select(position,ppg,week)
+
+# added_value <- function(data,player_num,compare_to){
+#   
+#  hypothetical_df <- bind_rows(data, # current team
+#                                df_w_weeks2[(player_num - 1)*13 + 1 : player_num*13,]
+#   ) %>%
+#     group_by(week,position) %>%
+#     arrange(desc(ppg)) %>%
+#     mutate(obs = row_number())
+#   
+#   hypothetical_lineup <- hypothetical_df %>%
+#     # hypothetical_points <- hypothetical_df %>%
+#     inner_join(.,lo_df, by = c("position")) %>%
+#     filter(obs <= lim) %>%
+#     bind_rows(.,
+#               hypothetical_df %>%
+#                 inner_join(.,lo_flex_op_df, by = c("position")) %>%
+#                 filter(obs == lim) %>%
+#                 ungroup() %>%
+#                 group_by(week) %>%
+#                 filter(ppg == max(ppg))) %>%
+#                 # group_by(week) %>%
+#                 # arrange(desc(ppg)) %>%
+#                 # slice(1)) %>%
+#      summarise(ttl_points = sum(ppg))
+#   
+#   # hypothetical_points <- hypothetical_lineup %>% ungroup() %>% summarise(total_ppg = sum(ttl_points))
+#   
+#     
+#   points_added <- (hypothetical_lineup$ttl_points - compare_to)/13
+#   
+#   return(round(points_added,1))
+# 
+# }
+
+
 added_value <- function(data,player_num,compare_to){
+  
   hypothetical_df <- bind_rows(data, # current team
-                               df_w_weeks[(player_num - 1)*13 + 1 : player_num*13,]
+                               df_w_weeks2[(player_num - 1)*13 + 1 : player_num*13,]
   ) %>%
-    arrange(week,position,desc(ppg)) %>%
     group_by(week,position) %>%
+    arrange(desc(ppg)) %>%
     mutate(obs = row_number())
   
   hypothetical_lineup <- hypothetical_df %>%
-    inner_join(.,lo_df, by = c("position")) %>%
-    filter(obs <= lim) %>%
-    bind_rows(., 
-              hypothetical_df %>%
-                inner_join(.,lo_flex_op_df, by = c("position")) %>%
-                filter(obs == lim) %>%
-                ungroup() %>%
-                group_by(week) %>%
-                filter(ppg == max(ppg))) %>%
-    group_by(week) %>%
+    inner_join(.,limits_df, by = c("position")) %>%
+    group_by(week,position) %>%
+    arrange(desc(ppg)) %>%
+    mutate(obs = row_number(),
+           flex_op_max = ifelse(obs== lim_flex_op & ppg == max(ppg),1,0)) %>%
+    filter(obs <= lim || flex_op_max == 1) %>%
     summarise(ttl_points = sum(ppg))
-  hypothetical_points <- hypothetical_lineup %>% ungroup() %>% summarise(total_ppg = sum(ttl_points))
-  points_added <- (hypothetical_points - compare_to)/13
+  
+
+  points_added <- (hypothetical_lineup$ttl_points - compare_to)/13
+  
   return(round(points_added,1))
+  
 }
 
-hdf <- bind_rows(drafted_w_weeks,df_w_weeks[1:13,])
-hdf
-hdf %>%
-  arrange(week,position) %>%
-  group_by(week,position) %>%
-  mutate(obs = row_number()) %>%
-  inner_join(.,lo_df, by = c("position")) %>%
-  filter(obs <= lim) %>%
-  bind_rows(.,
-            hdf %>%
-              arrange(week,position,desc(ppg)) %>%
-              group_by(week, position) %>%
-              mutate(obs = row_number()) %>%
-              inner_join(.,lo_flex_op_df, by = c("position")) %>%
-              filter(obs == lim) %>%
-              ungroup() %>%
-              group_by(week) %>%
-              filter(ppg == max(ppg))) %>%
-  group_by(week) %>%
-  summarise(ttl_points = sum(ppg))
 
 
+
+
+colnames(drafted_w_weeks)
+
+
+
+s <- Sys.time()
 added_value(drafted_w_weeks,1,0)
+e <- Sys.time()
+
+t1 <- e- s
+t1
+t2 <- e-s
+t2
+
 
 colnames(df)
 dfr <- df %>% data.frame()  
    
+
+
 
 drafted_players_w_weeks <- 
   dfr %>%
@@ -159,34 +248,27 @@ lineup_optimizer <-
   summarise(ttl_points = sum(ppg))
 
   
-  dfr2_alt <- dfr2 %>% data.frame()
-  print(str(dfr2_alt))
-  dfr2_alt$VALUE_ADDED = 0
-  dfr3_list <- list(dfr2_alt)
+  dfr_alt <- dfr %>% data.frame()
+  print(str(dfr_alt))
+  dfr_alt$VALUE_ADDED = 0
+  dfr_list <- list(dfr_alt)
   dpww <- drafted_players_w_weeks
   thelineup <- lineup_optimizer %>% data.frame() %>% mutate(ttl_points = round(ttl_points,1)) %>% data.frame() 
   # ctp = sum(thelineup$ttl_pts)
   start = Sys.time()
   ctp = 0
+
   
-  library(profvis)
+  av <- rep(0,dim(dfr_alt)[1])
   start = Sys.time()
-  av <- rep(0,dim(dfr2_alt)[1])
   # for(i in 1:length(av)){
   for(i in 1:900){
   # for(i in 1:2){
-    av[i] <- added_value(drafted_w_weeks,i,ctp)
+    av[i] <- added_value(drafted_w_weeks2,i,ctp)
   }
   end = Sys.time()
   print(end - start)
-
-  # looks like I cut it in half. 
-  p
-  i <- 14
-  p2 <- profvis({
-    added_value(drafted_w_weeks,
-                i,
-                ctp
-    )
-  })
-
+  
+  # I think the warnings are due to NA's in the data. But I made great progress tonight. Down from 5 seconds to 3.2,
+  # and overall, down from 30 seconds to 3 !!
+  
