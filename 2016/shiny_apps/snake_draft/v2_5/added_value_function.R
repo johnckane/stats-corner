@@ -73,97 +73,12 @@ drafted_w_weeks <- df_w_weeks %>%
 
 lineup_optimzier
 
-# added_value <- function(data,player_num,compare_to){
-#   hypothetical_df <- bind_rows(data, # current team
-#                                df_w_weeks[(player_num - 1)*13 + 1 : player_num*13,]
-#   ) %>%
-#     arrange(week,position,desc(ppg)) %>%
-#     group_by(week,position) %>%
-#     mutate(obs = row_number())
-# 
-#   hypothetical_lineup <- hypothetical_df %>%
-#     inner_join(.,lo_df, by = c("position")) %>%
-#     filter(obs <= lim) %>%
-#     bind_rows(.,
-#               hypothetical_df %>%
-#                 inner_join(.,lo_flex_op_df, by = c("position")) %>%
-#                 filter(obs == lim) %>%
-#                 ungroup() %>%
-#                 group_by(week) %>%
-#                 filter(ppg == max(ppg))) %>%
-#     group_by(week) %>%
-#     summarise(ttl_points = sum(ppg))
-#   hypothetical_points <- hypothetical_lineup %>% ungroup() %>% summarise(total_ppg = sum(ttl_points))
-#   points_added <- (hypothetical_points - compare_to)/13
-#   return(round(points_added,1))
-# }
-
 colnames(drafted_players_w_weeks)
 colnames(df_w_weeks)
-
-# added_value <- function(data,player_num,compare_to){
-#   hypothetical_df <- bind_rows(data %>% select(position,ppg,week), # current team
-#                                df_w_weeks[(player_num - 1)*13 + 1 : player_num*13,c(2,3,7)]
-#   ) %>%
-#     arrange(week,position,desc(ppg)) %>%
-#     group_by(week,position) %>%
-#     mutate(obs = row_number())
-# 
-#   hypothetical_lineup <- hypothetical_df %>%
-#     inner_join(.,lo_df, by = c("position")) %>%
-#     filter(obs <= lim) %>%
-#     bind_rows(.,
-#               hypothetical_df %>%
-#                 inner_join(.,lo_flex_op_df, by = c("position")) %>%
-#                 filter(obs == lim) %>%
-#                 ungroup() %>%
-#                 group_by(week) %>%
-#                 filter(ppg == max(ppg))) %>%
-#     group_by(week) %>%
-#     summarise(ttl_points = sum(ppg))
-#   hypothetical_points <- hypothetical_lineup %>% ungroup() %>% summarise(total_ppg = sum(ttl_points))
-#   points_added <- (hypothetical_points - compare_to)/13
-#   return(round(points_added,1))
-# }
 
 df_w_weeks2 <- df_w_weeks[,c(2,3,7)]
 
 drafted_w_weeks2 <- drafted_players_w_weeks %>% select(position,ppg,week)
-
-# added_value <- function(data,player_num,compare_to){
-#   
-#  hypothetical_df <- bind_rows(data, # current team
-#                                df_w_weeks2[(player_num - 1)*13 + 1 : player_num*13,]
-#   ) %>%
-#     group_by(week,position) %>%
-#     arrange(desc(ppg)) %>%
-#     mutate(obs = row_number())
-#   
-#   hypothetical_lineup <- hypothetical_df %>%
-#     # hypothetical_points <- hypothetical_df %>%
-#     inner_join(.,lo_df, by = c("position")) %>%
-#     filter(obs <= lim) %>%
-#     bind_rows(.,
-#               hypothetical_df %>%
-#                 inner_join(.,lo_flex_op_df, by = c("position")) %>%
-#                 filter(obs == lim) %>%
-#                 ungroup() %>%
-#                 group_by(week) %>%
-#                 filter(ppg == max(ppg))) %>%
-#                 # group_by(week) %>%
-#                 # arrange(desc(ppg)) %>%
-#                 # slice(1)) %>%
-#      summarise(ttl_points = sum(ppg))
-#   
-#   # hypothetical_points <- hypothetical_lineup %>% ungroup() %>% summarise(total_ppg = sum(ttl_points))
-#   
-#     
-#   points_added <- (hypothetical_lineup$ttl_points - compare_to)/13
-#   
-#   return(round(points_added,1))
-# 
-# }
-
 
 added_value <- function(data,player_num,compare_to){
   
@@ -190,30 +105,6 @@ added_value <- function(data,player_num,compare_to){
   
 }
 
-
-
-
-
-colnames(drafted_w_weeks)
-
-
-
-s <- Sys.time()
-added_value(drafted_w_weeks,1,0)
-e <- Sys.time()
-
-t1 <- e- s
-t1
-t2 <- e-s
-t2
-
-
-colnames(df)
-dfr <- df %>% data.frame()  
-   
-
-
-
 drafted_players_w_weeks <- 
   dfr %>%
     filter(player_team %in% input$your_team) %>%
@@ -223,8 +114,6 @@ drafted_players_w_weeks <-
     arrange(position) %>%
     mutate(VALUE_ADDED = 0)
 
-# input$your_team <- "Antonio Brown - PIT"
-input$your_team <- NULL
 lineup_optimizer <-
   drafted_players_w_weeks %>%
   filter(player_team %in% input$your_team) %>%
