@@ -3,58 +3,85 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 
-df <- read.csv("/home/john/stats_corner/2016/shiny_apps/snake_draft/v2_1/faa_projection_data.csv",
-               #df <- read.csv("/srv/shiny-server/stats-corner/2016/snake-assistant/faa_projection_data.csv",
-               stringsAsFactors = FALSE,
-               header = TRUE)
-df$ppr_adp      <- ifelse(df$ppr_adp == "null", 999, as.numeric(df$ppr_adp))
-df$standard_adp <- ifelse(df$standard_adp == "null",999, as.numeric(df$standard_adp))                       
-df_team <- str_split(df$player_team, " - ")
-df_team2 <- sapply(df_team,"[[",2)
-df$team <- df_team2 %>% str_trim()
-
-team <- c("GB","PHI","JAC","KC","NO","SEA","MIN","TB","CAR","DAL","BAL",
-          "LA","MIA","NYG","PIT","SF","ARI","CHI","CIN","HOU","NE","WAS",
-          "BUF","DET","IND","OAK","ATL","DEN","NYJ","SD","CLE","TEN")
-bye <- c(4,4,5,5,5,5,6,6,7,7,8,8,8,8,8,8,9,9,9,9,9,9,10,10,10,10,11,11,11,11,13,13)
-
-team_byes <- data.frame(team,bye,stringsAsFactors = F)
-
-
-df <- left_join(df,team_byes, by = "team") %>% select(-team)
-# Needed for the lineup optimzier:
-week <- c(1:13)
-week_df <- data.frame(week, dummy = 1)
-
-#' This function calculates season per game value added:
-
-added_value <- function(data,player_num,compare_to){
-  
-  hypothetical_df <- bind_rows(data, # current team
-                               df_w_weeks()[(player_num - 1)*13 + 1 : player_num*13,]
-  ) %>%
-    group_by(week,position) %>%
-    arrange(desc(ppg)) %>%
-    mutate(obs = row_number())
-  
-  hypothetical_lineup <- hypothetical_df %>%
-    inner_join(.,limits_df, by = c("position")) %>%
-    group_by(week,position) %>%
-    arrange(desc(ppg)) %>%
-    mutate(obs = row_number(),
-           flex_op_max = ifelse(obs== lim_flex_op & ppg == max(ppg),1,0)) %>%
-    filter(obs <= lim || flex_op_max == 1) %>%
-    summarise(ttl_points = sum(ppg))
-  
-  
-  points_added <- (hypothetical_lineup$ttl_points - compare_to)/13
-  
-  return(round(points_added,1))
-  
-}
 
 shinyServer(function(input, output) {
+  
+#############################################
+#### These are all non-reactive elements ####
+#############################################
 
+  df <- read.csv("/home/john/stats_corner/2016/shiny_apps/snake_draft/v2_1/faa_projection_data.csv",
+                 #df <- read.csv("/srv/shiny-server/stats-corner/2016/snake-assistant/faa_projection_data.csv",
+                 stringsAsFactors = FALSE,
+                 header = TRUE)
+  df$ppr_adp      <- ifelse(df$ppr_adp == "null", 999, as.numeric(df$ppr_adp))
+  df$standard_adp <- ifelse(df$standard_adp == "null",999, as.numeric(df$standard_adp))                       
+  df_team <- str_split(df$player_team, " - ")
+  df_team2 <- sapply(df_team,"[[",2)
+  df$team <- df_team2 %>% str_trim()
+  
+  team <- c("GB","PHI","JAC","KC","NO","SEA","MIN","TB","CAR","DAL","BAL",
+            "LA","MIA","NYG","PIT","SF","ARI","CHI","CIN","HOU","NE","WAS",
+            "BUF","DET","IND","OAK","ATL","DEN","NYJ","SD","CLE","TEN")
+  bye <- c(4,4,5,5,5,5,6,6,7,7,8,8,8,8,8,8,9,9,9,9,9,9,10,10,10,10,11,11,11,11,13,13)
+  
+  team_byes <- data.frame(team,bye,stringsAsFactors = F)
+  
+  
+  df <- left_join(df,team_byes, by = "team") %>% select(-team)
+  # Needed for the lineup optimzier:
+  week <- c(1:13)
+  week_df <- data.frame(week, dummy = 1)
+  
+  #' This function calculates season per game value added:
+  
+  added_value <- function(data,player_num,compare_to){
+    
+    # if(player_num == 1){print(df_w_weeks()[(player_num - 1)*13 + 1 : player_num*13,])}
+    # if(player_num == 5){print(df_w_weeks()[(player_num - 1)*13 + 1 : player_num*13,])}
+    
+    # if(player_num == 1){print(df_w_weeks()[1:13, ])}
+    # if(player_num == 5){print(df_w_weeks()[53 : 65,])}
+    
+    # if(player_num == 1){print(c((player_num-1)*13+1,player_num*13))}
+    # if(player_num == 5){print(c((player_num-1)*13+1,player_num*13))}
+    
+    
+    hypothetical_df <- bind_rows(data, # current team
+                                 df_w_weeks()[(player_num - 1)*13 + 1 : player_num*13,]
+    ) %>%
+      group_by(week,position) %>%
+      arrange(desc(ppg)) %>%
+      mutate(obs = row_number())
+    
+  
+    
+    hypothetical_lineup <- hypothetical_df %>%
+      ungroup() %>%
+      inner_join(.,limits_df(), by = c("position")) %>%
+      group_by(week,position) %>%
+      arrange(desc(ppg)) %>%
+      mutate(obs = row_number(),
+             flex_op_max = ifelse(obs== lim_flex_op & ppg == max(ppg),1,0)) %>%
+      filter(obs <= lim || flex_op_max == 1) %>%
+      summarise(ttl_points = sum(ppg))
+    
+    # if(player_num == 1){print(hypothetical_lineup)}
+    # if(player_num == 2){print(hypothetical_lineup)}
+    
+    
+    points_added <- (hypothetical_lineup$ttl_points - compare_to)/13
+    
+ 
+    
+    return(round(points_added,1))
+    
+  }
+  
+###############################################
+###############################################  
+############################################### 
+  
   lo_df <- reactive({
     data.frame(position = c("QB","RB","WR","TE","K","DST"),
                       lim = c(input$num_qb,
@@ -110,11 +137,11 @@ shinyServer(function(input, output) {
   
   df_w_weeks <- reactive({
     dfr() %>%
-      filter(!(player_team %in% input$drafted_players),
-             !(player_team %in% input$my_team)) %>%
+      filter(!(player_team %in% input$my_team)) %>%
       mutate(dummy = 1) %>%
       full_join(.,week_df, by = "dummy") %>%
-      mutate(ppg = replace(ppg,bye == week, 0))
+      mutate(ppg = replace(ppg,bye == week, 0)) %>%
+      arrange(player_team,week)
   })
   
 
@@ -128,14 +155,14 @@ shinyServer(function(input, output) {
   
   
   lineup_optimizer <- reactive({
-    my_team_w_weeks%>%
+    my_team_w_weeks()%>%
       arrange(week,position,desc(ppg)) %>%
       group_by(week,position) %>%
       mutate(obs = row_number()) %>%
       inner_join(.,limits_df(), by = c("position")) %>%
       filter(obs <= lim) %>%
       bind_rows(., 
-                drafted_players_w_weeks() %>%
+                my_team_w_weeks() %>%
                   arrange(week,position,desc(ppg)) %>%
                   group_by(week, position) %>%
                   mutate(obs = row_number()) %>%
@@ -156,14 +183,15 @@ shinyServer(function(input, output) {
                              !(player_team %in% input$your_team))
     players <- dfr2 %>% select(player_team)
     av <- rep(0,dim(dfr2)[1])
+    compare_to <- lineup_optimizer() %>% ungroup() %>% summarise(total = sum(ttl_points)) %>% select(total)
     for(i in 1:length(av)){
-      av[i] <- added_value(df_w_weeks(),i,ctp)
+      av[i] <- added_value(my_team_w_weeks(),i,compare_to)
     }
-    
     return(dfr2 %>% inner_join(.,data.frame(player_team = players,VALUE_ADDED = av), by  = "player_team") )
 
   })
   
+
   next_pick <- reactive({
     ifelse(input$picks_made %% 2 == 0,
            input$picks_made * input$league_teams + input$first_pick,
