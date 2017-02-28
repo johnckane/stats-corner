@@ -37,24 +37,12 @@ shinyServer(function(input, output) {
   
   added_value <- function(data,player_num,compare_to){
     
-    # if(player_num == 1){print(df_w_weeks()[(player_num - 1)*13 + 1 : player_num*13,])}
-    # if(player_num == 5){print(df_w_weeks()[(player_num - 1)*13 + 1 : player_num*13,])}
-    
-    # if(player_num == 1){print(df_w_weeks()[1:13, ])}
-    # if(player_num == 5){print(df_w_weeks()[53 : 65,])}
-    
-    # if(player_num == 1){print(c((player_num-1)*13+1,player_num*13))}
-    # if(player_num == 5){print(c((player_num-1)*13+1,player_num*13))}
-    
-    
     hypothetical_df <- bind_rows(data, # current team
-                                 df_w_weeks()[(player_num - 1)*13 + 1 : player_num*13,]
+                                 df_w_weeks()[((player_num - 1)*13 + 1):(player_num*13),]
     ) %>%
       group_by(week,position) %>%
       arrange(desc(ppg)) %>%
       mutate(obs = row_number())
-    
-  
     
     hypothetical_lineup <- hypothetical_df %>%
       ungroup() %>%
@@ -63,16 +51,12 @@ shinyServer(function(input, output) {
       arrange(desc(ppg)) %>%
       mutate(obs = row_number(),
              flex_op_max = ifelse(obs== lim_flex_op & ppg == max(ppg),1,0)) %>%
-      filter(obs <= lim || flex_op_max == 1) %>%
+      filter(obs <= lim || flex_op_max == 1)  %>%
+      ungroup() %>%
       summarise(ttl_points = sum(ppg))
-    
-    # if(player_num == 1){print(hypothetical_lineup)}
-    # if(player_num == 2){print(hypothetical_lineup)}
-    
+     
     
     points_added <- (hypothetical_lineup$ttl_points - compare_to)/13
-    
- 
     
     return(round(points_added,1))
     
@@ -181,13 +165,15 @@ shinyServer(function(input, output) {
     dfr2 <- dfr() %>% filter(.,
                              !(player_team %in% input$drafted_players),
                              !(player_team %in% input$your_team))
-    players <- dfr2 %>% select(player_team)
+    players <- dfr2 %>% arrange(player_team) %>% select(player_team)
     av <- rep(0,dim(dfr2)[1])
     compare_to <- lineup_optimizer() %>% ungroup() %>% summarise(total = sum(ttl_points)) %>% select(total)
     for(i in 1:length(av)){
       av[i] <- added_value(my_team_w_weeks(),i,compare_to)
     }
-    return(dfr2 %>% inner_join(.,data.frame(player_team = players,VALUE_ADDED = av), by  = "player_team") )
+  
+    # print(head(dfr2 %>% inner_join(.,data.frame(player_team = players,VALUE_ADDED = av), by  = "player_team")))
+    return(dfr2 %>% inner_join(.,data.frame(player_team = players,VALUE_ADDED = unlist(av)), by  = "player_team") )
 
   })
   
@@ -217,7 +203,7 @@ shinyServer(function(input, output) {
   # 1 : anticipated drafted players by the next time you pick
   # 2 : anticipated drafted players by the time after the next time you pick  
   dp0 <- reactive({
-    bindrows(input$drafted_players,input$your_team)
+    bind_rows(input$drafted_players,input$your_team)
   })
   
   ap1 <- reactive({
@@ -263,11 +249,10 @@ shinyServer(function(input, output) {
       slice(1)
   ) %>%
     arrange(position,adp) %>%
-    mutate(pct_drop = round(100*(VALUE_ADDED- lag(VALUE_ADDED))/VALUE_ADDED,2),
-           raw_drop = (VALUE_ADDED-lag(VALUE_ADDED))) %>%
-    #select (-points) %>%
     group_by(position) %>%
-    mutate(record = row_number())
+    mutate(pct_drop = round(100*(VALUE_ADDED - lead(VALUE_ADDED))/VALUE_ADDED,2),
+           raw_drop = (VALUE_ADDED - lead(VALUE_ADDED)),
+           record   = row_number())
   })
 
   # get the metrics
