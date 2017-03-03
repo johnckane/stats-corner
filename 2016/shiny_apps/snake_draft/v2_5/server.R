@@ -38,11 +38,23 @@ shinyServer(function(input, output) {
   added_value <- function(data,player_num,compare_to){
     
     hypothetical_df <- bind_rows(data, # current team
-                                 df_w_weeks()[((player_num - 1)*13 + 1):(player_num*13),]
+                                 df_w_weeks2()[((player_num - 1)*13 + 1):(player_num*13),]
     ) %>%
       group_by(week,position) %>%
       arrange(desc(ppg)) %>%
       mutate(obs = row_number())
+    
+    print(
+      hypothetical_lineup <- hypothetical_df %>%
+        ungroup() %>%
+        inner_join(.,limits_df(), by = c("position")) %>%
+        group_by(week,position) %>%
+        arrange(desc(ppg)) %>%
+        mutate(obs = row_number()) %>%
+        mutate(flex_op_max = ifelse(obs== lim_flex_op & ppg == max(ppg),1,0)) %>%
+        filter(obs <= lim || flex_op_max == 1),
+      n = 100
+    )
     
     hypothetical_lineup <- hypothetical_df %>%
       ungroup() %>%
@@ -93,8 +105,6 @@ shinyServer(function(input, output) {
     }
   })
   
-  reactive(print(head(dfr())))
-  
   limits_df <- reactive ({
   if(input$extra_pos == "FLEX"){
     inner_join(lo_df(), 
@@ -124,22 +134,40 @@ shinyServer(function(input, output) {
   
   # This is the dataframe that the value added calculation works on.
   # It will only update when you add more players to your team
+  # df_w_weeks <- reactive({
+  #   dfr() %>%
+  #     mutate(dummy = 1) %>%
+  #     full_join(.,week_df, by = "dummy") %>%
+  #     mutate(ppg = replace(ppg,bye == week, 0)) %>%
+  #     arrange(player_team,week)
+  # })
+  
+  
   df_w_weeks <- reactive({
     dfr() %>%
-      filter(!(player_team %in% input$my_team)) %>%
-      mutate(dummy = 1) %>%
-      full_join(.,week_df, by = "dummy") %>%
-      mutate(ppg = replace(ppg,bye == week, 0)) %>%
-      arrange(player_team,week)
+    mutate(dummy = 1) %>%
+    full_join(.,week_df, by = "dummy") %>%
+    mutate(ppg = replace(ppg,bye==week,0)) %>%
+    arrange(player_team,week)
+  })
+  
+  df_w_weeks2 <- reactive({
+   df_w_weeks() %>%
+      filter(!(player_team %in% input$my_team))
   })
   
 
-  my_team_w_weeks<- reactive({
-    dfr() %>%
-      filter(player_team %in% input$your_team) %>%
-      mutate(dummy = 1) %>%
-      full_join(., week_df, by = "dummy") %>%
-      mutate(ppg = replace(ppg,bye == week, 0))
+  # my_team_w_weeks<- reactive({
+  #   dfr() %>%
+  #     filter(player_team %in% input$your_team) %>%
+  #     mutate(dummy = 1) %>%
+  #     full_join(., week_df, by = "dummy") %>%
+  #     mutate(ppg = replace(ppg,bye == week, 0))
+  # })
+  
+  my_team_w_weeks <- reactive({
+    df_w_weeks() %>%
+      filter(player_team %in% input$your_team)
   })
   
   
@@ -172,14 +200,19 @@ shinyServer(function(input, output) {
     players <- dfr2 %>% arrange(player_team) %>% select(player_team)
     av <- rep(0,dim(dfr2)[1])
     compare_to <- lineup_optimizer() %>% ungroup() %>% summarise(total = sum(ttl_points)) %>% select(total)
+    print(compare_to)
     for(i in 1:length(av)){
       av[i] <- added_value(my_team_w_weeks(),i,compare_to)
+      
     }
-  
+     
     return(dfr2 %>% inner_join(.,
-                               data.frame(player_team = players,VALUE_ADDED = unlist(av)), by  = "player_team") %>% ungroup()
+                               data.frame(player_team = players,
+                                          VALUE_ADDED = unlist(av),
+                                          stringsAsFactors = FALSE), 
+                               by  = "player_team") %>% 
+             ungroup()
            )
-
   })
   
 
@@ -208,7 +241,10 @@ shinyServer(function(input, output) {
   # 1 : anticipated drafted players by the next time you pick
   # 2 : anticipated drafted players by the time after the next time you pick  
   dp0 <- reactive({
-    bind_rows(data.frame(drafted_players = input$drafted_players),data.frame(drafted_players = input$your_team))
+    bind_rows(data.frame(drafted_players = input$drafted_players,
+                         stringsAsFactors = FALSE),
+              data.frame(drafted_players = input$your_team,
+                         stringsAsFactors = FALSE))
   })
   
   ap1 <- reactive({
@@ -287,7 +323,7 @@ shinyServer(function(input, output) {
         spread(key = record, value = player_team),   
       by = "position") %>%
       select(1,14,5,15,6,8,11) %>%
-      data.frame() %>%
+      data.frame(.,stringsAsFactors = FALSE) %>%
       `colnames<-`(c("POS","BEST_AVAILABLE","VA","BANT","VA_BANT","PCT_DROP","RAW_DROP"))  %>%
     arrange(desc(PCT_DROP))
     }
@@ -316,7 +352,7 @@ shinyServer(function(input, output) {
             spread(key = record, value = player_team),  #%>%
           by = "position") %>%
         select(1,14,5,16,7,10,13) %>%
-        data.frame() %>%
+        data.frame(.,stringsAsFactors = FALSE) %>%
         `colnames<-`(c("POS","BEST_AVAILABLE","VA","BANT2","VA_BANT2","PCT_DROP","RAW_DROP")) %>%
         mutate(PCT_DROP = -round(100*(VA_BANT2/VA-1),1), #want 'positive drops' so 5% drop represented as 5, not -5
                RAW_DROP = VA_BANT2 - VA) %>%
@@ -336,14 +372,14 @@ shinyServer(function(input, output) {
         filter(!player_team %in% input$drafted_players) %>%
         arrange(adp) %>%
         select(1,2,4,3,5) %>%
-        data.frame() %>%
+        data.frame(.,stringsAsFactors = FALSE) %>%
         `colnames<-`(c("Player","POS","ADP","ppg","BYE"))
   })
   
   output$optimized_lineup <- renderDataTable({
     
     lineup_optimizer() %>%  
-      data.frame() %>%
+      data.frame(.,stringsAsFactors = FALSE) %>%
       mutate(ttl_points = round(ttl_points,1)) %>%
       `colnames<-`(c("Week","Expected Points"))
   
@@ -352,7 +388,7 @@ shinyServer(function(input, output) {
  
   output$rec_table <- renderDataTable({
      recs() %>%
-     data.frame()
+     data.frame(.,stringsAsFactors = FALSE)
    },
    options = list(paging = FALSE, searching = FALSE))
 })
