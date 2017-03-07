@@ -42,31 +42,17 @@ shinyServer(function(input, output) {
     ) %>%
       group_by(week,position) %>%
       arrange(desc(ppg)) %>%
-      mutate(obs = row_number())
-    
-    print(
-      hypothetical_lineup <- hypothetical_df %>%
-        ungroup() %>%
-        inner_join(.,limits_df(), by = c("position")) %>%
-        group_by(week,position) %>%
-        arrange(desc(ppg)) %>%
-        mutate(obs = row_number()) %>%
-        mutate(flex_op_max = ifelse(obs== lim_flex_op & ppg == max(ppg),1,0)) %>%
-        filter(obs <= lim || flex_op_max == 1),
-      n = 100
-    )
-    
-    hypothetical_lineup <- hypothetical_df %>%
+      mutate(obs = row_number()) %>%
       ungroup() %>%
-      inner_join(.,limits_df(), by = c("position")) %>%
-      group_by(week,position) %>%
-      arrange(desc(ppg)) %>%
-      mutate(obs = row_number(),
-             flex_op_max = ifelse(obs== lim_flex_op & ppg == max(ppg),1,0)) %>%
-      filter(obs <= lim || flex_op_max == 1)  %>%
+      inner_join(.,limits_df(), by = c("position"))
+    
+
+    hypothetical_lineup <-
+      bind_rows(hypothetical_df %>% filter(obs <= lim),
+                hypothetical_df %>% filter(obs == lim_flex_op) %>% group_by(week) %>% arrange(desc(ppg)) %>% slice(1)
+      ) %>%
       ungroup() %>%
       summarise(ttl_points = sum(ppg))
-     
     
     points_added <- (hypothetical_lineup$ttl_points - compare_to)/13
     
@@ -105,31 +91,27 @@ shinyServer(function(input, output) {
     }
   })
   
+
   limits_df <- reactive ({
-  if(input$extra_pos == "FLEX"){
-    inner_join(lo_df(), 
-               data.frame(position = c("QB","RB","WR","TE","K","DST"),
-                                lim_flex_op = c(input$num_qb,
-                                                input$num_rb + 1,
-                                                input$num_wr + 1,
-                                                input$num_te + 1,
-                                                input$num_k,
-                                                input$num_dst),
-                                stringsAsFactors = FALSE),
-               by = "position")
-   }  
-   else if(input$extra_pos == "OP"){
-     inner_join(lo_df(),
-                data.frame(position = c("QB","RB","WR","TE","K","DST"),
-                                 lim_flex_op = c(input$num_qb + 1,
-                                                 input$num_rb + 1,
-                                                 input$num_wr + 1,
-                                                 input$num_te + 1,
-                                                 input$num_k,
-                                                 input$num_dst),
-                                 stringsAsFactors = FALSE),
-                by = "position")
-   }
+    if(input$extra_pos == "FLEX"){
+      left_join(lo_df(),
+                 data.frame(position = c("RB","WR","TE"),
+                            lim_flex_op = c(input$num_rb + 1,
+                                            input$num_wr + 1,
+                                            input$num_te + 1),
+                            stringsAsFactors = FALSE),
+                 by = "position")
+    }
+    else if(input$extra_pos == "OP"){
+      left_join(lo_df(),
+                 data.frame(position = c("QB","RB","WR","TE"),
+                            lim_flex_op = c(input$num_qb + 1,
+                                            input$num_rb + 1,
+                                            input$num_wr + 1,
+                                            input$num_te + 1),
+                            stringsAsFactors = FALSE),
+                 by = "position")
+    }
   })
   
   # This is the dataframe that the value added calculation works on.
@@ -157,14 +139,6 @@ shinyServer(function(input, output) {
   })
   
 
-  # my_team_w_weeks<- reactive({
-  #   dfr() %>%
-  #     filter(player_team %in% input$your_team) %>%
-  #     mutate(dummy = 1) %>%
-  #     full_join(., week_df, by = "dummy") %>%
-  #     mutate(ppg = replace(ppg,bye == week, 0))
-  # })
-  
   my_team_w_weeks <- reactive({
     df_w_weeks() %>%
       filter(player_team %in% input$your_team)
@@ -196,16 +170,18 @@ shinyServer(function(input, output) {
   
   dfr2 <- reactive({
     dfr2 <- dfr() %>% filter(.,
-                             !(player_team %in% input$your_team))
-    players <- dfr2 %>% arrange(player_team) %>% select(player_team)
+                             !(player_team %in% input$your_team)) %>%
+      arrange(player_team)
+    
+    players <- dfr2$player_team
+    
     av <- rep(0,dim(dfr2)[1])
     compare_to <- lineup_optimizer() %>% ungroup() %>% summarise(total = sum(ttl_points)) %>% select(total)
-    print(compare_to)
     for(i in 1:length(av)){
       av[i] <- added_value(my_team_w_weeks(),i,compare_to)
-      
     }
      
+    
     return(dfr2 %>% inner_join(.,
                                data.frame(player_team = players,
                                           VALUE_ADDED = unlist(av),
@@ -244,7 +220,8 @@ shinyServer(function(input, output) {
     bind_rows(data.frame(drafted_players = input$drafted_players,
                          stringsAsFactors = FALSE),
               data.frame(drafted_players = input$your_team,
-                         stringsAsFactors = FALSE))
+                         stringsAsFactors = FALSE)) %>%
+      distinct(drafted_players, .keep_all = TRUE)
   })
   
   ap1 <- reactive({
@@ -339,17 +316,17 @@ shinyServer(function(input, output) {
         inner_join(
           n3() %>%
             select(position,pct_drop, record) %>%
-            spread(key = record, value = pct_drop), #%>%
+            spread(key = record, value = pct_drop),
           by = "position") %>%
         inner_join(
           n3() %>%
             select(position,raw_drop,record) %>%
-            spread(key = record, value = raw_drop), # %>%
+            spread(key = record, value = raw_drop),
           by = "position") %>%
         inner_join(
           n3() %>%
             select(position,player_team,record) %>%
-            spread(key = record, value = player_team),  #%>%
+            spread(key = record, value = player_team),  
           by = "position") %>%
         select(1,14,5,16,7,10,13) %>%
         data.frame(.,stringsAsFactors = FALSE) %>%

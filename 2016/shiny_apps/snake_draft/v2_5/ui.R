@@ -64,7 +64,7 @@ shinyUI(fixedPage(
 		                 numericInput("num_dst",  label = "# DST",  value = 1)
 		        ),
 		        tabPanel("Recomendations",
-		                 h4("PPG and Dropoffs of Best Available (BA) Now and Next Time (BANT)"),
+		                 h4("Value Added (Per Game) and Dropoffs of Best Available (BA) Now and Next Time (BANT)"),
 		                 checkboxGroupInput("pos_to_rec", label = h4("Positions to Recommend"), 
 		                                    choices = list("QB" = "QB", "RB" = "RB", "WR" = "WR", "TE" = "TE", "K" = "K", 
 		                                                   "DST" = "DST", "FLEX" = "FLEX", "OP" = "OP"),
