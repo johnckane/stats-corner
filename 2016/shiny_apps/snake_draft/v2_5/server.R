@@ -35,17 +35,20 @@ shinyServer(function(input, output) {
   
   #' This function calculates season per game value added:
   
-  added_value <- function(data,player_num,compare_to){
-    
+  added_value <- function(data,
+                          player_num,
+                          week_data,
+                          compare_to,
+                          player_list){
     hypothetical_df <- bind_rows(data, # current team
-                                 df_w_weeks2()[((player_num - 1)*13 + 1):(player_num*13),]
+                                 # df_w_weeks2()[((player_num - 1)*13 + 1):(player_num*13),]
+                                 week_data[((player_num - 1)*13 + 1):(player_num*13),]
     ) %>%
       group_by(week,position) %>%
       arrange(desc(ppg)) %>%
       mutate(obs = row_number()) %>%
       ungroup() %>%
       inner_join(.,limits_df(), by = c("position"))
-    
 
     hypothetical_lineup <-
       bind_rows(hypothetical_df %>% filter(obs <= lim),
@@ -59,6 +62,7 @@ shinyServer(function(input, output) {
     return(round(points_added,1))
     
   }
+
   
 ###############################################
 ###############################################  
@@ -135,7 +139,7 @@ shinyServer(function(input, output) {
   
   df_w_weeks2 <- reactive({
    df_w_weeks() %>%
-      filter(!(player_team %in% input$my_team))
+      filter(!(player_team %in% input$your_team))
   })
   
 
@@ -169,26 +173,31 @@ shinyServer(function(input, output) {
   
   
   dfr2 <- reactive({
-    dfr2 <- dfr() %>% filter(.,
+    dfr_2 <- dfr() %>% filter(.,
                              !(player_team %in% input$your_team)) %>%
       arrange(player_team)
+
+    players <- dfr_2$player_team
     
-    players <- dfr2$player_team
-    
-    av <- rep(0,dim(dfr2)[1])
-    compare_to <- lineup_optimizer() %>% ungroup() %>% summarise(total = sum(ttl_points)) %>% select(total)
+    av <- rep(0,dim(dfr_2)[1])
+    ct <- lineup_optimizer() %>% ungroup() %>% summarise(total = sum(ttl_points)) %>% select(total)
     for(i in 1:length(av)){
-      av[i] <- added_value(my_team_w_weeks(),i,compare_to)
+      av[i] <- added_value(data = my_team_w_weeks(),
+                           player_num = i,
+                           week_data = df_w_weeks2(),
+                           compare_to = ct,
+                           player_list  = players)
     }
-     
     
-    return(dfr2 %>% inner_join(.,
+    
+    return(dfr_2 %>% inner_join(.,
                                data.frame(player_team = players,
                                           VALUE_ADDED = unlist(av),
                                           stringsAsFactors = FALSE), 
                                by  = "player_team") %>% 
              ungroup()
            )
+    
   })
   
 
@@ -252,6 +261,7 @@ shinyServer(function(input, output) {
           slice((next_pick2() - length(dp0())): dim(dfr2())[1])
   })
   n3 <- reactive({
+    
     rbind(
     ap1() %>%
       group_by(position) %>%
