@@ -104,14 +104,14 @@ shinyUI(fixedPage(
 						         p("Data last updated on 9/4"),
 						         p("Questions? Email me: StatsCorner@gmail.com"),
 						         p(""),
-						         p("App Updated on 2016-12-17, version 2.3"),
-						         p("What's new in version 2.3 (vs 2.0)?"),
+						         p("App Updated on 2017-03-10, version 2.5"),
+						         p("What's new in version 2.5 (vs 2.0)?"),
 						         p("1. Data update"),
 						         p("2. BYE week filters"),
 						         p("3. Position filters"),
 						         p("4. OP and FLEX recommendations"),
 						         p("5. Lineup Optimizer"),
-						         p("6. A 'Value Added' variable in recommendations, based on current roster and BYE Weeks")
+						         p("6. Recommendations based on value added to your roster, not general points added.")
 						)
 	      )
 			)
