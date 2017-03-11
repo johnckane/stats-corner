@@ -309,10 +309,12 @@ shinyServer(function(input, output) {
         select(position,player_team,record) %>%
         spread(key = record, value = player_team),   
       by = "position") %>%
-      select(1,14,5,15,6,8,11) %>%
+      # select(1,14,5,15,6,8,11) %>%
+      select(1,14,5,15,6,11) %>%
       data.frame(.,stringsAsFactors = FALSE) %>%
-      `colnames<-`(c("POS","BEST_AVAILABLE","VA","BANT","VA_BANT","PCT_DROP","RAW_DROP"))  %>%
-    arrange(desc(PCT_DROP))
+      `colnames<-`(c("POS","BEST_AVAILABLE","VA","BANT","VA_BANT","DROP")) %>%
+      # `colnames<-`(c("POS","BEST_AVAILABLE","VA","BANT","VA_BANT","PCT_DROP","RAW_DROP"))  %>%
+    arrange(desc(DROP))
     }
     else if(input$one_or_two == 2){
       n3() %>% 
@@ -338,12 +340,13 @@ shinyServer(function(input, output) {
             select(position,player_team,record) %>%
             spread(key = record, value = player_team),  
           by = "position") %>%
-        select(1,14,5,16,7,10,13) %>%
+        # select(1,14,5,16,7,10,13) %>%
+        select(1,14,5,16,7,13) %>%
         data.frame(.,stringsAsFactors = FALSE) %>%
-        `colnames<-`(c("POS","BEST_AVAILABLE","VA","BANT2","VA_BANT2","PCT_DROP","RAW_DROP")) %>%
-        mutate(PCT_DROP = -round(100*(VA_BANT2/VA-1),1), #want 'positive drops' so 5% drop represented as 5, not -5
-               RAW_DROP = VA_BANT2 - VA) %>%
-        arrange(desc(PCT_DROP))
+        # `colnames<-`(c("POS","BEST_AVAILABLE","VA","BANT2","VA_BANT2","PCT_DROP","RAW_DROP")) %>%
+        `colnames<-`(c("POS","BEST_AVAILABLE","VA","BANT2","VA_BANT2","DROP")) %>%
+        mutate(DROP = VA - VA_BANT2) %>%
+        arrange(desc(DROP))
     }
   })
   
@@ -352,7 +355,7 @@ shinyServer(function(input, output) {
   output$next_pick1 <- renderText(next_pick1())
   output$next_pick2 <- renderText(next_pick2())
   
-  output$pos_recs <- renderText(paste(as.character(recs()$POS[order(-recs()$PCT_DROP)]), collapse = ", "))
+  output$pos_recs <- renderText(paste(as.character(recs()$POS[order(-recs()$DROP)]), collapse = ", "))
   
   output$available_players <- renderDataTable({
       dfr2() %>%
