@@ -243,27 +243,30 @@ shinyServer(function(input, output) {
   ap1 <- reactive({
     dfr2() %>%
           filter(!player_team %in% input$drafted_players, 
-                 !player_team %in% input$your_team,
-                 position %in% input$pos_to_rec, 
-                 !bye %in% as.numeric(input$byes_to_filter)) %>%
+                 !player_team %in% input$your_team#,
+                 # position %in% input$pos_to_rec, 
+                 # !bye %in% as.numeric(input$byes_to_filter)
+                 ) %>%
           arrange(adp)
   })
   
   ap2 <- reactive({
     dfr2() %>%
           filter(!player_team %in% input$drafted_players,
-                 !player_team %in% input$your_team,
-                 position %in% input$pos_to_rec, 
-                 !bye %in% as.numeric(input$byes_to_filter)) %>%
+                 !player_team %in% input$your_team#,
+                 # position %in% input$pos_to_rec, 
+                 # !bye %in% as.numeric(input$byes_to_filter)
+                 ) %>%
           arrange(adp) %>%
           slice((next_pick1() - length(dp0())): dim(dfr2())[1])
   })
   ap3 <- reactive({
     dfr2() %>%
           filter(!player_team %in% input$drafted_players,
-                 !player_team %in% input$your_team,
-                 position %in% input$pos_to_rec, 
-                 !bye %in% as.numeric(input$byes_to_filter)) %>%
+                 !player_team %in% input$your_team#,
+                 # position %in% input$pos_to_rec, 
+                 # !bye %in% as.numeric(input$byes_to_filter)
+                 ) %>%
           arrange(adp) %>%
           slice((next_pick2() - length(dp0())): dim(dfr2())[1])
   })
