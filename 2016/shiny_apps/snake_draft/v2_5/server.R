@@ -67,6 +67,7 @@ shinyServer(function(input, output) {
 ###############################################
 ###############################################  
 ############################################### 
+  picks_made <- reactive({length(input$your_team)})
   
   lo_df <- reactive({
     data.frame(position = c("QB","RB","WR","TE","K","DST"),
@@ -201,17 +202,23 @@ shinyServer(function(input, output) {
   })
   
 
+  # next_pick <- reactive({
+  #   ifelse(picks_made() %% 2 == 0,
+  #          picks_made() * input$league_teams + input$first_pick,
+  #          picks_made() * input$league_teams + input$league_teams - input$first_pick + 1)
+  # })
+  
   next_pick <- reactive({
-    ifelse(input$picks_made %% 2 == 0,
-           input$picks_made * input$league_teams + input$first_pick,
-           input$picks_made * input$league_teams + input$league_teams - input$first_pick + 1)
+    ifelse(picks_made() %% 2 == 0,
+           picks_made()* input$league_teams + input$first_pick,
+           picks_made() * input$league_teams + input$league_teams - input$first_pick + 1)
   })
   
   # The pick after the next
   next_pick1 <- reactive({
-    ifelse(input$picks_made %%2 == 0,
+    ifelse(picks_made() %%2 == 0,
            next_pick() + 2 * (input$league_teams - input$first_pick) + 1,
-           (input$picks_made + 1) * input$league_teams + input$first_pick
+           (picks_made() + 1) * input$league_teams + input$first_pick
     )
   })
   
@@ -236,27 +243,30 @@ shinyServer(function(input, output) {
   ap1 <- reactive({
     dfr2() %>%
           filter(!player_team %in% input$drafted_players, 
-                 !player_team %in% input$your_team,
-                 position %in% input$pos_to_rec, 
-                 !bye %in% as.numeric(input$byes_to_filter)) %>%
+                 !player_team %in% input$your_team#,
+                 # position %in% input$pos_to_rec, 
+                 # !bye %in% as.numeric(input$byes_to_filter)
+                 ) %>%
           arrange(adp)
   })
   
   ap2 <- reactive({
     dfr2() %>%
           filter(!player_team %in% input$drafted_players,
-                 !player_team %in% input$your_team,
-                 position %in% input$pos_to_rec, 
-                 !bye %in% as.numeric(input$byes_to_filter)) %>%
+                 !player_team %in% input$your_team#,
+                 # position %in% input$pos_to_rec, 
+                 # !bye %in% as.numeric(input$byes_to_filter)
+                 ) %>%
           arrange(adp) %>%
           slice((next_pick1() - length(dp0())): dim(dfr2())[1])
   })
   ap3 <- reactive({
     dfr2() %>%
           filter(!player_team %in% input$drafted_players,
-                 !player_team %in% input$your_team,
-                 position %in% input$pos_to_rec, 
-                 !bye %in% as.numeric(input$byes_to_filter)) %>%
+                 !player_team %in% input$your_team#,
+                 # position %in% input$pos_to_rec, 
+                 # !bye %in% as.numeric(input$byes_to_filter)
+                 ) %>%
           arrange(adp) %>%
           slice((next_pick2() - length(dp0())): dim(dfr2())[1])
   })
