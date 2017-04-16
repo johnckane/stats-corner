@@ -4,7 +4,7 @@ output: html_notebook
 ---
 
 ```{r}
-install.packages("RMySQL")
+# install.packages("RMySQL")
 library(RMySQL)
 help(package = "RMySQL")
 ```
@@ -158,6 +158,7 @@ defense <- dbGetQuery(con = mydb,
                       ,a1.sck + 6*a1.tdret + 2*a1.ints + 2*a1.saf +2*a1.blk +2*a1.frcv +6*a1.tdd as pts
                       from defense as a1) as a
                       group by 1,2,3")
+head(defense)
 ```
 
 ```{r}
@@ -188,14 +189,43 @@ pa <-
                                                   ifelse(pa >= 35 & pa <= 45, -3,
                                                          ifelse(pa >= 46, -5, 0))))))))
 
-
+pa
 # now yards against
 # I think the way to do it is to look at yards by team, then give this value to their opponent
 
-dbGetQuery()
+ty <- dbGetQuery(con = mydb,
+                  "select
+                    gid
+                  , tid
+                  , tname
+                  , ry + py as ty
+                  from team")
+tya <- 
+ty %>%
+  group_by(gid) %>%
+  mutate(tya = ifelse(row_number() == 1, lead(ty), lag(ty))) %>%
+  select(gid,tname,tya) %>%
+  mutate(fpts = ifelse(tya < 100, 5,
+                        ifelse(tya >= 100 & tya <= 199, 3,
+                               ifelse(tya >= 200 & tya <= 299, 2,
+                                      ifelse(tya >= 350 & tya <= 399,-1,
+                                             ifelse(tya >= 400 & tya <= 449, -3,
+                                                    ifelse(tya >= 450 & tya <= 499,-5,
+                                                           ifelse(tya >= 500 & tya <= 549, -6,
+                                                                  ifelse(tya >= 550, -7,0)))))))))
+head(tya)
 
-
-
+total_defense <- 
+  defense %>%
+  select(gid,team,fp) %>%
+  inner_join(pa %>% select(gid,team,pts),
+             by = c("gid","team")) %>%
+  inner_join(tya %>% select(-tya),
+             by = c("gid","team" = "tname")) %>%
+  ungroup() %>%
+  mutate(points = fp + pts + fpts) %>%
+  select(-fp,-pts,-fpts)
+head(total_defense)
 ```
 
 ```{r}
@@ -208,8 +238,8 @@ coach <- dbGetQuery(con = mydb,
                     , case when (ptsh - ptsv) >= 25 then 3
                            when (ptsh - ptsv) between  20 and  24 then 1
                            when (ptsh - ptsv) between  15 and  19 then 1
-                           when (ptsh - ptsv) between -15 and -19 then -1
-                           when (ptsh - ptsv) between -20 and -24 then -1
+                           when (ptsh - ptsv) between -19 and -15 then -1
+                           when (ptsh - ptsv) between -24 and -20 then -1
                            when (ptsh - ptsv) <= -25 then -3 
                            else 0 end as pts
                     from game
@@ -222,19 +252,10 @@ coach <- dbGetQuery(con = mydb,
                     , case when (ptsv - ptsh) >= 25 then 3
                            when (ptsv - ptsh) between  20 and  24 then 1
                            when (ptsv - ptsh) between  15 and  19 then 1
-                           when (ptsv - ptsh) between -15 and -19 then -1
-                           when (ptsv - ptsh) between -20 and -24 then -1
+                           when (ptsv - ptsh) between -19 and -15 then -1
+                           when (ptsv - ptsh) between -24 and -20 then -1
                            when (ptsv - ptsh) <= -25 then -3 
                            else 0 end as pts
                     from game")
+head(coach)
 ```
-
-```{r}
-coach %>%
-  group_by(coach) %>%
-  summarise(ttl = sum(pts)) %>%
-  arrange(ttl) %>%
-  ungroup() %>%
-  summarise(st = sum(ttl))
-```
-
