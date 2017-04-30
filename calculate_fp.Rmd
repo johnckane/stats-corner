@@ -50,14 +50,14 @@ dbClearResult(dbListResults(mydb)[[1]])
 # we don't get points for return yards
 offense <- dbGetQuery(con = mydb,
            "select 
-              player
-            , gid
-            , game
-            , seas
-            , year
-            , team
+              a.player
+            , b.wk as week
+            , a.year
+            , a.team
             , 0.04*py + -2*ints + 4*tdp + 0.1*ry + 0.1*recy + 6*tdr + 6*tdrec -2*fuml +6*tdret as fp
-            from offense") 
+            from offense as a
+            join game as b on a.gid = b.gid") 
+head(offense)
 ```
 ```{r}
 dbGetQuery(con = mydb,
@@ -67,8 +67,17 @@ dbGetQuery(con = mydb,
 
 
 ```{r}
+dbGetQuery(con = mydb, "select * from game limit 10")
 two_point <- dbGetQuery(con = mydb,
-                        "select a.*,b.gid from conv as a join play as b on a.pid = b.pid  where conv = 1")
+                        "select 
+                          a.*
+                        , b.gid
+                        , c.seas as year
+                        , c.wk as week 
+                        from conv as a 
+                        join play as b on a.pid = b.pid
+                        join game as c on b.gid = c.gid where conv = 1")
+head(two_point)
 rush_two_point <- two_point %>%
   filter(bc != "")
 pass_two_point <- two_point %>%
@@ -78,28 +87,28 @@ two_point %>%
 
 
 head(pass_two_point)
-
+head(offense)
 offense2 <-
   offense %>%
   left_join(., 
-            pass_two_point %>% group_by(gid,psr) %>% summarise(count = n()), 
-            by = c("gid","player" = "psr")) %>% 
+            pass_two_point %>% group_by(week,year,psr) %>% summarise(count = n()), 
+            by = c("year","week","player" = "psr")) %>% 
   mutate(fp = ifelse(is.na(count) == FALSE, fp + 2*count, fp)) %>%
   select(-count)
-
+head(offense2)
 offense3 <-
   offense2 %>%
   left_join(.,
-            pass_two_point %>% group_by(gid,trg) %>% summarise(count= n()),
-            by = c("gid","player" = "trg")) %>%
+            pass_two_point %>% group_by(week,year,trg) %>% summarise(count= n()),
+            by = c("year","week","player" = "trg")) %>%
   mutate(fp = ifelse(is.na(count) == FALSE, fp+2*count, fp)) %>%
   select(-count)
 
 offense4 <-
   offense3 %>%
   left_join(.,
-            rush_two_point %>% group_by(gid,bc) %>% summarise(count = n()),
-            by = c("gid", "player" = "bc")) %>%
+            rush_two_point %>% group_by(week,year,bc) %>% summarise(count = n()),
+            by = c("year","week","player" = "bc")) %>%
   mutate(fp = ifelse(is.na(count) == FALSE, fp+2*count, fp)) %>%
   select(-count)
 
@@ -113,12 +122,17 @@ dbGetQuery(con = mydb,
 ```
 
 ```{r}
+dbGetQuery(con = mydb,
+           "select * from game limit 10")
+dbGetQuery(con = mydb,
+           "select * from play limit 10")
 kicking <- dbGetQuery(con = mydb,
                       "
                       select
                        a.fkicker as player
-                      ,a.gid 
-                      ,sum(a.pts) as fp
+                      ,b.seas as year
+                      ,b.wk as week
+                      ,sum(a.pts) as points
                       from
                       (select 
                         a1.pid
@@ -133,8 +147,10 @@ kicking <- dbGetQuery(con = mydb,
                         end as pts
                         from fgxp as a1
                         join play as b1 on a1.pid = b1.pid) as a
-                     group by 1,2
+                     join game as b on a.gid = b.gid
+                     group by 1,2,3
                       ")
+head(kicking)
 ```
 
 
@@ -259,3 +275,99 @@ coach <- dbGetQuery(con = mydb,
                     from game")
 head(coach)
 ```
+
+```{r}
+head(offense4)
+head(kicking)
+head(total_defense)
+head(coach)
+```
+
+```{r}
+with(offense4,table(game))
+offense5 <- offense4 %>%
+  select(player,year,week,fp) %>%
+  rename(points = fp)
+head(offense5)
+filter(offense5, player == 'TB-2300')
+head(offense5)
+```
+
+```{r}
+head(kicking)
+```
+
+```{r}
+head(total_defense)
+total_defense2 <- total_defense %>%
+  left_join(.,
+            dbGetQuery(con = mydb,
+                       "select gid, seas as year, wk as week from game"),
+            by = c("gid")) %>%
+  mutate(player = paste0(team,"/DST")) %>%
+  select(player,year,week,points)
+head(total_defense2)
+```
+
+```{r}
+head(coach)
+coach2 <-
+  coach %>%
+  rename(year = seas,
+         week = wk,
+         points = pts) %>%
+  mutate(player = paste0(coach,"/HC")) %>%
+  select(player, year, week, points)
+```
+
+```{r}
+points_week_data <- rbind(offense5,
+                          kicking,
+                          total_defense2,
+                          coach2) %>%
+  group_by(player,week,year) %>%
+  summarise(points = sum(points)) %>%
+  ungroup()
+head(points_week_data)
+points_week_data %>%
+  filter(year >= 2009) %>%
+  arrange(desc(points)) %>%
+  slice(1:10)
+save(points_week_data, file = "/home/john/stats_corner/points_week_data.Rda")
+dbGetQuery(con = mydb,
+           "select * from player where player = 'JH-2200'")
+```
+
+
+```{r}
+# For fantasy purposes, only use data from 2010 onward
+points_week_data_2010 <- filter(points_week_data, year >= 2010)
+save(points_week_data_2010, file = "/home/john/stats_corner/points_week_data_2010.Rda")
+```
+
+
+```{r}
+# Actually, we need this split by year so that we can transpose each individually. 
+# Also need a non-game variable for each player to indicate draft or not. 
+# First try to transpose
+dbGetQuery(con = mydb,
+           "select * from player where player = 'WW-0200'")
+points_week_data_2010 %>%
+  filter(year == 2010) %>%
+  select(-year) %>%
+  spread(.,
+         key = week,
+         value = points,
+         fill = 0) #%>%
+  spread(.,
+         key = player,
+         value = 
+
+```
+
+
+
+
+
+
+
