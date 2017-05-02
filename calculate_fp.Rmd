@@ -352,17 +352,32 @@ save(points_week_data_2010, file = "/home/john/stats_corner/points_week_data_201
 # First try to transpose
 dbGetQuery(con = mydb,
            "select * from player where player = 'WW-0200'")
-points_week_data_2010 %>%
+one_row <- points_week_data_2010 %>%
   filter(year == 2010) %>%
   select(-year) %>%
   spread(.,
          key = week,
          value = points,
-         fill = 0) #%>%
-  spread(.,
-         key = player,
-         value = 
+         fill = 0) %>%
+  spread(.,key = player)
 
+
+one_row <-
+  points_week_data_2010 %>%
+  filter(year == 2010, week <= 16) %>%
+  select(-year) %>%
+  unite(temp, player, week) %>%
+  spread(key = temp, value = points)
+
+
+
+```
+
+```{r}
+players <- dbGetQuery(con = mydb,
+                      "select player, fname, lname
+                       from player")
+head(players)
 ```
 
 
