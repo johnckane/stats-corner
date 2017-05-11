@@ -300,7 +300,6 @@ head(coach)
 ```
 
 ```{r}
-with(offense4,table(game))
 offense5 <- offense4 %>%
   select(player,year,week,fp) %>%
   rename(points = fp)
@@ -471,9 +470,6 @@ pwd$coach <- grepl("HC",pwd$player)
 pwd$dst <- grepl("D/ST",pwd$player)
 filter(pwd,dst == 1)
 
-filter(point_week_data, pos == "HC")
-
-
 players <- dbGetQuery(con = mydb,
                       "select player, fname, lname
                        from player")
@@ -591,7 +587,47 @@ points_week_data_w_cost <-
 
 draft_data %>%
   arrange(player,year) %>%
-  select(player,year,value,keeper)
+  select(player,year,value,keeper) 
+
+
+coded_draft_data2 <- coded_draft_data %>%
+  ungroup() %>%
+  arrange(player_code,year) %>%
+  group_by(player) %>%
+  mutate(player_obs = row_number())
+
+head(coded_draft_data2)
+
+## Easiest way to do this is in a loop I think
+coded_draft_data2$adj_value <- coded_draft_data2$value
+for(i in 1:dim(coded_draft_data2)[1]){
+    if(coded_draft_data2$keeper[i] == 1){
+        if(coded_draft_data2$player_obs[i] != 1){
+            if(coded_draft_data2$year[i] == (coded_draft_data2$year[i-1] + 1)){
+            coded_draft_data2$adj_value[i] <- coded_draft_data2$adj_value[i-1] + 7
+            }
+        }
+    }
+}
+
+# Now remerge with points_week_data_w_cost
+library(magrittr)
+points_week_data_w_cost %<>% 
+  select(-value) %>%
+  left_join(.,
+            coded_draft_data2  %>% select(player_code,year,adj_value), 
+            by = c("player" = "player_code","year"))
+
+filter(points_week_data_w_cost) %>% filter(adj_value > 0) %>% arrange(player,year) %>% View()
+filter(points_week_data_w_cost, player == 'TB-2300')
+
+points_week_data_w_cost %<>%
+  mutate(points = ifelse(week == 0 & keeper == 1,adj_value,points))
+
+points_week_data_w_cost %<>%
+  select(player,year,week,points)
+
+# break into year (2010 - 2015) then transpose. 
 
 ```
 
