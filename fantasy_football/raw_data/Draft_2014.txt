@@ -1,0 +1,192 @@
+3	Le'Veon Bell, Pit RB  K	$13
+15	Arian Foster, Hou RB  K	$10
+26	Robert Griffin III, Wsh QB	$50
+29	Peyton Manning, Den QB	$103
+36	Brandon Marshall, Chi WR	$74
+50	Seahawks D/ST D/ST	$7
+62	Michael Vick, NYJ QB	$3
+92	Steven Jackson, Atl RB	$12
+98	Kirk Cousins, Wsh QB	$3
+110	Riley Cooper, Phi WR	$8
+113	Terrance Williams, Dal WR	$6
+120	Fred Jackson, Buf RB	$3
+122	Mason Crosby, GB K	$1
+133	Charles Clay, Mia TE	$1
+140	Danny Amendola, NE WR	$4
+154	Seahawks Coach HC	$1
+9	Julius Thomas, Den TE  K  	$27
+21	Nick Foles, Phi QB  K  	$10
+28	DeMarco Murray, Dal RB  	$71
+53	Ben Roethlisberger, Pit QB  	$36
+59	Victor Cruz, NYG WR  	$42
+61	C.J. Spiller, Buf RB  	$35
+65	Cordarrelle Patterson, Min WR  	$30
+68	Pierre Garcon, Wsh WR  	$26
+89	Sammy Watkins, Buf WR  	$16
+116	Maurice Jones-Drew, Oak RB  	$1
+159	Donald Brown, SD RB  	$1
+167	Knile Davis, KC RB  	$1
+174	C.J. Anderson, Den RB  	$1
+180	Buccaneers D/ST D/ST  	$1
+185	Adam Vinatieri, Ind K  	$1
+189	Buccaneers Coach HC  	$1
+2	Cam Newton, Car QB  K	$22
+14	Zac Stacy, StL RB  K	$7
+38	Dez Bryant, Dal WR	$78
+39	A.J. Green, Cin WR	$81
+43	Frank Gore, SF RB	$44
+54	Alex Smith, KC QB	$13
+84	Chris Johnson, NYJ RB	$7
+85	Brian Hoyer, Cle QB	$1
+87	Jeremy Maclin, Phi WR	$13
+97	Benny Cunningham, StL RB	$1
+99	Reggie Wayne, Ind WR	$9
+109	Greg Olsen, Car TE	$4
+121	Rams D/ST D/ST	$3
+129	DeAngelo Williams, Car RB	$2
+132	Blair Walsh, Min K	$1
+144	Bengals Coach HC	$3
+7	Julio Jones, Atl WR  K	$30
+19	Alfred Morris, Wsh RB  K	$17
+35	Reggie Bush, Det RB	$43
+48	Larry Fitzgerald, Ari WR	$46
+57	Philip Rivers, SD QB	$42
+60	Vernon Davis, SF TE	$24
+86	Julian Edelman, NE WR	$19
+90	Geno Smith, NYJ QB	$15
+102	Bishop Sankey, Ten RB	$5
+111	Eric Decker, NYJ WR	$10
+114	Panthers D/ST D/ST	$5
+125	Steven Hauschka, Sea K	$2
+126	Blake Bortles, Jac QB	$1
+137	Rueben Randle, NYG WR	$1
+143	Patriots Coach HC	$14
+148	Mike Evans, TB WR	$5
+1	Demaryius Thomas, Den WR  K	$21
+13	Jordy Nelson, GB WR  K	$33
+30	Jason Witten, Dal TE	$27
+44	Giovani Bernard, Cin RB	$66
+49	Tony Romo, Dal QB	$64
+72	Michael Crabtree, SF WR	$31
+73	Jake Locker, Ten QB	$17
+80	Rashad Jennings, NYG RB	$22
+128	Knowshon Moreno, Mia RB	$3
+131	Chris Ivory, NYJ RB	$1
+139	Danny Woodhead, SD RB	$2
+142	Hakeem Nicks, Ind WR	$1
+153	Teddy Bridgewater, Min QB	$1
+162	Matt Bryant, Atl K	$1
+170	Packers Coach HC	$1
+176	Saints D/ST D/ST	$1
+8	Eddie Lacy, GB RB  K	$17
+20	Montee Ball, Den RB  K	$32
+45	Matthew Stafford, Det QB	$75
+46	Tom Brady, NE QB	$68
+70	Kyle Rudolph, Min TE	$13
+78	EJ Manuel, Buf QB	$5
+88	T.Y. Hilton, Ind WR	$15
+91	Joique Bell, Det RB	$15
+105	Emmanuel Sanders, Den WR	$17
+115	DeAndre Hopkins, Hou WR	$5
+119	Justin Tucker, Bal K	$2
+127	Brandin Cooks, NO WR	$13
+138	Bengals D/ST D/ST	$3
+149	Carlos Hyde, SF RB	$9
+158	Jordan Reed, Wsh TE	$1
+166	49ers Coach HC	$1
+11	Randall Cobb, GB WR  K	$14
+22	Colin Kaepernick, SF QB  K	$14
+34	Ryan Mathews, SD RB	$30
+40	Vincent Jackson, TB WR	$42
+42	Andy Dalton, Cin QB	$28
+56	Andre Johnson, Hou WR	$46
+75	Toby Gerhart, Jac RB	$20
+77	Michael Floyd, Ari WR	$17
+82	Ryan Fitzpatrick, Hou QB	$16
+94	Dennis Pitta, Bal TE	$4
+95	49ers D/ST D/ST	$7
+96	Mike Wallace, Mia WR	$13
+100	Stevan Ridley, NE RB	$7
+103	Jordan Cameron, Cle TE	$11
+106	Stephen Gostkowski, NE K	$10
+118	Broncos Coach HC	$3
+4	Andrew Luck, Ind QB  K	$45
+16	Shane Vereen, NE RB  K	$22
+24	Calvin Johnson, Det WR	$78
+25	Adrian Peterson, Min RB	$97
+71	DeSean Jackson, Wsh WR	$26
+76	Trent Richardson, Ind RB	$4
+79	Ray Rice, Bal RB	$15
+104	Pierre Thomas, NO RB	$2
+112	Anquan Boldin, SF WR	$4
+134	Khiry Robinson, NO RB	$1
+145	Steve Smith, Bal WR	$1
+155	Darren McFadden, Oak RB	$1
+163	Broncos D/ST D/ST	$1
+171	Phil Dawson, SF K	$1
+177	Delanie Walker, Ten TE	$1
+182	Colts Coach HC	$1
+10	Marshawn Lynch, Sea RB  K	$64
+31	Doug Martin, TB RB	$73
+47	Rob Gronkowski, NE TE	$41
+64	Eli Manning, NYG QB	$18
+66	Carson Palmer, Ari QB	$23
+67	Percy Harvin, Sea WR	$20
+74	Cecil Shorts, Jac WR	$14
+81	Josh McCown, TB QB	$29
+108	Kendall Wright, Ten WR	$7
+117	Matt Prater, Den K	$5
+151	Shonn Greene, Ten RB	$1
+160	Bernard Pierce, Bal RB	$1
+168	Mark Ingram, NO RB	$1
+175	LeGarrette Blount, Pit RB	$1
+181	Chiefs D/ST D/ST	$1
+186	Eagles Coach HC	$1
+6	LeSean McCoy, Phi RB  K	$56
+18	Jamaal Charles, KC RB  K	$58
+37	Aaron Rodgers, GB QB	$109
+52	Joe Flacco, Bal QB	$22
+63	Roddy White, Atl WR	$36
+101	Marques Colston, NO WR	$8
+136	Greg Jennings, Min WR	$1
+147	Dwayne Bowe, KC WR	$2
+157	James Starks, GB RB	$1
+165	Shaun Hill, StL QB	$1
+179	Heath Miller, Pit TE	$1
+184	Marqise Lee, Jac WR	$1
+188	Roy Helu, Wsh RB	$1
+190	Ravens D/ST D/ST	$1
+191	Robbie Gould, Chi K	$1
+192	Lions Coach HC	$1
+12	Russell Wilson, Sea QB  K	$12
+23	Alshon Jeffery, Chi WR  K	$11
+32	Jimmy Graham, NO TE	$69
+41	Antonio Brown, Pit WR	$57
+51	Ben Tate, Cle RB	$43
+55	Matt Ryan, Atl QB	$58
+58	Andre Ellington, Ari RB	$37
+107	Cardinals D/ST D/ST	$1
+130	Dan Bailey, Dal K	$1
+135	Lamar Miller, Mia RB	$2
+141	Jeremy Hill, Cin RB	$1
+150	Andre Williams, NYG RB	$2
+152	Terrance West, Cle RB	$1
+161	Tavon Austin, StL WR	$1
+169	Saints Coach HC	$1
+173	Justin Hunter, Ten WR	$2
+5	Ryan Tannehill, Mia QB  K	$16
+17	Keenan Allen, SD WR  K	$7
+27	Matt Forte, Chi RB	$84
+33	Drew Brees, NO QB	$106
+69	Jay Cutler, Chi QB	$39
+83	Torrey Smith, Bal WR	$25
+93	Golden Tate, Det WR	$11
+123	Wes Welker, Den WR	$4
+124	Darren Sproles, Phi RB	$1
+146	Markus Wheaton, Pit WR	$1
+156	Ahmad Bradshaw, Ind RB	$1
+164	Martellus Bennett, Chi TE	$1
+172	Nick Novak, SD K	$1
+178	Johnny Manziel, Cle QB	$1
+183	Patriots D/ST D/ST	$1
+187	Bears Coach HC	$1

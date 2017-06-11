@@ -4,13 +4,13 @@ output: html_notebook
 ---
 
 ```{r}
-install.packages("RMySQL")
+# install.packages("RMySQL")
 library(RMySQL)
 #help(package = "RMySQL")
 ```
 
 ```{r}
-install.packages("tidyverse")
+# install.packages("tidyverse")
 #update.packages()
 library(tidyverse)
 mydb = dbConnect(MySQL(), user='root', password='', dbname='armchair_analysis', host='localhost')
@@ -402,7 +402,7 @@ head(players)
 Where is my draft cost data?
 ```{r}
 library(readr)
-install.packages("RCurl")
+# install.packages("RCurl")
 library(RCurl)
 library(stringr)
 load("/home/john/stats_corner/points_week_data.Rda")
@@ -636,7 +636,7 @@ points_week_data_w_cost2 %<>%
   select(player,year,week,points,position) %>%
   arrange(player,year,week)
 
-filter(points_week_data_w_cost2, player == 'TB-2300')
+filter(points_week_data_w_cost2, player == 'DP-0350')
 
 # break into year (2010 - 2015) then transpose. 
 
@@ -662,22 +662,40 @@ Need to decide if I want to only model drafted players. I think the answer is ye
 
 
 ```{r}
+colnames(points_week_data_w_cost2)
 drafted <- points_week_data_w_cost2 %>%
   filter(week == 40, points > 0) %>%
   select(player,year)
+
+filter(drafted, year == 2015, player == 'DP-0350')
 
 drafted_points_w_week <- 
   points_week_data_w_cost2 %>%
   inner_join(drafted, by = c("player","year")) %>%
   filter(week %in% c(1:16,30,40))
+colnames(drafted_points_w_week)
 1059*18
 with(drafted_points_w_week,table(week))
 
-player_year <- drafted_points_w_week %>% group_by(player,year) %>% slice(1) %>% mutate(dummy = 1) %>% select(player,year,dummy)
+filter(drafted_points_w_week, year == 2015, player == 'DP-0350')
+
+player_year <- drafted_points_w_week %>% 
+  group_by(player,year,position) %>% 
+  filter(is.na(position) == FALSE) %>%
+  slice(1) %>% 
+  mutate(dummy = 1) %>% 
+  select(player,year,position,dummy)
+
+filter(player_year, year == 2015, player == 'DP-0350')
 
 full_year_week <- data.frame(year = rep(c(2010:2015),each=18), week = rep(c(1:16,30,40),6), dummy = rep(1,108))
 
+head(full_year_week)
+
 player_year_week <- full_year_week %>% inner_join(.,player_year, by = c("year","dummy"))
+
+filter(player_year_week, year == 2015, player == 'DP-0350')
+
 
 head(player_year_week)
 head(points_week_data_w_cost2)
@@ -685,17 +703,17 @@ head(points_week_data_w_cost2)
 points_week_data_w_cost3 <-
   player_year_week %>%
   select(-dummy) %>%
-  left_join(.,points_week_data_w_cost2, by = c("player","year","week")) %>%
+  left_join(.,points_week_data_w_cost2 %>% select(-position), by = c("player","year","week")) %>%
   filter(week %in% c(1:16,30,40)) %>%
   mutate(points = ifelse(is.na(points),0,points)) %>%
   ungroup() %>%
   arrange(year,player,week) %>%
-  mutate(position = ifelse(is.na(position),lag(position),position)) %>%
+  #mutate(position = ifelse(is.na(position),lag(position),position)) %>%
   mutate(week2 = ifelse(week %in% c(1,2,3,4,5,6,7,8,9),paste0("0",week),week))
 
 with(points_week_data_w_cost3,table(week,week2))
 
-
+filter(points_week_data_w_cost3, year == 2015,player == 'DP-0350')
 
   
 ```
@@ -774,7 +792,6 @@ save(lookup2015, file = "/home/john/stats_corner/fantasy_football/lookup2015.Rda
 
 Now to transpose
 ```{r}
-
 names2010 <-points_week_data_w_cost3 %>%
   ungroup() %>%
   filter(year == 2010) %>%
@@ -786,13 +803,13 @@ names2010 <-points_week_data_w_cost3 %>%
   mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
   mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
   mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
-  mutate(temp2 = str_replace_all(temp2,c("49ers"),".49ers")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
   select(temp2) %>%
   unlist() %>%
   unname() 
 
 names2010
-
 
 
 transpose2010 <- points_week_data_w_cost3 %>%
@@ -805,20 +822,265 @@ transpose2010 <- points_week_data_w_cost3 %>%
   mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
   mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
   mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
-  mutate(temp2 = str_replace_all(temp2,c("49ers"),".49ers")) %>%  spread(key = temp2, value = points) %>%
-  select_(.,.dots = names2010)
-  
-names2010[1]
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
+  select(-week) %>%
+  spread(key  = temp2, value = points) 
 
-select_(transpose2010)  
-parse(text = (names2010)[[1]])
 
+transpose2010 <- transpose2010[,names2010]
+
+transpose2010[,c(721:756)]
+```
+
+Repeat for 2011, 2012, 2013, 2014, 2015
+```{r}
+names2011 <-points_week_data_w_cost3 %>%
+  ungroup() %>%
+  filter(year == 2011) %>%
+  arrange(position,player,week2) %>%
+  select(-year,-position,-week) %>%
+  unite(temp, player, week2) %>%
+  select(temp) %>%
+  mutate(temp2 = str_replace_all(temp,c("'"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
+  select(temp2) %>%
+  unlist() %>%
+  unname() 
+
+transpose2011 <- points_week_data_w_cost3 %>%
+  ungroup() %>%
+  filter(year == 2011) %>%
+  arrange(position,player,week) %>%
+  select(-year,-position) %>%
+  unite(temp2, player, week2) %>%
+  mutate(temp2 = str_replace_all(temp2,c("'"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
+  select(-week) %>%
+  spread(key  = temp2, value = points) 
+
+transpose2011 <- transpose2011[,names2011]
+
+```
+
+```{r}
+names2012 <-points_week_data_w_cost3 %>%
+  ungroup() %>%
+  filter(year == 2012) %>%
+  arrange(position,player,week2) %>%
+  select(-year,-position,-week) %>%
+  unite(temp, player, week2) %>%
+  select(temp) %>%
+  mutate(temp2 = str_replace_all(temp,c("'"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
+  select(temp2) %>%
+  unlist() %>%
+  unname() 
+
+transpose2012 <- points_week_data_w_cost3 %>%
+  ungroup() %>%
+  filter(year == 2012) %>%
+  arrange(position,player,week) %>%
+  select(-year,-position) %>%
+  unite(temp2, player, week2) %>%
+  mutate(temp2 = str_replace_all(temp2,c("'"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
+  select(-week) %>%
+  spread(key  = temp2, value = points) 
+
+transpose2012 <- transpose2012[,names2012]
+
+```
+
+```{r}
+names2013 <-points_week_data_w_cost3 %>%
+  ungroup() %>%
+  filter(year == 2013) %>%
+  arrange(position,player,week2) %>%
+  select(-year,-position,-week) %>%
+  unite(temp, player, week2) %>%
+  select(temp) %>%
+  mutate(temp2 = str_replace_all(temp,c("'"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
+  select(temp2) %>%
+  unlist() %>%
+  unname() 
+
+transpose2013 <- points_week_data_w_cost3 %>%
+  ungroup() %>%
+  filter(year == 2013) %>%
+  arrange(position,player,week) %>%
+  select(-year,-position) %>%
+  unite(temp2, player, week2) %>%
+  mutate(temp2 = str_replace_all(temp2,c("'"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
+  select(-week) %>%
+  spread(key  = temp2, value = points) 
+
+transpose2013 <- transpose2013[,names2013]
+
+```
+
+
+```{r}
+names2014 <-points_week_data_w_cost3 %>%
+  ungroup() %>%
+  filter(year == 2014) %>%
+  arrange(position,player,week2) %>%
+  select(-year,-position,-week) %>%
+  unite(temp, player, week2) %>%
+  select(temp) %>%
+  mutate(temp2 = str_replace_all(temp,c("'"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
+  select(temp2) %>%
+  unlist() %>%
+  unname() 
+
+transpose2014 <- points_week_data_w_cost3 %>%
+  ungroup() %>%
+  filter(year == 2014) %>%
+  arrange(position,player,week) %>%
+  select(-year,-position) %>%
+  unite(temp2, player, week2) %>%
+  mutate(temp2 = str_replace_all(temp2,c("'"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
+  select(-week) %>%
+  spread(key  = temp2, value = points) 
+
+transpose2014 <- transpose2014[,names2014]
+
+```
+
+
+```{r}
+names2015 <-points_week_data_w_cost3 %>%
+  ungroup() %>%
+  filter(year == 2015) %>%
+  arrange(position,player,week2) %>%
+  select(-year,-position,-week) %>%
+  unite(temp, player, week2) %>%
+  select(temp) %>%
+  mutate(temp2 = str_replace_all(temp,c("'"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
+  select(temp2) %>%
+  unlist() %>%
+  unname() 
+
+transpose2015 <- points_week_data_w_cost3 %>%
+  ungroup() %>%
+  filter(year == 2015) %>%
+  arrange(position,player,week) %>%
+  select(-year,-position) %>%
+  unite(temp2, player, week2) %>%
+  mutate(temp2 = str_replace_all(temp2,c("'"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c(" "),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("/"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("-"),"")) %>%
+  mutate(temp2 = str_replace_all(temp2,c("49ers"),"`49ers")) %>%
+  mutate(temp2 = ifelse(str_sub(temp2,1,2) == "`4", paste0(temp2,"`"),temp2)) %>%
+  select(-week) %>%
+  spread(key  = temp2, value = points) 
+
+transpose2015 <- transpose2015[,names2015]
 ```
 
 
 
 
 
+
+
+Save Data as .csv
+```{r}
+library(readr)
+?write_csv
+write_csv(transpose2010,
+          path = "/home/john/stats_corner/fantasy_football/transpose2010.csv",
+          col_names = FALSE)
+
+write_csv(transpose2011,
+          path = "/home/john/stats_corner/fantasy_football/transpose2011.csv",
+          col_names = FALSE)
+
+write_csv(transpose2012,
+          path = "/home/john/stats_corner/fantasy_football/transpose2012.csv",
+          col_names = FALSE)
+
+write_csv(transpose2013,
+          path = "/home/john/stats_corner/fantasy_football/transpose2013.csv",
+          col_names = FALSE)
+
+write_csv(transpose2014,
+          path = "/home/john/stats_corner/fantasy_football/transpose2014.csv",
+          col_names = FALSE)
+
+write_csv(transpose2015,
+          path = "/home/john/stats_corner/fantasy_football/transpose2015.csv",
+          col_names = FALSE)
+
+
+
+
+write_csv(lookup2010,
+          path = "/home/john/stats_corner/fantasy_football/lookup2010.csv",
+          col_names = FALSE)
+
+write_csv(lookup2011,
+          path = "/home/john/stats_corner/fantasy_football/lookup2011.csv",
+          col_names = FALSE)
+
+write_csv(lookup2012,
+          path = "/home/john/stats_corner/fantasy_football/lookup2012.csv",
+          col_names = FALSE)
+
+write_csv(lookup2013,
+          path = "/home/john/stats_corner/fantasy_football/lookup2013.csv",
+          col_names = FALSE)
+
+write_csv(lookup2014,
+          path = "/home/john/stats_corner/fantasy_football/lookup2014.csv",
+          col_names = FALSE)
+
+write_csv(lookup2015,
+          path = "/home/john/stats_corner/fantasy_football/lookup2015.csv",
+          col_names = FALSE)
+```
 
 
 
