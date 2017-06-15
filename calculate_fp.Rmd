@@ -639,6 +639,8 @@ points_week_data_w_cost2 %<>%
 filter(points_week_data_w_cost2, player == 'DP-0350')
 
 # break into year (2010 - 2015) then transpose. 
+head(coded_draft_data2)
+save(coded_draft_data2,file = "/home/john/stats_corner/fantasy_football/coded_draft_data2.Rda")
 
 ```
 
