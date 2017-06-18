@@ -13,7 +13,7 @@ library(RMySQL)
 # install.packages("tidyverse")
 #update.packages()
 library(tidyverse)
-mydb = dbConnect(MySQL(), user='root', password='', dbname='armchair_analysis', host='localhost')
+mydb = dbConnect(MySQL(), user='root', password='cz14F4b12', dbname='armchair_analysis', host='localhost')
 dbListTables(mydb)
 ```
 
@@ -696,6 +696,8 @@ head(full_year_week)
 
 player_year_week <- full_year_week %>% inner_join(.,player_year, by = c("year","dummy"))
 
+
+
 filter(player_year_week, year == 2015, player == 'DP-0350')
 
 
@@ -718,6 +720,11 @@ with(points_week_data_w_cost3,table(week,week2))
 filter(points_week_data_w_cost3, year == 2015,player == 'DP-0350')
 
   
+```
+```{r}
+player_year_week %>%
+  group_by(position) %>%
+  slice(1)
 ```
 
 
@@ -1084,5 +1091,34 @@ write_csv(lookup2015,
           col_names = FALSE)
 ```
 
+```{r}
+coded_draft_data2 %>%
+  group_by(year,owner) %>%
+  summarise(count = n())
+```
 
+```{r}
+lookup2015 %>%
+  group_by(position) %>%
+  summarise(mino = min(obs),
+            maxo = max(obs))
+
+lookup2015 %>%
+  group_by(position) %>%
+  summarise(count = n())
+
+colnames(lookup2015)
+
+colnames(coded_draft_data2)
+coded_draft_data2 %>%
+  filter(year == 2009) %>%
+  group_by(owner,pos) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  group_by(pos) %>%
+  arrange(desc(count)) %>%
+  slice(1)
+
+
+```
 
