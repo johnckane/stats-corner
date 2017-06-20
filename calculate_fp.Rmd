@@ -13,7 +13,7 @@ library(RMySQL)
 # install.packages("tidyverse")
 #update.packages()
 library(tidyverse)
-mydb = dbConnect(MySQL(), user='root', password='cz14F4b12', dbname='armchair_analysis', host='localhost')
+mydb = dbConnect(MySQL(), user='root', password='', dbname='armchair_analysis', host='localhost')
 dbListTables(mydb)
 ```
 
