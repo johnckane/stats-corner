@@ -13,7 +13,7 @@ library(RMySQL)
 # install.packages("tidyverse")
 #update.packages()
 library(tidyverse)
-mydb = dbConnect(MySQL(), user='root', password='', dbname='armchair_analysis', host='localhost')
+mydb = dbConnect(MySQL(), user='root', password='cz14F4b12', dbname='armchair_analysis', host='localhost')
 dbListTables(mydb)
 ```
 
@@ -350,7 +350,8 @@ points_week_data %>%
   filter(year >= 2009) %>%
   arrange(desc(points)) %>%
   slice(1:10)
-save(points_week_data, file = "/home/john/stats_corner/points_week_data.Rda")
+#save(points_week_data, file = "/home/john/stats_corner/points_week_data.Rda")
+load("/home/john/stats_corner/points_week_data.Rda")
 dbGetQuery(con = mydb,
            "select * from player where player = 'JH-2200'")
 ```
@@ -360,6 +361,7 @@ dbGetQuery(con = mydb,
 # For fantasy purposes, only use data from 2010 onward
 points_week_data_2010 <- filter(points_week_data, year >= 2010)
 save(points_week_data_2010, file = "/home/john/stats_corner/points_week_data_2010.Rda")
+load("/home/john/stats_corner/points_week_data_2010.Rda")
 ```
 
 
@@ -641,7 +643,7 @@ filter(points_week_data_w_cost2, player == 'DP-0350')
 # break into year (2010 - 2015) then transpose. 
 head(coded_draft_data2)
 save(coded_draft_data2,file = "/home/john/stats_corner/fantasy_football/coded_draft_data2.Rda")
-
+load("/home/john/stats_corner/fantasy_football/coded_draft_data2.Rda")
 ```
 
 
@@ -718,8 +720,6 @@ points_week_data_w_cost3 <-
 with(points_week_data_w_cost3,table(week,week2))
 
 filter(points_week_data_w_cost3, year == 2015,player == 'DP-0350')
-
-  
 ```
 ```{r}
 player_year_week %>%
