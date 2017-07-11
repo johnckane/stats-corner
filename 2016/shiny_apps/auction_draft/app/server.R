@@ -45,6 +45,35 @@ shinyServer(
             matrix(rbind(c1_error,c2,c3,c4,c5,c6()),nrow=6)
         })
         
+        auction_block <- reactive({
+          solution <-   data.frame(as.character(full_data2$player),
+                                   as.character(full_data2$pos),
+                                   full_data2$pred_cost,
+                                   full_data2$pred_cost2,
+                                   full_data2$ppg,
+                                   solve_model()) %>% 
+            filter(solve_model()==1) %>%
+            data.frame() %>%
+            `colnames<-`(c("Player","Position","Est. Cost", "Est. Cost w/ Error","PPG","Solution"))
+          
+          
+          if(input$candidate %in% solution$Player){
+            last_salary_in <- solution$`Est. Cost`[which(solution$Player == input$candidate)]
+          # The goal here is to see how high we can go and still draft the player.
+          # Do this by binary search with a maximum value of cash remaining 
+          # And a minimum value of current predicted cost. 
+          }
+          
+          else{
+          # The goal here is to see how low we need to go in order to draft the player. 
+          # Do this by binary search with the maximum/starting value of current predicted cost. 
+          # And the minimum value of $1.
+          }
+        })
+        
+        output$auction_block_value <- renderText(auction_block())
+        
+        
         solve_model <- reactive({
             lp(
             "max",

@@ -38,6 +38,17 @@ shinyUI(fluidPage(
             fluidRow(
                 tabsetPanel(
                 id = 'dataset',
+                tabPanel('Optimal Value',
+                         fluidRow(
+                           column(12,
+                           selectizeInput(
+                             'candidate',
+                             'Player on Block',
+                             choices = full_data2$player,
+                             multiple = FALSE
+                           ))
+                         ),
+                         verbatimTextOutput('auction_block_value')),
                 tabPanel('Optimal Model', dataTableOutput('table_solution_model')),
                 tabPanel('Optimal + Error Model', dataTableOutput('table_solution_error_model')),
                # tabPanel('My Team',dataTableOutput('table_my_team')),
