@@ -45,7 +45,8 @@ shinyUI(fluidPage(
                              'candidate',
                              'Player on Block',
                              choices = full_data2$player,
-                             multiple = FALSE
+                             multiple = FALSE,
+                             selected = NULL
                            ))
                          ),
                          verbatimTextOutput('auction_block_value')),
