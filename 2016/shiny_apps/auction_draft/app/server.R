@@ -47,10 +47,7 @@ shinyServer(
         constraints_model <- reactive({
             matrix(rbind(c1_fit,c2,c3,c4,c5,c6(),c7,c8),nrow=8)
         })
-        constraints_model_error <- reactive({
-            matrix(rbind(c1_error,c2,c3,c4,c5,c6(),c7,c8),nrow=8)
-        })
-        
+
         find_value <- function(player,low,high,start){
           found_value <- NULL
           last_val_in = NULL
@@ -123,6 +120,8 @@ shinyServer(
           return(found_value)
         }
         
+        
+  
     
         
         solve_model <- reactive({
@@ -180,19 +179,7 @@ shinyServer(
                },
             options=list(searching=FALSE, paging = FALSE))
 
-      output$table_solution_error_model <- renderDataTable({
-        data.frame(as.character(full_data2$player),
-                   as.character(full_data2$pos),
-                   full_data2$pred_cost,
-                   full_data2$pred_cost2,
-                   full_data2$ppg,
-                   solve_model_error()) %>%
-          filter(solve_model_error() == 1) %>%
-          data.frame() %>%
-          `colnames<-`(c("Player","Position","Est. Cost", "Est. Cost w/ Error","PPG","Solution")) %>%
-          arrange(Position,PPG)
-      })     
-           
+
       
        # output$table_my_team <- renderDataTable({
        #      full_data2 %>%
@@ -201,25 +188,6 @@ shinyServer(
        #  },
        #  options=list(searching=FALSE, paging = FALSE))
 # 
-#        output$error_ppg <- renderText({
-#          error_ppg <- data.frame(as.character(full_data2$player),
-#                     as.character(full_data2$pos),
-#                     full_data2$pred_cost,
-#                     full_data2$pred_cost2,
-#                     full_data2$ppg,
-#                     solve_model_error()) %>%
-#            filter(solve_model_error() == 1) %>%
-#            data.frame() %>%
-#            `colnames<-`(c("Player","Position","Est. Cost", "Est. Cost w/ Error","PPG","Solution")) %>%
-#            summarise(ttl_ppg = sum(PPG))
-#          
-#          myteam_ppg <- full_data2 %>%
-#            filter(player %in% input$my_team) %>%
-#                   data.frame() %>%
-#                     summarise(my_team_ppg = sum(ppg))
-#                   
-#          round(as.numeric(error_ppg + myteam_ppg),1)
-#        })
 #        
 #        output$model_ppg <- renderText({
 #          
@@ -245,10 +213,6 @@ shinyServer(
 #          
 #        })
 #        
-        
-         
-         
-         
         output$table_all_players <- renderDataTable({
             full_data2 %>%
                 data.frame()
