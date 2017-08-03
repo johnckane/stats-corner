@@ -14,7 +14,10 @@ shinyUI(fluidPage(
                 column(2,
                        numericInput("wr", label = h3("WRs to draft"), value = 3)),
                 column(2,
-                       numericInput('te',label = h3("TEs to draft"), value = 1))
+                       numericInput('te',label = h3("TEs to draft"), value = 1)),
+                column(2,
+                       numericInput('dst',label = h3("DST to draft"), value = 1)),
+                column(2,numericInput('k',label = h3("K to draft"), value = 1))
         
             ),
             #fluidRow(
@@ -38,8 +41,19 @@ shinyUI(fluidPage(
             fluidRow(
                 tabsetPanel(
                 id = 'dataset',
+                tabPanel('Optimal Value',
+                         fluidRow(
+                           column(12,
+                           selectizeInput(
+                             'candidate',
+                             'Player on Block',
+                             choices = full_data2$player,
+                             multiple = FALSE#,
+#                             selected = NULL
+                           ))
+                         ),
+                         verbatimTextOutput('auction_block_value')),
                 tabPanel('Optimal Model', dataTableOutput('table_solution_model')),
-                tabPanel('Optimal + Error Model', dataTableOutput('table_solution_error_model')),
                # tabPanel('My Team',dataTableOutput('table_my_team')),
                 tabPanel('All Players', dataTableOutput('table_all_players')),
                 tabPanel('Unavailable Players',
