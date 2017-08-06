@@ -2,12 +2,13 @@ library(shiny)
 library(dplyr)
 library(lpSolve)
 
-full_data2 <- read.csv("/home/john/stats_corner/2016/shiny_apps/auction_draft/app/full_data3.csv",
-                       stringsAsFactors = F,
-                       header = T)
+ full_data2 <- read.csv("/home/john/stats_corner/2016/shiny_apps/auction_draft/app/data2017test.csv",
+                        stringsAsFactors = F,
+                        header = T)
 
 full_data2 <- full_data2 %>%
   filter(is.na(ppg) == F)
+
 
 library(ggplot2)
 
