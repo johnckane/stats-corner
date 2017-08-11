@@ -45,37 +45,92 @@ adp_data <- do.call(rbind,data_list)
 save(adp_data, file = "/home/john/stats_corner/fantasy_football/adp_data.Rda")
 
 
+
+
+
+
 # Pull in player code from the database. 
+adp_data$first_name <- sapply(str_split(adp_data$player,' '), '[[',1)
+adp_data$last_name  <- sapply(str_split(adp_data$player,' '), '[[',2)
+
+adp_data_players <- adp_data %>% group_by(player, first_name, last_name) %>% slice(1) %>% select(player, first_name, last_name)
 
 mydb = dbConnect(MySQL(), user='root', password='cz14F4b12', dbname='armchair_analysis', host='localhost')
 players <- dbGetQuery(con = mydb,
                       "select player as player_code, fname, lname, pos1
                        from player")
 
-adp_data$first_name <- sapply(str_split(adp_data$player,' '), '[[',1)
-adp_data$last_name  <- sapply(str_split(adp_data$player,' '), '[[',2)
-
-head(adp_data)
-
-data_w_names <- adp_data %>% left_join(.,players,by = c("first_name" = "fname","last_name" = "lname"))
-
-
-
-
-# I think better to start with uniques... 
-?dplyr::distinct
-
-unique_adp_players <- 
-  adp_data %>%
-  group_by(player,year) %>%
-  summarise(count = n()) %>%
-  filter(count == 1)
-
-multiple_adp_players <-
-  adp_data %>%
-  group_by(player,year) %>%
+duplicate_entries <- 
+ adp_data_players %>%
+  left_join(.,players, by = c("first_name" = "fname","last_name" = "lname")) %>%
+  group_by(player) %>%
   summarise(count = n()) %>%
   filter(count > 1)
-  
 
 
+single_entries <- 
+  adp_data_players %>% 
+  anti_join(.,duplicate_entries, by = c("player"))
+
+single_entries_coded <-
+  single_entries %>%
+  left_join(.,players,by = c("first_name" = "fname","last_name" = "lname")) 
+single_entries_coded %>% head()
+
+
+adp_data_w_code <-
+  adp_data %>%
+  left_join(.,single_entries_coded %>% ungroup() %>% select(player,player_code), by = c("player"))
+adp_data_w_code %<>%
+  mutate(player_code = ifelse(pos %in% c("DEF"), player,player_code)) %>%
+  mutate(pos = ifelse(pos == "DEF","D/ST",
+                      ifelse(pos == "PK","K",pos)))
+
+with(adp_data_w_code,table(pos))
+
+uncoded <- 
+  adp_data_w_code %>%
+  filter(is.na(player_code == TRUE))
+
+# These teams are based on 2017 rosters
+uncoded %>% group_by(player) %>% slice(1) %>% tally
+uncoded %>% arrange(player,year) %>% slice(71:n())
+
+dbGetQuery(con = mydb,"select * from player where fname = 'Deshaun' and lname = 'Foster'")
+
+uncoded %<>%
+  mutate(player_code = ifelse(player == 'Adrian Peterson' & team == 'NO','AP-0700',
+                       ifelse(player == 'Adrian Peterson' & team == 'FA','AP-0800',
+                       ifelse(player == 'Alex Smith' & pos = 'QB','AS-1600',
+                       ifelse(player == 'Antonio Brown','AB-3500',
+                       ifelse(player == 'Beanie Wells','CW-1400',
+                       ifelse(player == 'Benjamin Watson','BW-0700',
+                       ifelse(player == 'Brandon Marshall','BM-0300',
+                       ifelse(player == 'Cam Newton','CN-0500',
+                       ifelse(player == 'Carnell Williams','CW-200',
+                       ifelse(player == 'Charles Johnson','CJ-1450',
+                       ifelse(player == 'Chris Johnson','CJ-1700',
+                       ifelse(player == 'CJ Anderson','CA-0750',
+                       ifelse(player == 'David Johnson','DJ-1325',
+                       ifelse(player == 'Deshaun Foster','DF-1400',
+                       ifelse(player == 'Donte Stallworth','DS-3600',
+                       ifelse(player == 'EJ Manuel','EM-0250',
+                       ifelse(player == 'Eric Johnson','EJ-0900',
+                       ifelse(player == 'James Davis','D-0600',
+                       ifelse(player == 'James Jones','JJ-4200',
+                       ifelse(player == 'Jonathan Stewart','JS-6700',
+                       ifelse(player == 'Joshua Cribbs','JC-5600',
+                       ifelse(player == 'Kevin Smith','KS-1700',
+                       ifelse(player == 'Kevin White','KW-0887',
+                       ifelse(player == 'LeRon McClain','LM-0700',
+                       ifelse(player == 'LeVeon Bell','LB-0250',
+                       ifelse(player == 'Marvin Jones','MJ-2250',
+                       ifelse(player == 'Matt Jones' & pos == 'WR','MJ-2300',
+                       ifelse(player == 'Matt Jones' & pos == 'RB','MJ-2275',
+                       ifelse(player == 'Michael Thomas','MT-0875',
+                       ifelse(player == 'Mike Sims-Walker','MW-0400')
+                              
+                       )))))))))))))))
+uncoded %>% arrange(player,year) %>% slice(72:n())
+dbGetQuery(con = mydb,"select * from player where lname = 'Walker'")
+                       
