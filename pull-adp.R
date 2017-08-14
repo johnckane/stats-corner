@@ -96,12 +96,12 @@ uncoded <-
 uncoded %>% group_by(player) %>% slice(1) %>% tally
 uncoded %>% arrange(player,year) %>% slice(71:n())
 
-dbGetQuery(con = mydb,"select * from player where fname = 'Deshaun' and lname = 'Foster'")
+
 
 uncoded %<>%
   mutate(player_code = ifelse(player == 'Adrian Peterson' & team == 'NO','AP-0700',
                        ifelse(player == 'Adrian Peterson' & team == 'FA','AP-0800',
-                       ifelse(player == 'Alex Smith' & pos = 'QB','AS-1600',
+                       ifelse(player == 'Alex Smith' & pos == 'QB','AS-1600',
                        ifelse(player == 'Antonio Brown','AB-3500',
                        ifelse(player == 'Beanie Wells','CW-1400',
                        ifelse(player == 'Benjamin Watson','BW-0700',
@@ -128,9 +128,37 @@ uncoded %<>%
                        ifelse(player == 'Matt Jones' & pos == 'WR','MJ-2300',
                        ifelse(player == 'Matt Jones' & pos == 'RB','MJ-2275',
                        ifelse(player == 'Michael Thomas','MT-0875',
-                       ifelse(player == 'Mike Sims-Walker','MW-0400')
-                              
-                       )))))))))))))))
-uncoded %>% arrange(player,year) %>% slice(72:n())
-dbGetQuery(con = mydb,"select * from player where lname = 'Walker'")
+                       ifelse(player == 'Mike Sims-Walker','MW-0400',
+                       ifelse(player == 'Mike Williams' & team == 'FA', 'MW-2700',
+                       ifelse(player == 'Mike Williams' & team == 'None', 'MW-2800',
+                       ifelse(player == 'Odell Beckham Jr','OB-0075',
+                       ifelse(player == 'Reggie Brown','RB-3700',
+                       ifelse(player == 'Ricky Williams','RW-2600',
+                       ifelse(player == 'Roy Williams','RW-3100',
+                       ifelse(player == 'Ryan Grant','RG-1600',
+                       ifelse(player == 'Steve Smith' & team == 'BAL','SS-2100',
+                       ifelse(player == 'Steve Smith' & team == 'TB', 'SS-2200',
+                       ifelse(player == 'TJ Yeldon','TY-0150',
+                       ifelse(player == 'T.Y. Hilton','TH-1850',
+                       ifelse(player == 'Zach Miller' & year %in% c(2009,2010,2011), 'ZM-0200',
+                       ifelse(player == 'Zach Miller' & year %in% c(2016), 'ZM-0250',
+                       ifelse(player == 'Chris Brown', 'CB-3600',
+                       ifelse(player == 'Chris Henry' & pos == 'RB','CH-2700',
+                       ifelse(player == 'Chris Henry' & pos == 'WR','CH-2800',
+                       ifelse(player == 'Chris Givens','CG-1060',player_code
+                       ))))))))))))))))))))))))))))))))))))))))))))))))
+
+filter(uncoded,is.na(player_code))
+dbGetQuery(con = mydb,"select * from player where fname = 'Chris' and lname = 'Givens'")
+
+
+coded_adp_data <- 
+  bind_rows(adp_data_w_code %>% filter(is.na(player_code) == FALSE),
+            uncoded)
+
+lapply(coded_adp_data, function(x) sum(is.na(x)))
+
+coded_adp_data %>% filter(is.na(player_code))
+
+save(coded_adp_data,file = "/home/john/stats_corner/fantasy_football/coded_adp_data_2010_2016.Rda")
                        
