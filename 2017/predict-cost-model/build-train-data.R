@@ -501,7 +501,28 @@ pwd_total_wlag <-
                                                                             lag(ppg,8),
                                                                             ifelse(lag(year,9) == year - 9,
                                                                                    lag(ppg,9),
-                                                                                   NA)))))))))
+                                                                                   NA))))))))),
+         lag_ppg10 = ifelse(lag(year,1) == year - 10,
+                           lag(ppg,1),
+                           ifelse(lag(year,2) == year - 10,
+                                  lag(ppg,2),
+                                  ifelse(lag(year,3) == year - 10,
+                                         lag(ppg,3),
+                                         ifelse(lag(year,4) == year - 10,
+                                                lag(ppg,4),
+                                                ifelse(lag(year,5) == year - 10,
+                                                       lag(ppg,5),
+                                                       ifelse(lag(year,6) == year - 10,
+                                                              lag(ppg,6),
+                                                              ifelse(lag(year,7) == year - 10,
+                                                                     lag(ppg,7),
+                                                                     ifelse(lag(year,8) == year - 10,
+                                                                            lag(ppg,8),
+                                                                            ifelse(lag(year,9) == year - 10,
+                                                                                   lag(ppg,9),
+                                                                                   ifelse(lag(year, 10) == year - 10,
+                                                                                          lag(ppg,10),
+                                                                                          NA))))))))))
   ) %>%
   mutate(lag_ttl1 = ifelse(lag(year,1) == year - 1,lag(ttl,1), NA),
          lag_ttl2 = ifelse(lag(year,1) == year - 2,
@@ -599,7 +620,28 @@ pwd_total_wlag <-
                                                                             lag(ttl,8),
                                                                             ifelse(lag(year,9) == year - 9,
                                                                                    lag(ttl,9),
-                                                                                   NA)))))))))
+                                                                                   NA))))))))),
+         lag_ttl10 = ifelse(lag(year,1) == year - 10,
+                           lag(ttl,1),
+                           ifelse(lag(year,2) == year - 10,
+                                  lag(ttl,2),
+                                  ifelse(lag(year,3) == year - 10,
+                                         lag(ttl,3),
+                                         ifelse(lag(year,4) == year - 10,
+                                                lag(ttl,4),
+                                                ifelse(lag(year,5) == year - 10,
+                                                       lag(ttl,5),
+                                                       ifelse(lag(year,6) == year - 10,
+                                                              lag(ttl,6),
+                                                              ifelse(lag(year,7) == year - 10,
+                                                                     lag(ttl,7),
+                                                                     ifelse(lag(year,8) == year - 10,
+                                                                            lag(ttl,8),
+                                                                            ifelse(lag(year,9) == year - 10,
+                                                                                   lag(ttl,9),
+                                                                                   ifelse(lag(year, 10) == year - 10,
+                                                                                          lag(ttl,10),
+                                                                                          NA))))))))))
   )
 
 # Join
@@ -611,3 +653,28 @@ na_count <-sapply(draft_and_points, function(y) sum(length(which(is.na(y)))))
 na_count
 table(draft_and_points$pos)
 1356-101-84
+
+## Need player data.
+library(RMySQL)
+library(tidyverse)
+mydb = dbConnect(MySQL(), user='root', password='cz14F4b12', dbname='armchair_analysis', host='localhost')
+
+player_info <- dbGetQuery(con = mydb,
+           "select player, yob, start from player")
+
+## Now bring all data together, calc new vars and drop unneeded vars
+#colnames(adp_data3)
+training_data <- 
+  lag_draft_data %>%
+  left_join(adp_data3, by = c("year","player_code" = "player_code")) %>%
+  left_join(pwd_total_wlag, by = c("year","player_code" = "player")) %>%
+  left_join(player_info, by = c("player_code" = "player")) %>%
+  mutate(age = year - yob,
+         experience = year-start) %>%
+  rename(player = player.x,
+         pick = pick.x,
+         team = team.x,
+         pos = pos.x) %>%
+  select(-pick.y,-pos.y,-team.y,-player.y,-games,-first_name,-last_name,-ppg,-ttl,-yob,-start,-times_drafted)
+training_data2017 <- training_data
+save(training_data, file = "/home/john/stats_corner/2017/predict-cost-model/training_data2017.Rda")
