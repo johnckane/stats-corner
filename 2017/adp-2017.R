@@ -1,7 +1,7 @@
 url_base <- "https://fantasyfootballcalculator.com/adp?format=standard&year="
 url_coda <- "&teams=12&view=graph&pos=all"
 year <- 2017
-dim <- 223
+dim <- 222
 
 for(j in 1:1){
   
@@ -11,7 +11,7 @@ for(j in 1:1){
     html_text() %>%
     matrix(.,nrow = dim,ncol = 13, byrow = TRUE) %>%
     as.data.frame(stringsAsFactors = FALSE) %>%
-    `colnames<-`(c("obs","pick","player","player2","pos","team","overall","std_dev","high","low","times_drafted","blank","blank2")) %>%
+    `colnames<-`(c("obs","pick","player","player2","pos","team","bye","overall","std_dev","high","low","times_drafted","blank")) %>%
     mutate(year = year) %>%
     select(year,pick,player,pos,team,overall,std_dev,high,low,times_drafted) %>%
     mutate(overall = as.numeric(overall),
@@ -114,3 +114,22 @@ uncoded2017 %<>%
                        ))))))))))))))))))))))
 filter(uncoded2017,is.na(player_code)) %>% arrange(player)  
 
+
+colnames(adp2017_w_code)
+colnames(uncoded2017)
+
+
+adp2017_final <- bind_rows(adp2017_w_code %>% filter(is.na(player_code) == FALSE),uncoded2017)
+
+adp2017_final %<>% 
+  left_join(.,team_df %>% select(abbr,team_name), by = c("team" = "abbr")) %>%
+  mutate(player_code =ifelse(pos == 'D/ST',paste0(team_name," ","D/ST"),player_code)) %>%
+  select(-team_name)
+
+
+adp2017_final %>% distinct() %>% dim()
+
+
+save(adp2017_final, file = "/home/john/stats_corner/2017/adp2017_final.Rda")
+#filter(adp2017_final, player == 'Antonio Brown')
+#filter(adp2017_w_code, player == 'Antonio Brown')

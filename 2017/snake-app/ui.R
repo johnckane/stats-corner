@@ -1,8 +1,8 @@
 library(shiny)
 
 
-df <- read.csv("/home/john/stats_corner/2017/snake-app/ffa_data.csv",
-#df <- read.csv("/srv/shiny-server/stats-corner/2017/snake-app/ffa_data.csv",
+#df <- read.csv("/home/john/stats_corner/2017/snake-app/ffa_data.csv",
+df <- read.csv("/srv/shiny-server/stats-corner/2017/snake-app/ffa_data.csv",
                stringsAsFactors = FALSE,
                header = TRUE)
 fluidPage(

@@ -1,5 +1,6 @@
 # Recreate the historic draft data, adjust keeper values
 
+
 library(readr)
 
 path <- "/home/john/stats_corner/fantasy_football/raw_data/"
@@ -228,7 +229,7 @@ coded_draft_data %<>%
   mutate(team = ifelse(player %in% c('49ers Coach','49ers D/ST'),'SF',
                        ifelse(player %in% c('Bears Coach','Bears D/ST'),'CHI',
                               ifelse(player %in% c('Bengals Coach','Bengals D/ST'),'CIN',
-                                     ifelse(player %in% c('Bill CoachBills D/ST',)))))))
+                                     ifelse(player %in% c('Bills Coach,Bills D/ST'),'BUF',team)))))
 colnames(coded_draft_data)
-draft_data <- coded_draft_data[c(1,2,3,4,13,5,6,8,12),]
+draft_data <- coded_draft_data[,c(1,2,3,4,13,5,6,8,12)]
 save(draft_data, file = "/home/john/stats_corner/fantasy_football/draft_data.Rda")

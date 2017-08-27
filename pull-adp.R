@@ -160,5 +160,14 @@ lapply(coded_adp_data, function(x) sum(is.na(x)))
 
 coded_adp_data %>% filter(is.na(player_code))
 
-save(coded_adp_data,file = "/home/john/stats_corner/fantasy_football/coded_adp_data_2010_2016.Rda")
+head(team_df)
+
+coded_adp_data2 <-
+  coded_adp_data %>%
+  left_join(.,team_df %>% select(abbr,team_name), by = c("team" = "abbr")) %>%
+  mutate(player_code =ifelse(pos == 'D/ST',paste0(team_name," ","D/ST"),player_code)) %>%
+  select(-team_name)
+                             
+
+save(coded_adp_data2,file = "/home/john/stats_corner/fantasy_football/coded_adp_data_2010_2016.Rda")
                        
