@@ -72,7 +72,7 @@ fluidPage(
           tabPanel("About",
                     a("Projection and ADP data downloaded from Fantasy Football Analytics",     
                       href="http://fantasyfootballanalytics.net/"),
-                    p("Data last updated on August 23, 2017"),
+                    p("Data last updated on August 29, 2017"),
                     p("Questions? Email me: StatsCorner@gmail.com"),
                     p(""),
                     p("What's New in version 3.1?"),
