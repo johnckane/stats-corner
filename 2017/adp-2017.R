@@ -1,7 +1,7 @@
 url_base <- "https://fantasyfootballcalculator.com/adp?format=standard&year="
 url_coda <- "&teams=12&view=graph&pos=all"
 year <- 2017
-dim <- 222
+dim <- 211
 
 for(j in 1:1){
   
@@ -52,6 +52,7 @@ single_entries_coded <-
 adp2017_w_code <-
   adp2017 %>%
   left_join(.,single_entries_coded %>% ungroup() %>% select(player,player_code), by = c("player"))
+
 adp2017_w_code %<>%
   mutate(player_code = ifelse(pos %in% c("DEF"), player,player_code)) %>%
   mutate(pos = ifelse(pos == "DEF","D/ST",
@@ -126,10 +127,17 @@ adp2017_final %<>%
   mutate(player_code =ifelse(pos == 'D/ST',paste0(team_name," ","D/ST"),player_code)) %>%
   select(-team_name)
 
+adp2017_final2 <-
+  adp2017_final %>%
+  left_join(team_df,by = c("team" = "abbr")) %>%
+  mutate(player_code2 = ifelse(pos == 'D/ST',paste0(team_name," D/ST"),player_code)) %>%
+  mutate(player_code = player_code2) %>%
+  select(-player_code2,team_name,city)
 
-adp2017_final %>% distinct() %>% dim()
+
+adp2017_final2 %>% distinct() %>% dim()
 
 
-save(adp2017_final, file = "/home/john/stats_corner/2017/adp2017_final.Rda")
+save(adp2017_final2, file = "/home/john/stats_corner/2017/adp2017_final.Rda")
 #filter(adp2017_final, player == 'Antonio Brown')
 #filter(adp2017_w_code, player == 'Antonio Brown')

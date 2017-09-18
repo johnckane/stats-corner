@@ -12,6 +12,7 @@ colnames(ffa_no_dst_w_code)
 colnames(ffa_no_dst)
 #filter(ffa_no_dst_w_code, player == 'Antonio Brown') %>% View()
 #filter(adp2017_final, player == 'Antonio Brown') %>% View()
+ffa_no_dst_w_code %<>% mutate(pos = position)
 ffa_no_dst_w_code %<>%
   mutate(player_code = ifelse(player == 'Alvin Kamara','Kamar01',
                        ifelse(player == 'Christian McCaffrey','McCaf01',
@@ -56,17 +57,20 @@ ffa_no_dst_w_code %>% filter(grepl('Foreman',player) == T)
 
 ffa_final <- bind_rows(ffa_no_dst_w_code,ffa_dst2)
 
-ffa_final %>% filter(playerposition == 'D/ST')
+ffa_final %>% filter(position == 'D/ST')
+
+ffa_final$ptsGame <- ffa_final$points/16
 
 str(ffa_final)
 str(adp2017_final)
 
 
-adp_w_proj <- adp2017_final %>% 
+adp_w_proj <- adp2017_final2 %>% 
   left_join(.,
             ffa_final %>% ungroup() %>% select(player_code,ptsGame) %>% filter(is.na(player_code) == FALSE), 
             by = c("player_code"))
 colnames(adp_w_proj)
 
 adp_w_proj %>% filter(is.na(ptsGame)) %>% arrange(player)
-                                                                                                                                       
+adp_w_proj2017 <- adp_w_proj                                                             
+save(adp_w_proj2017,file="/home/john/stats_corner/2017/predict-cost-model/adp_w_proj2017.Rda")                                                                          

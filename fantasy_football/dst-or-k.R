@@ -1,5 +1,6 @@
-library(RMySQL)
 library(tidyverse)
+library(ineq) #ineq(X,type="Gini")
+library(RMySQL)
 mydb = dbConnect(MySQL(), user='root', password='cz14F4b12', dbname='armchair_analysis', host='localhost')
 team_name_abbr_lookup <- data.frame(abbr = c('ARI','ATL','BAL','BUF','CAR','CHI','CIN','CLE','DAL','DEN',
                                              'DET','GB' ,'HOU','IND','JAC','KC' ,'LA' ,'MIA','MIN','NE',
@@ -12,13 +13,13 @@ team_name_abbr_lookup <- data.frame(abbr = c('ARI','ATL','BAL','BUF','CAR','CHI'
                                     stringsAsFactors = FALSE)
 offense <- dbGetQuery(con = mydb,
                       "select 
-              a.player
-            , b.wk as week
-            , a.year
-            , a.team
-            , 0.04*py + -2*ints + 4*tdp + 0.1*ry + 0.1*recy + 6*tdr + 6*tdrec -2*fuml +6*tdret as fp
-            from offense as a
-            join game as b on a.gid = b.gid") 
+                      a.player
+                      , b.wk as week
+                      , a.year
+                      , a.team
+                      , 0.04*py + -2*ints + 4*tdp + 0.1*ry + 0.1*recy + 6*tdr + 6*tdrec -2*fuml +6*tdret as fp
+                      from offense as a
+                      join game as b on a.gid = b.gid") 
 two_point <- dbGetQuery(con = mydb,
                         "select 
                         a.*
@@ -61,37 +62,37 @@ offense4 <-
 kicking <- dbGetQuery(con = mydb,
                       "
                       select
-                       a.fkicker as player
+                      a.fkicker as player
                       ,b.seas as year
                       ,b.wk as week
                       ,sum(a.pts) as points
                       from
                       (select 
-                        a1.pid
+                      a1.pid
                       , b1.gid
                       , a1.fkicker
                       , case when a1.fgxp = 'XP' and a1.good = 1 then 1 
-                             when a1.fgxp = 'FG' and a1.good = 1 and a1.dist <= 39 then 3
-                             when a1.fgxp = 'FG' and a1.good = 1 and a1.dist >= 40 and dist <= 49 then 4
-                             when a1.fgxp = 'FG' and a1.good = 1 and a1.dist >= 50 then 5
-                             when a1.fgxp = 'FG' and a1.good = 0 then -1
-                             else 0
-                        end as pts
-                        from fgxp as a1
-                        join play as b1 on a1.pid = b1.pid) as a
-                     join game as b on a.gid = b.gid
-                     group by 1,2,3
+                      when a1.fgxp = 'FG' and a1.good = 1 and a1.dist <= 39 then 3
+                      when a1.fgxp = 'FG' and a1.good = 1 and a1.dist >= 40 and dist <= 49 then 4
+                      when a1.fgxp = 'FG' and a1.good = 1 and a1.dist >= 50 then 5
+                      when a1.fgxp = 'FG' and a1.good = 0 then -1
+                      else 0
+                      end as pts
+                      from fgxp as a1
+                      join play as b1 on a1.pid = b1.pid) as a
+                      join game as b on a.gid = b.gid
+                      group by 1,2,3
                       ")
 defense <- dbGetQuery(con = mydb,
                       "
                       select
-                       a.gid
+                      a.gid
                       ,a.team
                       ,a.year
                       ,sum(a.pts) as fp
                       from
                       (select
-                       a1.gid
+                      a1.gid
                       ,a1.team
                       ,a1.year
                       ,a1.sck + 6*a1.tdret + 2*a1.ints + 2*a1.saf +2*a1.blk +2*a1.frcv +6*a1.tdd as pts
@@ -118,11 +119,11 @@ pa <-
                                                          ifelse(pa >= 46, -5, 0))))))))
 ty <- dbGetQuery(con = mydb,
                  "select
-                    gid
-                  , tid
-                  , tname
-                  , ry + py as ty
-                  from team")
+                 gid
+                 , tid
+                 , tname
+                 , ry + py as ty
+                 from team")
 tya <- 
   ty %>%
   group_by(gid) %>%
@@ -148,31 +149,31 @@ total_defense <-
   select(-fp,-pts,-fpts)
 coach <- dbGetQuery(con = mydb,
                     "select
-                      gid
+                    gid
                     , seas
                     , wk
                     , h as coach
                     , case when (ptsh - ptsv) >= 25 then 3
-                           when (ptsh - ptsv) between  20 and  24 then 1
-                           when (ptsh - ptsv) between  15 and  19 then 1
-                           when (ptsh - ptsv) between -19 and -15 then -1
-                           when (ptsh - ptsv) between -24 and -20 then -1
-                           when (ptsh - ptsv) <= -25 then -3 
-                           else 0 end as pts
+                    when (ptsh - ptsv) between  20 and  24 then 1
+                    when (ptsh - ptsv) between  15 and  19 then 1
+                    when (ptsh - ptsv) between -19 and -15 then -1
+                    when (ptsh - ptsv) between -24 and -20 then -1
+                    when (ptsh - ptsv) <= -25 then -3 
+                    else 0 end as pts
                     from game
                     union
                     select
-                      gid
+                    gid
                     , seas
                     , wk
                     , v as coach
                     , case when (ptsv - ptsh) >= 25 then 3
-                           when (ptsv - ptsh) between  20 and  24 then 1
-                           when (ptsv - ptsh) between  15 and  19 then 1
-                           when (ptsv - ptsh) between -19 and -15 then -1
-                           when (ptsv - ptsh) between -24 and -20 then -1
-                           when (ptsv - ptsh) <= -25 then -3 
-                           else 0 end as pts
+                    when (ptsv - ptsh) between  20 and  24 then 1
+                    when (ptsv - ptsh) between  15 and  19 then 1
+                    when (ptsv - ptsh) between -19 and -15 then -1
+                    when (ptsv - ptsh) between -24 and -20 then -1
+                    when (ptsv - ptsh) <= -25 then -3 
+                    else 0 end as pts
                     from game")
 offense5 <- offense4 %>%
   select(player,year,week,fp) %>%
@@ -201,67 +202,62 @@ points_week_data <- rbind(offense5,
   summarise(points = sum(points)) %>%
   ungroup()
 
-# Need to join this with position data
-dbListFields(conn = mydb, "player")
+colnames(points_week_data)
 
-player_pos <- dbGetQuery(conn = mydb,
-                         "select player, pos1, yob from player")
+player_pos <- dbGetQuery(con = mydb,"select player, pos1 from player")
 
-points_week_pos <-
-  left_join(points_week_data,player_pos, by = c("player")) %>%
-  rename(pos = pos1) %>%
-  mutate(age = year - yob) %>%
-  filter(pos %in% c("QB","RB","WR","TE","K"))
+points_week_data %<>%
+  left_join(player_pos,by = "player") %>%
+  mutate(pos1 = ifelse(grepl("D/ST",player),"D/ST",pos1))
+str(coded_adp_data2)
 
-head(points_week_pos)
+colnames(coded_adp_data2)
 
-points_year_pos <- 
-  points_week_pos %>%
-  filter(week %in% c(1:16)) %>% # only care about fantasy season!
-  group_by(player,pos,age,year) %>%
-  summarise(total_points = sum(points)) %>%
+pos_adp <- 
+  coded_adp_data2 %>%
+  arrange(year,pos,overall) %>%
+  group_by(year,pos) %>%
+  mutate(pos_adp = row_number())
+
+str(pos_adp)
+str(points_week_data)
+
+top5 <-
+points_week_data %>%
+  filter(pos1 %in% c("D/ST","K"),week<=16) %>%
+  group_by(year,pos1,player) %>%
+  summarise(avg = mean(points),
+            sd = sd(points),
+            gini = ineq(points,type="Gini")) %>%
+  arrange(year,pos1,desc(avg)) %>%
+  group_by(year,pos1) %>%
+  mutate(obs = row_number()) %>%
+  filter(obs <= 10) %>%
   ungroup() %>%
-  group_by(pos,year) %>%
-  arrange(desc(total_points)) #%>%
-  slice(1:40)
-  
-  
-  points_year_pos_top40 <- 
-    points_week_pos %>%
-    filter(week %in% c(1:16)) %>% # only care about fantasy season!
-    group_by(player,pos,age,year) %>%
-    summarise(total_points = sum(points)) %>%
-    ungroup() %>%
-    group_by(pos,year) %>%
-    arrange(desc(total_points)) %>%
-    slice(1:40)
-
-head(points_year_pos)
-library(ggplot2)
-
-plot <- ggplot(data = points_year_pos,
-               aes(x = age, y = total_points)) 
-plot +
-  geom_point(alpha = 0.2) +
-  geom_smooth() +
-  facet_wrap(~pos,ncol = 5) +
-  geom_vline(xintercept = c(25,30,35), colour = 'red') +
-  ggtitle("Total Fantasy Points by Position and Age",subtitle = "Since 2000")
+  inner_join(.,
+            pos_adp %>% ungroup(), 
+            by = c("player"="player_code","year")) %>%
+  mutate(marker = paste0(pos_adp,"-",obs))
 
 
 
-plot2 <- ggplot(data = points_year_pos %>% filter(year >= 2010),
-                aes(x = age, y = total_points)) 
-plot2 +
-  geom_point(alpha = 0.2) +
-  geom_smooth() +
-  facet_wrap(~pos,ncol = 5) +
-  geom_vline(xintercept = c(25,30,35), colour = 'red') +
-  geom_point(data = points_year_pos_top40 %>% filter(year >= 2010),
-             aes(x = age,y = total_points), colour = 'green', alpha = 0.2) +
-  geom_smooth(data = points_year_pos_top40 %>% filter(year >= 2010),
-              aes(x = age,y = total_points), colour = 'green') +
-  geom_hline(data = data.frame(pos = c("K","RB","WR","TE","QB"),
-                               total_points = c(128,200,192,160,280)),
-             aes(yintercept = total_points)) +
-  ggtitle("Total Fantasy Points by Position and Age",subtitle = "Since 2010") 
+plot <- ggplot(data = top5,
+               aes(x = avg,
+                   y = sd,
+                   label = marker,
+                   colour=pos1))
+plot + 
+  geom_point() +
+  geom_label() +
+  facet_wrap(~year)
+
+
+plot2 <- ggplot(data = top5,
+               aes(x = avg,
+                   y = gini,
+                   label = obs,
+                   colour=pos1))
+plot2 + 
+  geom_point() +
+  geom_label() +
+  facet_wrap(~year)

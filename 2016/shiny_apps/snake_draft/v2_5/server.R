@@ -10,7 +10,7 @@ shinyServer(function(input, output) {
 #### These are all non-reactive elements ####
 #############################################
 
-  df <- read.csv("/home/john/stats_corner/2016/shiny_apps/snake_draft/v2_1/faa_projection_data.csv",
+  df <- read.csv("/home/john/stats_corner/2016/shiny_apps/snake_draft/v2_5/faa_projection_data.csv",
                  #df <- read.csv("/srv/shiny-server/stats-corner/2016/snake-assistant/faa_projection_data.csv",
                  stringsAsFactors = FALSE,
                  header = TRUE)

@@ -1,12 +1,12 @@
 library(shiny)
 
 
-#df <- read.csv("/home/john/stats_corner/2017/snake-app/ffa_data.csv",
-df <- read.csv("/srv/shiny-server/stats-corner/2017/snake-app/ffa_data.csv",
+df <- read.csv("/home/john/stats_corner/2017/snake-app/ffa_data.csv",
+#df <- read.csv("/srv/shiny-server/stats-corner/2017/snake-app/ffa_data.csv",
                stringsAsFactors = FALSE,
                header = TRUE)
 fluidPage(
-  headerPanel('Snake Draft Assistant 3.1'),
+  headerPanel('Snake Draft Assistant 3.2'),
   sidebarLayout(position = "right",
     sidebarPanel(
       wellPanel(
@@ -14,10 +14,6 @@ fluidPage(
         textOutput("next_pick"),
         textOutput("next_pick1"),
         textOutput("next_pick2")
-      ),
-      wellPanel(
-        h4("Drafted Players"),
-        selectizeInput("drafted_players", label = "Enter Players as they get Drafted", multiple = TRUE, choices = df$player_team)
       )
     ),
     mainPanel(
@@ -67,21 +63,27 @@ fluidPage(
                            h5("Do Not Recommend These Players"),
                            selectizeInput("dnr", label = "Enter Players To Avoid", multiple = TRUE, choices = df$player_team))
                     ),
+          tabPanel("Drafted Players",
+                  h4("Drafted Players"),
+                  selectizeInput("drafted_players", label = "Enter Players as they get Drafted", multiple = TRUE, choices = df$player_team)
+                  ),
           tabPanel("Available Players",
                    dataTableOutput("available_players")),
           tabPanel("About",
                     a("Projection and ADP data downloaded from Fantasy Football Analytics",     
                       href="http://fantasyfootballanalytics.net/"),
-                    p("Data last updated on August 29, 2017"),
+                    p("Standard Scoring data last updated on August 29, 2017"),
+                    p("PPR Scoring data last updated on September 4, 2017"),
                     p("Questions? Email me: StatsCorner@gmail.com"),
                     p(""),
-                    p("What's New in version 3.1?"),
+                    p("What's New in version 3.2 (compared to 3.0)?"),
                     p("1. Can specify 'None' in addition to 'FLEX' and 'OP' for additional positions"),
                     p("2. A tab listing ALL available players with Value Added and PPG"),
                     p("3. A 'Do Not Recommend' tab that removes players from your recommendations"),
                     p("4. Added player age to Recommendations table"),
+                    p("5. Separate tab for drafted players"),
                     p(""),
-                    p("App Updated on 2017-08-27, version 3.1")
+                    p("App Updated on 2017-09-04, version 3.2")
           )
         )
       )
