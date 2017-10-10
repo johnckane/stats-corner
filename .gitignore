@@ -1,4 +1,6 @@
 playoff rate by record.R
 README.md
 simple stats.R
-
+.Rproj.user
+*.Rda
+xgboost.model
