@@ -50,7 +50,7 @@ copyright = "© This post is licensed under a Creative Commons Attribution-NonCo
 # Add your own params here
 [params]
   author = "Ritchie Zhu"
-  avatar = "/home/john/stats_corner/stats-corner-web/content/media/stats-corner-logo.png"
+  avatar = "/home/john/stats-corner/content/media/stats-corner-logo.png"
   seotitle = "Hugo Blog (SEO Version)"
   subtitle = ""
   description = "Hugo is one of the most popular open-source static site generators. With its amazing speed and flexibility, Hugo makes building websites fun again."
