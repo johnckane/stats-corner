@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "baseURL = \"http://localhost:1313\"\nbaseURL = \"http://www.statscorner.com\"\nlanguageCode = \"en\"\ntitle = \"Stats Corner\"\ntheme = \"hugo-nuo\"\nenableRobotsTXT = true\npygmentsuseclasses = true\nPygmentsCodeFences = true\ncanonifyurls = true\n\n# Disqus Username\ndisqusShortname = \"disqus_shortname\"\n\n# Google Analytics UA number\ngoogleAnalytics = \"UA-XXXXXXXX-X\"\n\n# Copyright of your post\ncopyright = \"© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.\"\n\n# Initial site menu, you can extend menu with content.\n[[menu.main]]\n  name = \"Home\"\n  weight = 10\n  identifier = \"home\"\n  url = \"/\"\n  \n[[menu.main]]\n  name = \"Posts\"\n  weight = 10\n  identifer = \"posts\"\n  url = \"/posts/\"\n\n[[menu.main]]\n  name = \"Advanced Standings\"\n  weight = 20\n  identifier = \"advanced-standings\"\n  url = \"http://ec2-54-213-112-234.us-west-2.compute.amazonaws.com:3838/stats-corner/2017/advanced-standings/\"\n\n[[menu.main]]\n  name = \"Record Book\"\n  weight = 20\n  identifier = \"record-book\"\n  url = \"\"\n\n[permalinks]\n    post = \"/:year/:month/:day/:slug/\"\n\n\n# Add your own params here\n[params]\n  author = \"Ritchie Zhu\"\n  avatar = \"/home/john/stats_corner/stats-corner-web/content/media/stats-corner-logo.png\"\n  seotitle = \"Hugo Blog (SEO Version)\"\n  subtitle = \"\"\n  description = \"Hugo is one of the most popular open-source static site generators. With its amazing speed and flexibility, Hugo makes building websites fun again.\"\n  paginate = 10\n\n  # Choose your social networks\n  email = \"name@domain.com\"\n  github = \"github_username\"\n  twitter = \"twitter_username\"\n  linkedin = \"linkedin_username\"\n  weibo = \"weibo_username\"\n  wechat= \"/img/qrcode.jpg\" # Replace with your wechat qrcode image\n  # facebook = \"facebook_username\"\n  # google = \"googlplus_id_number\"\n  # instagram = \"instagram_username\"\n  # youtube = \"youtube_username\"\n  # vimeo = \"vimeo_username\"\n  # medium = \"medium_username\"\n  # quora = \"quora_username\"\n  # pinterest = \"pinterest_username\"\n  # dribbble = \"dribbble_username\"\n  # behance = \"behance_username\"\n  # jsfiddle = \"jsfiddle_username\"\n  # codepen = \"codepen_username\"\n  # zhihu = \"zhihu_username\"\n  # douban = \"douban_username\"\n  # bilibili = \"bilibili_id_number\"\n\n  # Changyan Comments (China Only)\n  changyan = false\n  changyanId = \"cyt3toRiB\"\n  changyanConf = \"prod_0908b1cb9a581501753cce1ed074dbe3\"\n\n  # Google Webmaster\n  # https://www.google.com/webmasters/\n  googleSiteVerification = \"_moDmnnBNVLBN1rzNxyGUGdPHE20YgbmrtzLIbxaWFc\"\n\n  # Bing Webmaster\n  # https://www.bing.com/toolbox/webmaster/\n  msValidate = \"22596E34341DD1D17D6022C44647E587\"\n\n  # Baidu Webmaster (China Only)\n  # https://zhanzhang.baidu.com/\n  # baiduSiteVerification = \"MZ23SPxxfa\"\n\n  # Sogou Webmaster (China Only)\n  # http://zhanzhang.sogou.com/\n  # sogouSiteVerification = \"m2jktMQTZm\"\n\n  # 360 Webmaster (China Only)\n  # http://zhanzhang.so.com/\n  # soSiteVerification = \"b7ab3b4c2edbc856642004d1b8c27a91\"\n\n  # Baidu Tongji (China Only)\n  # https://tongji.baidu.com/\n  # baiduTongji = \"e21dc1e8a592188271b615159dc88af7\"\n\n  # ICP Number (China Only)\n  # ICP = \"苏ICP备16005986号-2\"\n",
+    "created" : 1505788664294.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1296534685",
+    "id" : "B7080DC2",
+    "lastKnownWriteTime" : 1507163473,
+    "last_content_update" : 1507163473507,
+    "path" : "~/stats_corner/stats-corner-web/config.toml",
+    "project_path" : "stats-corner-web/config.toml",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}
