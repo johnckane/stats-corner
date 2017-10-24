@@ -169,7 +169,7 @@ server <- shinyServer(function(input, output) {
   
   
   data_season_summary3 <- reactive({
-    if(input$season == max(games_played$year)){
+    if(this_week() != 13){
       data_season_summary2() %>%
         mutate(w_plus_1 = W + 1) %>%
         left_join(.,
@@ -184,7 +184,7 @@ server <- shinyServer(function(input, output) {
         select(1,2,3,4,5,6,7,8,9,18) %>%
         `colnames<-`(c("Owner","W","L","Points","PA","PW","SOS","Luck","Playoff Probability","Playoff Leverage"))
     }
-    else if(input$season != max(games_played$year)){
+    else if(this_week() == 13){
       data_season_summary2() %>%
         mutate(w_plus_1 = W + 1) %>%
         left_join(.,
