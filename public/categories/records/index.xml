@@ -22,5 +22,15 @@
  Can we get something on the likelihood that a team sets the single season point record and misses the playoffs?! Because it looks like we’re heading that way[.</description>
     </item>
     
+    <item>
+      <title>Week 4</title>
+      <link>/2014/09/23/week-4/</link>
+      <pubDate>Tue, 23 Sep 2014 00:00:00 +0000</pubDate>
+      
+      <guid>/2014/09/23/week-4/</guid>
+      <description>A bit belated but the annual statistical update has arrived.
+Note: You too can have this data. Find the game data here.If you want to play around with owner totals you’ll need to fold in the information found here. I retain all editing privileges but you can play around with the data at your leisure. I hope to update the spreadsheets weekly. In due time you will be able to find all data and R code on github.</description>
+    </item>
+    
   </channel>
 </rss>

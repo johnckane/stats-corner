@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projections on Stats Corner</title>
+    <link>/categories/projections/</link>
+    <description>Recent content in Projections on Stats Corner</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
+    <lastBuildDate>Tue, 14 Oct 2014 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/projections/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Week 7</title>
+      <link>/2014/10/14/week-7/</link>
+      <pubDate>Tue, 14 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>/2014/10/14/week-7/</guid>
+      <description>Welcome to a very special Stats Corner.
+In light of recent emails I felt I should dedicate this week’s post to non-traditional students and the SAT. The National College Review Board has kept statistics on non-traditional students(defined as age 25+ at time of enrolment) since 1983 and…
+Just kidding.
+This week is special because I’m focusing not on historical game data from our database but rather the ups and downs that accompany me and likewise most of you on Sundays.</description>
+    </item>
+    
+  </channel>
+</rss>

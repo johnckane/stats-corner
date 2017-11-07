@@ -1,70 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Stats Corner</title>
-    <link>/</link>
-    <description>Recent content on Stats Corner</description>
+    <title>2014 on Stats Corner</title>
+    <link>/categories/2014/</link>
+    <description>Recent content in 2014 on Stats Corner</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
-    <lastBuildDate>Wed, 09 Apr 2014 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 14 Oct 2014 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/2014/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Links</title>
-      <link>/links/</link>
-      <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/links/</guid>
-      <description>Ritchie and his friends.</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>/about/</link>
-      <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/about/</guid>
-      <description>Hugo is a static site engine written in Go.
-It makes use of a variety of open source projects including:
- Cobra Viper J Walter Weatherman Cast  Learn more and contribute on GitHub.</description>
-    </item>
-    
-    <item>
-      <title>Calm Down Tim</title>
-      <link>/2015/11/12/calm-down-tim/</link>
-      <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
-      
-      <guid>/2015/11/12/calm-down-tim/</guid>
-      <description>Thanks Tim for the idea on the league message board for this post. I figure I’ll address it head on. For those of you who don’t know, even though to have clicked on this link you must have seen that he posted something, this is what he said:
- Can we get something on the likelihood that a team sets the single season point record and misses the playoffs?! Because it looks like we’re heading that way[.</description>
-    </item>
-    
-    <item>
-      <title>Keeper Analysis</title>
-      <link>/2015/09/12/keeper-analysis/</link>
-      <pubDate>Sat, 12 Sep 2015 00:00:00 +0000</pubDate>
-      
-      <guid>/2015/09/12/keeper-analysis/</guid>
-      <description>Stats Corner There are three types of owners in our league:
- The owner who is plotting his keepers before the end of the previous regular season (Regan, Ready, Harrington, Olson, D’Skae).
- The owner who starts thinking sometime during the summer who he’s going to keep (Kane, McShane, Hartman, Higdon).
- The owner who decides the morning of the draft who he’s keeping (Thieneman, Matovina).
-  Whoops, I’m sorry four types:</description>
-    </item>
-    
-    <item>
-      <title>Scoring the Draft</title>
-      <link>/2015/09/05/scoring-the-draft/</link>
-      <pubDate>Sat, 05 Sep 2015 00:00:00 +0000</pubDate>
-      
-      <guid>/2015/09/05/scoring-the-draft/</guid>
-      <description>Welcome back to Stats Corner for the 2015 Season!
-This place has a new look, a new location on the internet and new ideas. I will no longer be restricted to message board posts. Bear with me as the style evolves. Here in Week 1 I want to focus on content and content only. Future posts should have a better style.
-Scoring the Draft Coming out of Draft Day I’m sure most of you were feeling pretty good.</description>
-    </item>
     
     <item>
       <title>Week 7</title>
