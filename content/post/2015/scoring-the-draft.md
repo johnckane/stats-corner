@@ -59,22 +59,19 @@ projected players to perform.
 Without further adieu, the results from ESPN. I threw in Z-scores
 because they’ll be useful later.
 
-    ## Source: local data frame [12 x 3]
-    ## 
-    ##           owner total_points           z
-    ##           (chr)        (dbl)       (dbl)
-    ## 1  Skrzyskewski       1775.1  1.34707343
-    ## 2        Higdon       1761.7  1.08217260
-    ## 3         Regan       1749.5  0.84099423
-    ## 4    Harrington       1745.5  0.76191936
-    ## 5      Matovina       1739.8  0.64923766
-    ## 6         Olson       1723.1  0.31910007
-    ## 7       McShane       1709.3  0.04629175
-    ## 8          Kane       1690.4 -0.32733703
-    ## 9       Hartman       1665.8 -0.81364751
-    ## 10    Thieneman       1665.3 -0.82353187
-    ## 11        Ready       1631.1 -1.49962204
-    ## 12     Shokunbi       1626.9 -1.58265066
+    ##             owner  total_points           z
+    ## 1    Skrzyskewski        1775.1  1.34707343
+    ## 2          Higdon        1761.7  1.08217260
+    ## 3           Regan        1749.5  0.84099423
+    ## 4      Harrington        1745.5  0.76191936
+    ## 5        Matovina        1739.8  0.64923766
+    ## 6           Olson        1723.1  0.31910007
+    ## 7         McShane        1709.3  0.04629175
+    ## 8            Kane        1690.4 -0.32733703
+    ## 9         Hartman        1665.8 -0.81364751
+    ##10       Thieneman        1665.3 -0.82353187
+    ##11           Ready        1631.1 -1.49962204
+    ##12        Shokunbi        1626.9 -1.58265066
 
 Before you go erasing names in the record book for most points in a
 season, note how just about every team is projected to set a new record.

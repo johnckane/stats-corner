@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
-    <lastBuildDate>Sat, 05 Sep 2015 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 12 Nov 2015 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>2015</title>
       <link>/tags/2015/</link>
-      <pubDate>Sat, 05 Sep 2015 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
       
       <guid>/tags/2015/</guid>
       <description></description>
@@ -24,9 +24,36 @@
     <item>
       <title>Draft</title>
       <link>/tags/draft/</link>
-      <pubDate>Sat, 05 Sep 2015 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 12 Sep 2015 00:00:00 +0000</pubDate>
       
       <guid>/tags/draft/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Harrington</title>
+      <link>/tags/harrington/</link>
+      <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/harrington/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Keepers</title>
+      <link>/tags/keepers/</link>
+      <pubDate>Sat, 12 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/keepers/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Records</title>
+      <link>/tags/records/</link>
+      <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/records/</guid>
       <description></description>
     </item>
     

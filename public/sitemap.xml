@@ -13,43 +13,89 @@
   </url>
   
   <url>
+    <loc>/2015/11/12/calm-down-tim/</loc>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2015/09/12/keeper-analysis/</loc>
+    <lastmod>2015-09-12T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/2015/09/05/scoring-the-draft/</loc>
     <lastmod>2015-09-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/tags/2015/</loc>
-    <lastmod>2015-09-05T00:00:00+00:00</lastmod>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/categories/2015/</loc>
-    <lastmod>2015-09-05T00:00:00+00:00</lastmod>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/categories/</loc>
-    <lastmod>2015-09-05T00:00:00+00:00</lastmod>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/draft/</loc>
-    <lastmod>2015-09-05T00:00:00+00:00</lastmod>
+    <lastmod>2015-09-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/categories/draft/</loc>
-    <lastmod>2015-09-05T00:00:00+00:00</lastmod>
+    <lastmod>2015-09-12T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/harrington/</loc>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/harrington/</loc>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/keepers/</loc>
+    <lastmod>2015-09-12T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/keepers/</loc>
+    <lastmod>2015-09-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2015-09-05T00:00:00+00:00</lastmod>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/records/</loc>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/records/</loc>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -61,7 +107,7 @@
   
   <url>
     <loc>/tags/</loc>
-    <lastmod>2015-09-05T00:00:00+00:00</lastmod>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

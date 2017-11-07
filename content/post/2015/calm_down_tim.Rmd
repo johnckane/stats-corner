@@ -1,0 +1,137 @@
+---
+title: Calm Down Tim
+author: John Kane
+date: '2015-11-12'
+slug: 
+categories:
+  - 2015
+  - Harrington
+  - Records
+tags: 
+  - 2015
+  - Harrington
+  - Records
+---
+
+Thanks Tim for the idea on the league message board for this post. I figure I'll address it head on. For those of you who don't know, even though to have clicked on this link you must have seen that he posted *something*, this is what he said:
+
+> Can we get something on the likelihood that a team sets the single season point record and misses the playoffs?! Because it looks like we're heading that way[.] - Tim Harrington
+
+These are really two separate pieces because while one would expect teams that score a lot of points to win a lot of games (and thereby make they playoffs) we know it's not always the case. 
+
+### The Single Season Points Record
+Tim is certainly in good position to make a run at the points record and so is Dan Ready. Both are currently outpacing current record holder, 2011 Team Default, through 9 weeks.
+```{r ,echo=FALSE,message=FALSE}
+library(dplyr)
+library(knitr)
+games_played <- read.csv("/home/john/stats-corner/content/post/2015/games_played.csv",as.is = TRUE)
+most_nine_weeks <- games_played %>%
+    filter(week <= 9) %>%
+    group_by(year,owner) %>%
+    summarise(ttl_points = sum(points)) %>%
+    ungroup() %>%
+    arrange(desc(ttl_points)) %>%
+    slice(1:10)
+season_totals <- games_played %>%
+    filter(year != 2015) %>%
+    group_by(owner,year) %>%
+    summarise(total_wins = sum(W),
+              total_points = sum(points),
+              total_pw = sum(pw),
+              playoff = mean(playoffs)) %>%
+    ungroup() %>%
+    arrange(desc(total_points)) %>%
+    mutate(rk = rank(-total_points),
+           neg_rk = rank(total_points))
+
+top10_season_totals <- left_join(most_nine_weeks %>% select(owner,year,ttl_points),
+                                 season_totals %>% select(owner,year,total_points,rk),
+                                 by = c("owner","year"))
+colnames(top10_season_totals) <- c("Owner","Year","Points Through 9 Weeks", "Season Total Points",
+                                   "Season Total Points Rank")
+
+kable(top10_season_totals)
+
+```
+
+To set the record, Tim needs to average 118.2 points per game over the course of the next four weeks. To date, he's averaged 127.0 points per game so I think it's doable.
+
+Ready on the other hand needs to average 132.4 points per game to set the record. To date he's averaged 120.7. Not as likely.
+
+
+### Tim Missing the Playoffs
+
+This is much more interesting because there are several perspectives to take.   
+
+#### Perspective #1
+
+This week's [Advanced Standings](http://rpubs.com/StatsCorner/124909) gave Tim, with 4 wins through 9 weeks, a 33% chance of making the playoffs. This is based on the fact that from 2010-2014 of the 21 teams who had 4 wins at this juncture, 7 made the postseason. It looks even better for him when we look closer at all 4 win teams through 9 weeks.
+
+```{r results='asis',echo=FALSE,message=FALSE}
+library(googleVis)
+four_nine <- games_played %>%
+    filter(week <= 9) %>%
+    group_by(owner,year) %>%
+    summarise(total_wins = sum(W),
+              total_points = sum(points),
+              total_pw = round(sum(pw),2),
+              sos = round(mean(opp_pw)*100,0),
+              playoff = mean(playoffs)) %>%
+    ungroup() %>%
+    filter(total_wins == 4) %>%
+    arrange(desc(total_points)) %>%
+    mutate(playoff2 = ifelse(playoff == 1,"Yes",ifelse(playoff == 0,"No","TBD"))) %>%
+    select(1,2,3,4,5,6,8)
+
+colnames(four_nine) <- c("Owner","Year","Wins","Points","Proportional Wins","Strength of Schedule","Playoffs")
+
+op <- options(gvis.plot.tag='chart')
+four_nine_table <- gvisTable(four_nine)
+print(four_nine_table,'chart')
+```
+
+
+A few things to note here:
+
+1. Pointswise, after Tim the next four and six of the first seven teams made the playoffs. 
+2. The 2015 Cuties are probably the best 4-5 team of all-time, considering the 1-2 punch of most points and most proportional wins in this group. Not necessarily something to brag about though.
+3. This league has been in operation for 7 seasons now. Somehow Tim has started 4-5 in six of those seasons!
+4. Back in 2009, Tim set the record for fewest points through nine weeks __AND__ he made the playoffs! So no crying about this Tim. How the hell did you make the playoffs in 2009? 
+
+#### Perspective #2
+
+Now let's revisit the final column of this week's [Advanced Stadings](http://rpubs.com/StatsCorner/124909). The "Projected Wins" column puts Tim at 6.88 wins. I've still not gotten around to making a glossary, but that stat considers your current win total, your past performance, your remaining opponents and the past performance of your remaining opponents to determine how likely you are to win each of your remaining games. That stat doesn't take into account injuries, players going hot or cold, or anything of that sort. It's very naive, but still informative. 
+
+Of course teams can't win 6.88 games. But what if we were to round each to the nearest whole numbered win total? What we'd see is that we're expecting Ready at 10 wins, Higdon at 9, Olson at 8 and then myself, Matovina, Ola and Tim tied at 7. Historically, teams with 7 wins makes the playoffs about 82% of the time. If these projections bear out, we'll expect 75% of the 7-win teams to make the playoffs, so pretty close to the rate we've seen in the past. If Tim's performance keeps up I've got to imagine he'd win one of the three spots in a tie-breaker. 
+ 
+
+
+### Conclusions
+
+So Tim and others here's what I think:
+
+1. Tim has a real shot at the points record. He wasn't being braggadocious when he posted that message to the board.
+2. Tim has between a 33% and 75% chance of making the playoffs. That 33% is very conservative and doesn't take into account how good Tim's team is. I think his chances are closer to 75%. 
+
+### Bonus: RJ and the Single Season (Fewest) Points Record
+In case you haven't seen, RJ's team is awful. The first ever 1-8 team in league history. Adding insult to injury, his best player may miss the next month (or more) with a lacerated kidney. RJ better pick it up unless he wants to supplant, well the 2010 version of himself I guess, as the owner of the worst team in league history. 
+
+FYI, in this table a rank of "1" means worst, as opposed to the most points table where it meant best.
+
+```{r,echo=FALSE,message=FALSE}
+least_nine_weeks <- games_played %>%
+    filter(week <= 9) %>%
+    group_by(year,owner) %>%
+    summarise(ttl_points = sum(points)) %>%
+    ungroup() %>%
+    arrange(ttl_points) %>%
+    slice(1:10)
+bottom10_season_totals <- left_join(least_nine_weeks %>% select(owner,year,ttl_points),
+                                    season_totals %>% select(owner,year,total_points,neg_rk),
+                                    by = c("owner","year"))
+colnames(bottom10_season_totals) <- c("Owner", "Year", "Points Through 9 Weeks","Season Total Points","Season Total Points Rank")
+kable(bottom10_season_totals)
+
+```
+
+RJ needs to average 73.5 points per game over the next four weeks to avoid re-setting the record. To date he's averaged 82.1. What will happen? Only time will tell. 
