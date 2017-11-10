@@ -1,10 +1,17 @@
 ---
-title: "Season Finale"
-author: "Stats Corner"
-date: "12/26/2015"
-output: html_document
+title: Season Finale
+author: John Kane
+date: '2015-12-26'
+slug: 
+categories:
+  - 2015
+  - Shokunbi
+  - Records
+tags: 
+  - 2015
+  - Shokunbi
+  - Records
 ---
-
 ## A New Points Record
 
 RJ set a new points record against Hartman in the toilet bowl semi-final. I thought he was a shoe-in for last place this year. His team stinks. But he shattered Hartman's record against Hartman! That should teach Hartman never to set records again. So here is what the updated leaderboard looks like for most points in a game:
