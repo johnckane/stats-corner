@@ -1,0 +1,16 @@
+---
+title: Taking Questions Week 11
+author: John Kane
+date: '2016-11-26'
+slug: 
+  categories:
+  - 2016
+  - Taking Questions 
+  - Proportional Wins
+tags: 
+  - 2016
+  - Taking Questions
+  - Proportional Wins
+---
+  
+[External link to **interactive** post](https://badnewz.shinyapps.io/takingquestionsweek11/)

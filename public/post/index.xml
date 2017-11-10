@@ -7,10 +7,58 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
-    <lastBuildDate>Thu, 12 Nov 2015 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 10 Dec 2016 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Season Recap and Playoff Preview</title>
+      <link>/2016/12/10/season-recap-and-playoff-preview/</link>
+      <pubDate>Sat, 10 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/2016/12/10/season-recap-and-playoff-preview/</guid>
+      <description>RIP The Jimmy G Era Even though we still have the playoffs, we’ve likely seen the end of the Jimmy G Era in Bad Newz once this season ends. RJ has the second most team names of all time, coming in at 7 in 8 seasons. Only McShane is a perfect 8 for 8 in terms of seasons/different team names. So it’s unlikely we’ll see them next year.</description>
+    </item>
+    
+    <item>
+      <title>Taking Questions Week 12</title>
+      <link>/2016/11/30/taking-questions-week-12/</link>
+      <pubDate>Wed, 30 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/2016/11/30/taking-questions-week-12/</guid>
+      <description>“In honor of my 0.3 win over RJ, what is the smallest margin of victory we’ve had since the move to decimal scoring?” Back in 2009 before we had decimal scoring we had two ties, Ready and Shokunbi tied at 97 in Week 4 then Kane and Ready tied in week 11 at 123.
+In 2010 we went to decimal scoring and have had 12 games decided by less than a point, or almost two per season.</description>
+    </item>
+    
+    <item>
+      <title>Taking Questions Week 11</title>
+      <link>/2016/11/26/taking-questions-week-11/</link>
+      <pubDate>Sat, 26 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/2016/11/26/taking-questions-week-11/</guid>
+      <description>External link to interactive post</description>
+    </item>
+    
+    <item>
+      <title>Taking Questions Week 10</title>
+      <link>/2016/11/19/taking-questions-week-10/</link>
+      <pubDate>Sat, 19 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/2016/11/19/taking-questions-week-10/</guid>
+      <description>Does Hartman Have a Shot at the Proportional Wins (PW) Record? Let’s take a look at the leaderboard of most PW through 10 weeks.
+  Year Owner PW Through 10 Weeks PW Season Total All Time Rank    2011 Shokunbi 7.45 10.09 1  2014 Skrzyszewski 7.45 9.45 2  2013 Ready 7.18 9.18 4  2016 Hartman 7.09 NA NA  2015 Harrington 6.91 8.55 8  2009 Regan 6.</description>
+    </item>
+    
+    <item>
+      <title>Season Finale</title>
+      <link>/2015/12/26/season-finale/</link>
+      <pubDate>Sat, 26 Dec 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/2015/12/26/season-finale/</guid>
+      <description>A New Points Record RJ set a new points record against Hartman in the toilet bowl semi-final. I thought he was a shoe-in for last place this year. His team stinks. But he shattered Hartman’s record against Hartman! That should teach Hartman never to set records again. So here is what the updated leaderboard looks like for most points in a game:
+  Owner Team Year Week Points    Thieneman 12.</description>
+    </item>
     
     <item>
       <title>Calm Down Tim</title>
@@ -86,6 +134,16 @@ I won’t try and pretend that the inspiration of this weekly Message Board Post
       <guid>/2014/09/23/week-4/</guid>
       <description>A bit belated but the annual statistical update has arrived.
 Note: You too can have this data. Find the game data here.If you want to play around with owner totals you’ll need to fold in the information found here. I retain all editing privileges but you can play around with the data at your leisure. I hope to update the spreadsheets weekly. In due time you will be able to find all data and R code on github.</description>
+    </item>
+    
+    <item>
+      <title>Playoff Preview</title>
+      <link>/1/01/01/playoff-preview/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/1/01/01/playoff-preview/</guid>
+      <description>Shout Out Congrats to Himmy Tarr, the only one to submit an answer to my trivia question last week. Jason Kidd is #2 all-time in both assists and steals. However when I wrote I had steals in mind. Nice job Tim. Also, Tim didn’t break the points record and made the playoffs. So all his fears were for naught.
+ Playoff Probabilities Playoff season is here. That means another round of interpreting ESPN’s questionable tie-breaking rules, disappointments for D’Skae and Dan Ready and the #4 seed attempting to get off the schnide of having never won a first round game (it’s true).</description>
     </item>
     
   </channel>
