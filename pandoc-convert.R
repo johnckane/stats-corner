@@ -1,7 +1,8 @@
 library(bookdown)
+setwd("/home/john/stats-corner")
 blogdown::serve_site()
 
-setwd("/home/john/stats-corner")
+
 
 library(rmarkdown)
 pandoc_convert("http://rpubs.com/StatsCorner/125519", 

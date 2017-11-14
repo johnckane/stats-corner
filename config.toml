@@ -24,12 +24,6 @@ copyright = "© This post is licensed under a Creative Commons Attribution-NonCo
   weight = 10
   identifier = "home"
   url = "/"
-  
-[[menu.main]]
-  name = "Posts"
-  weight = 10
-  identifer = "posts"
-  url = "/posts/"
 
 [[menu.main]]
   name = "Advanced Standings"
@@ -49,8 +43,7 @@ copyright = "© This post is licensed under a Creative Commons Attribution-NonCo
 
 # Add your own params here
 [params]
-  author = "Ritchie Zhu"
-  avatar = "https://github.com/johnckane/stats-corner/blob/master/content/media/stats-corner-logo.png"
+  avatar = "./media/stats-corner-logo4.png"
   seotitle = "Stats Corner"
   subtitle = ""
   description = ""
