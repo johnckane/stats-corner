@@ -1,0 +1,75 @@
+---
+title: Taking Questions Week 10
+author: John Kane
+date: '2017-11-16'
+slug: 
+categories:
+  - 2017
+  - Records
+tags: 
+  - 2017
+  - Records
+---
+
+
+Welcome back to Stats Corner posts for the 2017 season!
+
+This is the first post on the new platform. The new platform should allow for better graphics.
+
+```{r,echo=FALSE}
+library(googlesheets)
+library(xml2)
+library(httr)
+library(curl)
+library(shiny)
+library(dplyr)
+library(reshape2)
+library(tidyr)
+library(readr)
+library(magrittr)
+
+workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
+
+owner <- workbook %>% gs_read(ws = "Owner-Team Name")
+games <- workbook %>% gs_read(ws = "Regular Season Games")
+playoff_games <- workbook %>% gs_read(ws = "Playoff Games")
+
+owner_games <- left_join(games,owner,by=c("year","team"))
+owner_games$week <- as.character(owner_games$week)
+owner_games$game <- as.character(owner_games$game)
+owner_games$game_id <- as.character(owner_games$game_id)
+owner_playoff_games <- left_join(playoff_games,owner,by = c("year","team"))
+
+all_games <- bind_rows(owner_games,owner_playoff_games)
+
+## Want to know after every week, what is the top 10.
+table(playoff_games$week)
+
+all_games %<>%
+  mutate(week_txt = ifelse(week == "R1","14",
+                       ifelse(week == "R2","15",
+                              ifelse(week == "R3","16",week_txt))))
+
+all_games$year_week <- paste0(all_games$year,all_games$week_txt)
+
+f <- function(week_flag){
+  output <-
+  all_games %>%
+    filter(year_week <= as.numeric(week_flag)) %>%
+    arrange(desc(points)) %>%
+    mutate(rank = row_number()) %>%
+     slice(1:10) %>%
+    select(rank,year_week,year,week,team,points,owner,week_txt)
+  return(output)
+}
+
+f("201010")
+
+
+unique(all_games$year_week)
+weekly_top_10 <- lapply(list(unique(all_games$year_week)),f)
+weekly_top_10[[1]][2]
+names(weekly_top_10)
+?lapply
+```
+
