@@ -14,7 +14,7 @@ tags:
 
 Welcome back to Stats Corner posts for the 2017 season!
 
-This is the first post on the new platform. The new platform should allow for better graphics.
+This is the first post on the new platform. The new platform should allow for better graphics, including animations.
 
 ```{r,echo=FALSE}
 library(googlesheets)
@@ -49,27 +49,183 @@ all_games %<>%
   mutate(week_txt = ifelse(week == "R1","14",
                        ifelse(week == "R2","15",
                               ifelse(week == "R3","16",week_txt))))
+         # ,
+         # week = ifelse(week_txt == "14",14,
+         #               ifelse(week_txt == "15",15,
+         #                      ifelse(week_txt == "16",16,week))))
+
 
 all_games$year_week <- paste0(all_games$year,all_games$week_txt)
+#all_games$year_week <- paste0(all_games$year," Week ",all_games$week)
+table(all_games$year_week)
+
+all_games$team_year_week <- paste0(all_games$team,"-",all_games$year_week)
+
+all_games$team_year_week
+
+all_games$team_points <- paste0(all_games$team," - ",as.character(all_games$points))
 
 f <- function(week_flag){
   output <-
   all_games %>%
     filter(year_week <= as.numeric(week_flag)) %>%
     arrange(desc(points)) %>%
-    mutate(rank = row_number()) %>%
+    mutate(rank = row_number(),
+           week = week_flag) %>%
      slice(1:10) %>%
-    select(rank,year_week,year,week,team,points,owner,week_txt)
+    select(rank,year_week,week,team,points,owner,team_year_week,team_points)
   return(output)
 }
 
 f("201010")
 
+weekly_top_10 <- lapply(list(unique(all_games$year_week)),function(x) lapply(x,f))
+all_top_10 <- do.call(rbind,weekly_top_10[[1]])
+head(all_top_10)
 
-unique(all_games$year_week)
-weekly_top_10 <- lapply(list(unique(all_games$year_week)),f)
-weekly_top_10[[1]][2]
-names(weekly_top_10)
-?lapply
+unique(all_games$year_week) 
+
+
+year_week_mapping_df <- data.frame(year_week = unique(all_games$year_week)) %>%
+  arrange(year_week) %>%
+  mutate(obs = row_number())
+
+all_top_10 %<>%
+  inner_join(.,year_week_mapping_df, by = c("week" = "year_week"))
+
+all_number1 <- filter(all_top_10,rank==1)
+all_number1 %>%
+  group_by(team_year_week,owner) %>%
+  summarise(n = n()) %>%
+  arrange(desc(n))
+```
+
+```{r}
+library(ggplot2)
+?geom_path
+```
+
+
+```{r}
+all_top_10$as_of_week <- rep(list(unique(all_games$year_week)),each=10)
+
+```
+
+
+```{r}
+library(gganimate)
+library(ggrepel)
+plot <- ggplot(data = all_top_10,
+               aes(x = week, y = as.factor(rank), label=team, group = team, frame = week)) +
+  geom_path() +
+  ggtitle("The Single Game Points Record Belt")
+
+gganimate(plot, interval = .2)
+
+```
+
+```{r}
+head(all_top_10)
+plot2 <- ggplot(data = all_top_10,
+               aes(x = obs, y = points, frame = week)) +
+  geom_path(aes(cumulative = TRUE, group = team)) +
+  geom_label(aes(x=obs,y=points,label = team_year_week)) +
+  theme_minimal() +
+  ggtitle("The Single Game Points Record Championship Belt \n")
+
+
+gganimate(plot2, interval = .2)
+
+
+
+
+```
+
+I hope you enjoy like I did, seeing the names of teams from seasons past. 
+
+Losman's Gamblers had a stranglehold on the record for two and half 
+
+
+```{r}
+library(tweenr)
+plot3 <- ggplot(data = all_top_10,
+               aes(x = obs, y = rank, frame = week)) +
+  geom_path(aes(cumulative = TRUE, group = team)) +
+  geom_label(aes(x=obs,y=rank,label = team_points)) +
+  theme_minimal() +
+  scale_y_reverse() +
+  scale_x_continuous("Time",
+                     lim = c(-35,175),
+                     breaks = seq(from = 1, to = 16*9,by=16),
+                     labels = seq(from = 2009, to = 2017)) +
+  ggtitle("The Single Game Points Record Championship Belt \n")
+
+
+gganimate(plot3, interval = .4)
+```
+
+
+Try it with tweener
+```{r}
+library(tweenr)
+tweenr_df <- all_top_10
+tweenr_df$ease_func = 'linear'
+tweenr_df$week <- as.numeric(tweenr_df$week)
+head(tweenr_df)
+
+all_top_10
+
+att2 <- all_top_10
+
+head(att2)
+att2 %<>% select(rank,week,team,points,obs)
+
+split_lists <- split(att2,att2$week)
+
+dt <- tween_states(data = split_lists, tweenlength = 1, statelength = 1, ease = 'linear', nframes = 500)
+
+head(all_top_10)
+
+```
+
+
+```{r}
+library(ggplot2)
+library(gganimate)
+library(ggforce)
+library(tweenr)
+
+# Making up data
+d <- data.frame(x = rnorm(20), y = rnorm(20), time = sample(100, 20), alpha = 0, 
+                size = 1, ease = 'elastic-out', id = 1:20, 
+                stringsAsFactors = FALSE)
+d2 <- d
+d2$time <- d$time + 10
+d2$alpha <- 1
+d2$size <- 3
+d2$ease <- 'linear'
+d3 <- d2
+d3$time <- d2$time + sample(50:100, 20)
+d3$size = 10
+d3$ease <- 'bounce-out'
+d4 <- d3
+d4$y <- min(d$y) - 0.5
+d4$size <- 2
+d4$time <- d3$time + 10
+d5 <- d4
+d5$time <- max(d5$time)
+df <- rbind(d, d2, d3, d4, d5)
+
+# Using tweenr
+dt <- tween_elements(df, 'time', 'id', 'ease', nframes = 500)
+
+# Animate with gganimate
+p <- ggplot(data = dt) + 
+    geom_point(aes(x=x, y=y, size=size, alpha=alpha, frame = .frame)) + 
+    scale_size(range = c(0.1, 20), guide = 'none') + 
+    scale_alpha(range = c(0, 1), guide = 'none') #+ 
+    ggforce::theme_no_axes()
+animation::ani.options(interval = 1/24)
+gganimate(p, 'dropping balls.gif', title_frame = F)
 ```
 
