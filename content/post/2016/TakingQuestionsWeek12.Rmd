@@ -62,6 +62,7 @@ for(i in seq(from=1,to=dim(games_played)[1],by=2)){
 
 
 games_played <- games_played %>%
+  filter(year <= 2016) %>%
   arrange(year,week,desc(points)) %>%
   group_by(year,week) %>%
   mutate(rk = rank(points,ties.method="min"),

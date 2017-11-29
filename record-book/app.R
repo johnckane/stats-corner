@@ -17,6 +17,7 @@ library(dplyr)
 library(reshape2)
 library(tidyr)
 library(readr)
+library(magrittr)
 
 workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
 
@@ -373,6 +374,32 @@ career_totals <- career_stats %>%
   select(owner,total_pw,total_points,total_w,total_max_pw,total_min_pw) %>%
   `colnames<-`(c("Owner","PW","Points","Wins","Weekly High Scores","Weekly Low Scores"))
   
+
+# h2h record plot
+rivalry_data <- games_played %>%
+  group_by(owner,Opponent) %>%
+  summarise(wins = sum(W),
+            losses = sum(L),
+            ties   = sum(T)) %>%
+  mutate(record = ifelse(ties != 0,
+                         paste(wins,'-',losses,'-',ties,sep=""),
+                         paste(wins,'-',losses,sep="")))
+
+
+
+record_matrix <- dcast(rivalry_data,owner~Opponent,value.var='record')
+
+h2h_plot <- ggplot(rivalry_data, aes(x=Opponent,y=owner,label=record)) + 
+  theme_bw() + 
+  geom_text(aes(size=4)) +
+  scale_x_discrete("vs. Opponent") +
+  scale_y_discrete("You", lim=rev(unique(rivalry_data$owner))) +
+  #labs(title='Bad Newz Head to Head Records') +
+  theme(legend.position = 'none',panel.grid.minor=element_line(colour='white'),
+        axis.text.x=element_text(angle=45,hjust=1,size=12),
+        axis.text.y=element_text(size=12))
+
+
 # Define UI for application that draws a histogram
 ui <- shinyUI(fluidPage(
   titlePanel("Bad Newz Record Book"),
@@ -399,7 +426,8 @@ ui <- shinyUI(fluidPage(
       tabPanel("Career",
         tabsetPanel(
           tabPanel("Per Game",dataTableOutput("career_game")),
-          tabPanel("Total",dataTableOutput("career_totals"))
+          tabPanel("Total",dataTableOutput("career_totals")),
+          tabPanel("Head to Head Records",plotOutput("career_h2h"))
         )         
       )
   )
@@ -423,6 +451,7 @@ server <- shinyServer(function(input, output) {
   
   output$career_game <- renderDataTable({career_game},options = list(paging = FALSE, searching = FALSE))
   output$career_totals <- renderDataTable({career_totals},options = list(paging = FALSE, searching = FALSE))
+  output$career_h2h <-renderPlot({plot(h2h_plot)})
 })
 
 # Run the application 

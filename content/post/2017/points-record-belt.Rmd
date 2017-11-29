@@ -1,7 +1,7 @@
 ---
-title: Taking Questions Week 10
+title: The Single Game Points Record Championship Belt
 author: John Kane
-date: '2017-11-16'
+date: '2017-11-28'
 slug: 
 categories:
   - 2017
@@ -12,11 +12,11 @@ tags:
 ---
 
 
-Welcome back to Stats Corner posts for the 2017 season!
+Welcome back to Stats Corner posts for the 2017 season! 
 
-This is the first post on the new platform. The new platform should allow for better graphics, including animations.
+This is the first post on the new platform. The new platform allows for better graphics, including animations. It's in the spirit of, "I can so I will" that a bring you this post. 
 
-```{r,echo=FALSE}
+```{r,echo=FALSE, include = FALSE}
 library(googlesheets)
 library(xml2)
 library(httr)
@@ -27,6 +27,7 @@ library(reshape2)
 library(tidyr)
 library(readr)
 library(magrittr)
+library(stringr)
 
 workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
 
@@ -100,69 +101,32 @@ all_number1 %>%
   arrange(desc(n))
 ```
 
-```{r}
-library(ggplot2)
-?geom_path
-```
-
 
 ```{r}
-all_top_10$as_of_week <- rep(list(unique(all_games$year_week)),each=10)
+summary <- all_number1 %>%
+  group_by(owner,team_year_week,points) %>%
+  summarise(weeks_at_no_1 = n(),
+            first_week = min(as.numeric(week)),
+            last_week = max(as.numeric(week))) %>%
+  ungroup() %>%
+  arrange(first_week) %>%
+  mutate(first_week_char = paste0(str_sub(first_week,1,4)," Week ",str_replace(str_sub(first_week,5,6),'0','')),
+         last_week_char = paste0(str_sub(last_week,1,4)," Week ",str_replace(str_sub(last_week,5,6),'0',''))) %>%
+  select(1,2,3,4,7,8)
 
+
+summary2 <- summary
+summary2$start <- str_locate(summary$team_year_week,'-')[,1]
+summary2$team <- str_sub(summary$team_year_week,1,summary2$start-1)
+summary2 %>%
+  select(1,8,3,4,5,6) %>%
+  `colnames<-`(c("Owner", "Team", "Points","Weeks with Record","First Week","Last Week"))
 ```
 
-
-```{r}
-library(gganimate)
-library(ggrepel)
-plot <- ggplot(data = all_top_10,
-               aes(x = week, y = as.factor(rank), label=team, group = team, frame = week)) +
-  geom_path() +
-  ggtitle("The Single Game Points Record Belt")
-
-gganimate(plot, interval = .2)
-
-```
-
-```{r}
-head(all_top_10)
-plot2 <- ggplot(data = all_top_10,
-               aes(x = obs, y = points, frame = week)) +
-  geom_path(aes(cumulative = TRUE, group = team)) +
-  geom_label(aes(x=obs,y=points,label = team_year_week)) +
-  theme_minimal() +
-  ggtitle("The Single Game Points Record Championship Belt \n")
-
-
-gganimate(plot2, interval = .2)
-
-
-
-
-```
 
 I hope you enjoy like I did, seeing the names of teams from seasons past. 
 
 Losman's Gamblers had a stranglehold on the record for two and half 
-
-
-```{r}
-library(tweenr)
-plot3 <- ggplot(data = all_top_10,
-               aes(x = obs, y = rank, frame = week)) +
-  geom_path(aes(cumulative = TRUE, group = team)) +
-  geom_label(aes(x=obs,y=rank,label = team_points)) +
-  theme_minimal() +
-  scale_y_reverse() +
-  scale_x_continuous("Time",
-                     lim = c(-35,175),
-                     breaks = seq(from = 1, to = 16*9,by=16),
-                     labels = seq(from = 2009, to = 2017)) +
-  ggtitle("The Single Game Points Record Championship Belt \n")
-
-
-gganimate(plot3, interval = .4)
-```
 
 
 Try it with tweener
@@ -228,4 +192,55 @@ p <- ggplot(data = dt) +
 animation::ani.options(interval = 1/24)
 gganimate(p, 'dropping balls.gif', title_frame = F)
 ```
+
+
+```{r}
+plot3 <- ggplot(data = all_top_10,
+               aes(x = obs, y = rank, frame = week)) +
+  geom_path(aes(cumulative = TRUE, group = team)) +
+  geom_label(aes(x=obs,y=rank,label = team_points)) +
+  theme_minimal() +
+  scale_y_reverse() +
+  scale_x_continuous("Time",
+                     lim = c(-35,175),
+                     breaks = seq(from = 1, to = 16*9,by=16),
+                     labels = seq(from = 2009, to = 2017)) +
+  ggtitle("The Single Game Points Record Championship Belt \n")
+
+library(tweenr)
+
+all_top_10_2 <- all_top_10 %>%
+  arrange(team,obs) %>%
+  #select(obs,rank,team,week,team_points) %>%
+  select(obs,rank,team_points) %>%
+  rename(x = obs, y = rank, time = obs, group = team_points) %>%
+  mutate(ease = "linear")
+
+all_top_10_2$group
+
+is.vector(all_top_10_2$group)
+is.vector(all_top_10$team_points)
+
+all_top_10_tween <- tween_elements(data = all_top_10_2,'time','group','ease',nframes = 276) #138*5
+
+library(ggplot2)
+library(gganimate)
+plot_it <- ggplot(data = all_top_10_tween, aes(x=time,y=y,frame = .frame, group = .group, cumulative = T,label = .group)) +
+  geom_path() +
+  geom_label() +
+  theme_minimal() +
+  scale_y_reverse() +
+  scale_x_continuous("Time",
+                     lim = c(-35,175),
+                     breaks = seq(from = 1, to = 16*9,by=16),
+                     labels = seq(from = 2009, to = 2017)) +
+  ggtitle("The Single Game Points Record Championship Belt \n")
+
+gganimate(plot_it, interval = 0.2)
+
+
+```
+
+
+
 
