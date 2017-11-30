@@ -74,8 +74,11 @@ copyright = "© This post is licensed under a Creative Commons Attribution-NonCo
 
   # Google Webmaster
   # https://www.google.com/webmasters/
-  googleSiteVerification = "_moDmnnBNVLBN1rzNxyGUGdPHE20YgbmrtzLIbxaWFc"
+  #googleSiteVerification = "_moDmnnBNVLBN1rzNxyGUGdPHE20YgbmrtzLIbxaWFc"
 
+
+  disqusShortname = "yourdiscussshortname"
+  
   # Bing Webmaster
   # https://www.bing.com/toolbox/webmaster/
   msValidate = "22596E34341DD1D17D6022C44647E587"

@@ -11,11 +11,6 @@ tags:
   - Records
 ---
 
-
-Welcome back to Stats Corner posts for the 2017 season! 
-
-This is the first post on the new platform. The new platform allows for better graphics, including animations. It's in the spirit of, "I can so I will" that a bring you this post. 
-
 ```{r,echo=FALSE, include = FALSE}
 library(googlesheets)
 library(xml2)
@@ -28,6 +23,10 @@ library(tidyr)
 library(readr)
 library(magrittr)
 library(stringr)
+library(ggplot2)
+library(gganimate)
+library(tweenr)
+library(knitr)
 
 workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
 
@@ -101,8 +100,56 @@ all_number1 %>%
   arrange(desc(n))
 ```
 
+Welcome back to Stats Corner posts for the 2017 season! Better late than never. This is the first post on a new platform, as you can see. I have purchased the domain [www.statscorner.com](www.statscorner.com). 
 
-```{r}
+I've gone back and incorporated posts from previous years dating back to 2014. You can find through the home page. Links to both the [Advanced Standings](http://ec2-54-213-112-234.us-west-2.compute.amazonaws.com:3838/stats-corner/advanced-standings/) and [Record Book](http://ec2-54-213-112-234.us-west-2.compute.amazonaws.com:3838/stats-corner/record-book/) appear on the left hand side. So if nothing else [statscorner.com](www.statscorner.com) is an easy url to remember if only to bring you up to date on Proportional Wins. 
+
+But I digress. 
+
+The career home run record is arguably the holy grail of sports records. There is something very pure to it. We all know Babe Ruth's 714 home runs, then Hank Aaron at 755 and (some of us know) Barry Bonds at 763. Ruth became the career home run leader when he hit his 138th career home run in 1920 [(source)](https://en.wikipedia.org/wiki/List_of_Major_League_Baseball_progressive_career_home_runs_leaders). He held onto the record for over 50 years before Aaron broke it. Then Aaron held the claim on the record for 30 plus years before Bonds broke his record. 
+
+The corrollary here is our single game points record. Of all the records I track I think it is my favorite, even though I've never really sniffed it. How long do team's usually hold on to the record?
+
+
+## Who's (Been) Number 1?
+
+As an excuse to illustrate the new capabilities of the platform, I've animated the Top 10 Single Game Points record through time. 
+
+```{r, echo = F, include = F, interval = 0.1, cache = TRUE}
+all_top_10_2 <- all_top_10 %>%
+  arrange(team,obs) %>%
+  #select(obs,rank,team,week,team_points) %>%
+  select(obs,rank,team_points) %>%
+  rename(x = obs, y = rank, time = obs, group = team_points) %>%
+  mutate(ease = "linear")
+
+all_top_10_tween <- tween_elements(data = all_top_10_2,'time','group','ease',nframes = 414) #138*5
+
+library(ggplot2)
+library(gganimate)
+plot_it <- ggplot(data = all_top_10_tween, aes(x=time,y=y,frame = .frame, group = .group, cumulative = F,label = .group)) +
+  geom_path() +
+  geom_label() +
+  theme_minimal() +
+  scale_y_reverse("Rank",breaks = c(1:10)) +
+  scale_x_continuous("Time",
+                     lim = c(-35,175),
+                     breaks = seq(from = 1, to = 16*9,by=16),
+                     labels = seq(from = 2009, to = 2017)) +
+  ggtitle("The Single Game Points Record Championship Belt \n")
+
+#animation <- gganimate(plot_it, interval = 0.1, title_frame = FALSE, filename = "/home/john/stats-corner/content/post/2017/belt.gif")
+
+```
+
+![First gif in Stats Corner history](/home/john/stats-corner/content/post/2017/belt.gif)
+
+
+## Time at Number 1
+
+What about time at #1? Between Losman's Gamblers, Cameron's Cuties and 12.5 PSI, who's held the belt the longest? Here the chronological list:
+
+```{r, echo = FALSE, include = TRUE}
 summary <- all_number1 %>%
   group_by(owner,team_year_week,points) %>%
   summarise(weeks_at_no_1 = n(),
@@ -120,126 +167,14 @@ summary2$start <- str_locate(summary$team_year_week,'-')[,1]
 summary2$team <- str_sub(summary$team_year_week,1,summary2$start-1)
 summary2 %>%
   select(1,8,3,4,5,6) %>%
-  `colnames<-`(c("Owner", "Team", "Points","Weeks with Record","First Week","Last Week"))
+  `colnames<-`(c("Owner", "Team", "Points","Weeks with Record","First Week","Last Week")) %>%
+  kable()
 ```
 
-
-I hope you enjoy like I did, seeing the names of teams from seasons past. 
-
-Losman's Gamblers had a stranglehold on the record for two and half 
+Since this includes playoffs, RJ needs to hold onto this record through Week 7 of next season to dethrone Losman's Gamblers for time spent at
+number 1.
 
 
-Try it with tweener
-```{r}
-library(tweenr)
-tweenr_df <- all_top_10
-tweenr_df$ease_func = 'linear'
-tweenr_df$week <- as.numeric(tweenr_df$week)
-head(tweenr_df)
-
-all_top_10
-
-att2 <- all_top_10
-
-head(att2)
-att2 %<>% select(rank,week,team,points,obs)
-
-split_lists <- split(att2,att2$week)
-
-dt <- tween_states(data = split_lists, tweenlength = 1, statelength = 1, ease = 'linear', nframes = 500)
-
-head(all_top_10)
-
-```
-
-
-```{r}
-library(ggplot2)
-library(gganimate)
-library(ggforce)
-library(tweenr)
-
-# Making up data
-d <- data.frame(x = rnorm(20), y = rnorm(20), time = sample(100, 20), alpha = 0, 
-                size = 1, ease = 'elastic-out', id = 1:20, 
-                stringsAsFactors = FALSE)
-d2 <- d
-d2$time <- d$time + 10
-d2$alpha <- 1
-d2$size <- 3
-d2$ease <- 'linear'
-d3 <- d2
-d3$time <- d2$time + sample(50:100, 20)
-d3$size = 10
-d3$ease <- 'bounce-out'
-d4 <- d3
-d4$y <- min(d$y) - 0.5
-d4$size <- 2
-d4$time <- d3$time + 10
-d5 <- d4
-d5$time <- max(d5$time)
-df <- rbind(d, d2, d3, d4, d5)
-
-# Using tweenr
-dt <- tween_elements(df, 'time', 'id', 'ease', nframes = 500)
-
-# Animate with gganimate
-p <- ggplot(data = dt) + 
-    geom_point(aes(x=x, y=y, size=size, alpha=alpha, frame = .frame)) + 
-    scale_size(range = c(0.1, 20), guide = 'none') + 
-    scale_alpha(range = c(0, 1), guide = 'none') #+ 
-    ggforce::theme_no_axes()
-animation::ani.options(interval = 1/24)
-gganimate(p, 'dropping balls.gif', title_frame = F)
-```
-
-
-```{r}
-plot3 <- ggplot(data = all_top_10,
-               aes(x = obs, y = rank, frame = week)) +
-  geom_path(aes(cumulative = TRUE, group = team)) +
-  geom_label(aes(x=obs,y=rank,label = team_points)) +
-  theme_minimal() +
-  scale_y_reverse() +
-  scale_x_continuous("Time",
-                     lim = c(-35,175),
-                     breaks = seq(from = 1, to = 16*9,by=16),
-                     labels = seq(from = 2009, to = 2017)) +
-  ggtitle("The Single Game Points Record Championship Belt \n")
-
-library(tweenr)
-
-all_top_10_2 <- all_top_10 %>%
-  arrange(team,obs) %>%
-  #select(obs,rank,team,week,team_points) %>%
-  select(obs,rank,team_points) %>%
-  rename(x = obs, y = rank, time = obs, group = team_points) %>%
-  mutate(ease = "linear")
-
-all_top_10_2$group
-
-is.vector(all_top_10_2$group)
-is.vector(all_top_10$team_points)
-
-all_top_10_tween <- tween_elements(data = all_top_10_2,'time','group','ease',nframes = 276) #138*5
-
-library(ggplot2)
-library(gganimate)
-plot_it <- ggplot(data = all_top_10_tween, aes(x=time,y=y,frame = .frame, group = .group, cumulative = T,label = .group)) +
-  geom_path() +
-  geom_label() +
-  theme_minimal() +
-  scale_y_reverse() +
-  scale_x_continuous("Time",
-                     lim = c(-35,175),
-                     breaks = seq(from = 1, to = 16*9,by=16),
-                     labels = seq(from = 2009, to = 2017)) +
-  ggtitle("The Single Game Points Record Championship Belt \n")
-
-gganimate(plot_it, interval = 0.2)
-
-
-```
 
 
 
