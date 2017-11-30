@@ -115,7 +115,7 @@ The corrollary here is our single game points record. Of all the records I track
 
 As an excuse to illustrate the new capabilities of the platform, I've animated the Top 10 Single Game Points record through time. 
 
-```{r, echo = F, include = F, interval = 0.1, cache = TRUE}
+```{r, echo = F, include = F, interval = 0.1, cache = TRUE, fig.show='animate', ffmpeg.format='gif', dev='jpeg'}
 all_top_10_2 <- all_top_10 %>%
   arrange(team,obs) %>%
   #select(obs,rank,team,week,team_points) %>%
@@ -138,7 +138,7 @@ plot_it <- ggplot(data = all_top_10_tween, aes(x=time,y=y,frame = .frame, group 
                      labels = seq(from = 2009, to = 2017)) +
   ggtitle("The Single Game Points Record Championship Belt \n")
 
-#animation <- gganimate(plot_it, interval = 0.1, title_frame = FALSE, filename = "/home/john/stats-corner/content/post/2017/belt.gif")
+animation <- gganimate(plot_it, interval = 0.1, title_frame = FALSE, filename = "/home/john/stats-corner/static/img/belt.gif")
 
 ```
 
