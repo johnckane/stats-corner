@@ -138,7 +138,7 @@ plot_it <- ggplot(data = all_top_10_tween, aes(x=time,y=y,frame = .frame, group 
                      labels = seq(from = 2009, to = 2017)) +
   ggtitle("The Single Game Points Record Championship Belt \n")
 
-animation <- gganimate(plot_it, interval = 0.1, title_frame = FALSE, filename = "/home/john/stats-corner/static/img/belt.gif")
+#animation <- gganimate(plot_it, interval = 0.1, title_frame = FALSE, filename = "/home/john/stats-corner/static/img/belt.gif")
 
 ```
 
