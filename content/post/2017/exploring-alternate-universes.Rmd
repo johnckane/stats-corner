@@ -1,0 +1,134 @@
+---
+title: Exploring Alternate Universes
+author: John Kane
+date: '2017-12-11'
+slug: exploring-alternate-universes
+categories:
+  - '2017'
+  - schedule
+tags:
+  - '2017'
+  - schedule
+---
+
+```{r, echo = F}
+library(googlesheets)
+library(xml2)
+library(httr)
+library(curl)
+library(shiny)
+library(dplyr)
+library(reshape2)
+library(tidyr)
+library(readr)
+library(magrittr)
+library(stringr)
+library(ggplot2)
+library(gganimate)
+library(tweenr)
+library(knitr)
+
+workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
+
+owner <- workbook %>% gs_read(ws = "Owner-Team Name")
+games <- workbook %>% gs_read(ws = "Regular Season Games")
+
+owner_games <- left_join(games,owner,by=c("year","team"))
+owner_games$week <- as.character(owner_games$week)
+owner_games$game <- as.character(owner_games$game)
+owner_games$game_id <- as.character(owner_games$game_id)
+
+
+data <- arrange(owner_games,game_id,points)
+data$W <- rep(0,dim(data)[1])
+data$L <- rep(0,dim(data)[1])
+data$T <- rep(0,dim(data)[1])
+data$PA <- rep(0,dim(data)[1])
+data$result <- rep(" ",dim(data)[1])
+data$opponent <- rep(" ",dim(data)[1])
+games_played <- data %>% filter(points > 0)
+### Loop to determine winners, and points against
+for(i in seq(from=1,to=dim(games_played)[1],by=2)){
+  
+  games_played$PA[i]   <- games_played$points[i+1]
+  games_played$PA[i+1] <- games_played$points[i]
+  
+  games_played$opponent[i] <- games_played$owner[i+1]
+  games_played$opponent[i+1] <- games_played$owner[i]
+  
+  if(games_played$points[i] < games_played$points[i+1]){
+    games_played$L[i] <- 1
+    games_played$W[i+1] <- 1
+    games_played$result[i] <- "L"
+    games_played$result[i+1] <- "W"
+    
+  }
+  if(games_played$points[i] == games_played$points[i+1]){
+    games_played$T[i] <- 1
+    games_played$T[i+1] <- 1
+    games_played$result[i] <- "T"
+    games_played$result[i+1] <- "T"
+  }
+  
+}
+
+
+games_played <- games_played %>%
+  filter(year <= 2017) %>%
+  arrange(year,week,desc(points)) %>%
+  group_by(year,week) %>%
+  mutate(rk = rank(points,ties.method="min"),
+         opp_rk = rank(PA,ties.method="min")) 
+
+# Now to calculate and add up proportional wins
+games_played$pw<- ifelse(games_played$year==2009,(games_played$rk-1)/9,(games_played$rk-1)/11)
+games_played$opp_pw <- ifelse(games_played$year==2009,(games_played$opp_rk-1)/9,(games_played$opp_rk-1)/11)
+
+season2017 <- games_played %>% filter(year == 2017)
+
+schedules <- season2017 %>% ungroup() %>% mutate(week = as.numeric(week)) %>% select(owner,week,opponent,points,PA) %>% arrange(owner,week)
+
+schedules$schedule <- schedules$owner
+
+?split
+owner_lists <- split(schedules, owner)
+
+  
+  
+```
+
+
+Proportional Wins gives a sense of team performance in a vacuum, it's nearer a rotiserrie scoring than head to head. I like it because it is superior to wins and losses and presents a better measure of consistency than points alone.
+
+But our league isn't rotiserrie. If we went by Proportional Wins or total points then both Matovina and Thieneman are in the playoffs and Shokunbi and I are out. As a digression, the league leader in points has always also led the league in Proportional Wins. Not so with second place. This year RJ was #2 in Proportional Wins (7.5) but sixth in points. No other runner-up in Proportional Wins has ever finished lower than third in total points. Add that to another peculuarity that belongs to RJ's teams (along with concurrently holding most points in a game and fewest points in game).
+
+But I digress.
+
+Everyone has to play some schedule. For the first 6 or so years in the league we defaulted to however ESPN thought best with the schedule. Back in the message board era of Stats Corner, I posted a head to head record matrix which is currently up to date and available in the career tab of the  [Record Book](http://ec2-54-213-112-234.us-west-2.compute.amazonaws.com:3838/stats-corner/record-book/), that showed that some league members had never played each other. It also showed some people play each other too much or too little, depending on whose side you take in the Regan-Harrington beatdown. 
+
+At the live draft in Florida we went about rectifying the situation so that schedules were more balanced. Every team would play every other team at least once, with each team playing two other teams twice, based on last years' standings. So the schedules are still pretty random. 
+
+So where this is all headed to is, what if you played someone else's schedule? How might your season be different?
+
+Constructing a schedule that works is quite a challenge in linear optimization, so what I'm not doing is looking at all possible schedules to evaluate each of them. I'm going to evaluate your record as if you had played the schedule of each other player. 
+
+So you'll have 11 different possible records, all determined I suppose by what division you're in? I'm not exactly sure.
+
+
+
+## 2017 
+
+
+```{r}
+
+```
+
+
+
+## Would be Perfect Seasons
+
+## Would be Bucs/Lions Seasons
+
+## Other Years
+
+
