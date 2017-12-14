@@ -87,14 +87,64 @@ games_played$opp_pw <- ifelse(games_played$year==2009,(games_played$opp_rk-1)/9,
 season2017 <- games_played %>% filter(year == 2017)
 
 schedules <- season2017 %>% ungroup() %>% mutate(week = as.numeric(week)) %>% select(owner,week,opponent,points,PA) %>% arrange(owner,week)
-
+schedules_all <- games_played %>% ungroup() %>% mutate(week = as.numeric(week)) %>% select(owner,week,opponent,points,PA,year) %>% arrange(owner,week)
+schedules_all$schedule <- schedules_all$owner
 schedules$schedule <- schedules$owner
+head(schedules)
+```
 
-?split
-owner_lists <- split(schedules, owner)
 
-  
-  
+```{r}
+schedules$dummy <- 1
+
+cross_join_games <- inner_join(schedules %>%
+                                 select(owner,week,points,dummy),
+                               schedules %>%
+                                 select(schedule,week,opponent,points,PA,dummy),
+                               by = c("week","dummy")) %>%
+  mutate(PA = ifelse(opponent == owner, points.y,PA))
+
+
+alternate17 <- cross_join_games %>%
+  mutate(W = ifelse(points.x > PA,1,0),
+         L = ifelse(points.x < PA,1,0),
+         Tie = ifelse(points.x == PA,1,0)) %>%
+  group_by(owner,schedule) %>%
+  summarise(wins = sum(W),
+            losses = sum(L),
+            ties = sum(Tie))
+
+```
+
+
+```{r}
+# make the plot
+plot_data <- alternate17 
+
+```
+
+
+
+```{r}
+schedules_all$dummy <- 1
+cross_join_all <- inner_join(schedules_all %>%
+                                 select(owner,week,points,dummy,year),
+                               schedules_all %>%
+                                 select(schedule,week,opponent,points,PA,dummy,year),
+                               by = c("week","dummy","year")) %>%
+  mutate(PA = ifelse(opponent == owner, points.y,PA))
+
+alternateall <- cross_join_all %>%
+  mutate(W = ifelse(points.x > PA,1,0),
+         L = ifelse(points.x < PA,1,0),
+         Tie = ifelse(points.x == PA,1,0)) %>%
+  group_by(owner,year,schedule) %>%
+  summarise(wins = sum(W),
+            losses = sum(L),
+            ties = sum(Tie))
+
+
+alternateall %>% filter(owner == 'Kane') %>% arrange(desc(wins))
 ```
 
 
