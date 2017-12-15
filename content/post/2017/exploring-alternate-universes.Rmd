@@ -84,67 +84,82 @@ games_played <- games_played %>%
 games_played$pw<- ifelse(games_played$year==2009,(games_played$rk-1)/9,(games_played$rk-1)/11)
 games_played$opp_pw <- ifelse(games_played$year==2009,(games_played$opp_rk-1)/9,(games_played$opp_rk-1)/11)
 
-season2017 <- games_played %>% filter(year == 2017)
-
-schedules <- season2017 %>% ungroup() %>% mutate(week = as.numeric(week)) %>% select(owner,week,opponent,points,PA) %>% arrange(owner,week)
-schedules_all <- games_played %>% ungroup() %>% mutate(week = as.numeric(week)) %>% select(owner,week,opponent,points,PA,year) %>% arrange(owner,week)
-schedules_all$schedule <- schedules_all$owner
+schedules <- games_played %>% ungroup() %>% mutate(week = as.numeric(week)) %>% select(owner,week,opponent,points,PA,year) %>% arrange(year,owner,week)
 schedules$schedule <- schedules$owner
-head(schedules)
+
 ```
 
 
 ```{r}
 schedules$dummy <- 1
 
-cross_join_games <- inner_join(schedules %>%
-                                 select(owner,week,points,dummy),
-                               schedules %>%
-                                 select(schedule,week,opponent,points,PA,dummy),
-                               by = c("week","dummy")) %>%
-  mutate(PA = ifelse(opponent == owner, points.y,PA))
-
-
-alternate17 <- cross_join_games %>%
-  mutate(W = ifelse(points.x > PA,1,0),
-         L = ifelse(points.x < PA,1,0),
-         Tie = ifelse(points.x == PA,1,0)) %>%
-  group_by(owner,schedule) %>%
-  summarise(wins = sum(W),
-            losses = sum(L),
-            ties = sum(Tie))
-
-```
-
-
-```{r}
-# make the plot
-plot_data <- alternate17 
-
-```
-
-
-
-```{r}
-schedules_all$dummy <- 1
-cross_join_all <- inner_join(schedules_all %>%
+cross_join_games <-  inner_join(schedules %>%
                                  select(owner,week,points,dummy,year),
-                               schedules_all %>%
+                               schedules %>%
                                  select(schedule,week,opponent,points,PA,dummy,year),
                                by = c("week","dummy","year")) %>%
   mutate(PA = ifelse(opponent == owner, points.y,PA))
 
-alternateall <- cross_join_all %>%
+
+alt_univ <- cross_join_games %>%
   mutate(W = ifelse(points.x > PA,1,0),
          L = ifelse(points.x < PA,1,0),
          Tie = ifelse(points.x == PA,1,0)) %>%
   group_by(owner,year,schedule) %>%
   summarise(wins = sum(W),
             losses = sum(L),
-            ties = sum(Tie))
+            ties = sum(Tie)) %>%
+  mutate(record = ifelse(ties == 0, paste0(wins,"-",losses),
+                         paste0(wins,"-",losses,"-",ties)))
 
 
-alternateall %>% filter(owner == 'Kane') %>% arrange(desc(wins))
+```
+
+
+```{r}
+alt17 <- alt_univ %>% filter(year == 2017)
+
+plot17 <- ggplot(data = alt17,
+               aes(x=schedule,y=owner,label=record)) + 
+  theme_bw() + 
+  geom_text(aes(size=4)) +
+  scale_x_discrete("Hypothetical Schedule Rather Than Yours") +
+  scale_y_discrete("You", lim=rev(unique(alt17$owner))) +
+  theme(legend.position = 'none',panel.grid.minor=element_line(colour='white'),
+        axis.text.x=element_text(angle=45,hjust=1,size=12),
+        axis.text.y=element_text(size=12)) +
+  ggtitle("Records in Alternate Universes", sub = "2017 Season")
+
+print(plot17)
+```
+
+
+## So Who
+
+
+```{r}
+actual_records <- alt_univ %>% filter(year == 2017, owner == schedule)
+max_records <- alt_univ %>% 
+  filter(year == 2017) %>% 
+  ungroup() %>% 
+  group_by(owner) %>%
+  filter(wins == max(wins)) %>%
+  mutate(had_you_played_max = ifelse(n() == 1, schedule, paste0(as.character(n())," others"))) %>%
+  slice(1)
+min_records <- alt_univ %>%
+  filter(year == 2017) %>%
+  ungroup() %>%
+  group_by(owner) %>%
+  filter(wins == min(wins)) %>%
+  mutate(had_you_played_min = ifelse(n() == 1, schedule, paste0(as.character(n())," others"))) %>%
+  slice(1)
+
+all_records <- actual_records %>%
+  ungroup() %>%
+  left_join(max_records %>% rename(max_wins = wins) %>% select(owner, max_wins, had_you_played_max), by = "owner") %>%
+  left_join(min_records %>% rename(min_wins = wins) %>% select(owner, min_wins, had_you_played_min), by = "owner") %>%
+  select(owner,wins,max_wins,had_you_played_max,min_wins,had_you_played_min)
+
 ```
 
 
@@ -177,8 +192,172 @@ So you'll have 11 different possible records, all determined I suppose by what d
 
 ## Would be Perfect Seasons
 
-## Would be Bucs/Lions Seasons
+Has it ever happened? The league record for total wins was set by Olson back in 2011 with 12. 
+
+```{r}
+alt_univ %>%
+  arrange(desc(wins)) %>%
+  filter(wins >= 12) %>%
+  select(owner, year, record, schedule)
+```
+
+Only once! I was expecting anywhere from a handful all the way up to as many as once per year.
+
+
+
+
+
+## The Darkest Timeline ((Link))
+
+On the flip side, was there a schedule out there so brutal some poor team couldn't even win a game? The league record for fewest wins in a season is two, set by Higdon in 2013 and then tied by Ready in 2016.
+
+The list for most wins, filtering on at least the record of 12 was only 6 deep. Not so for fewest wins. There were 30 different potential seasons where a team won two or fewer games. But does there exist a season with zero wins?
+
+```{r}
+alt_univ %>%
+  arrange(desc(wins)) %>%
+  filter(wins <= 1) %>%
+  select(owner, year, record, schedule)
+```
+
+Nope, turns out to go winless is really really hard.
 
 ## Other Years
 
+For completeness sake, every year from 2016 back to 2009 are presented here without comment. 
 
+```{r}
+alt16 <- alt_univ %>% filter(year == 2016)
+
+plot16 <- ggplot(data = alt16,
+               aes(x=schedule,y=owner,label=record)) + 
+  theme_bw() + 
+  geom_text(aes(size=4)) +
+  scale_x_discrete("Hypothetical Schedule Rather Than Yours") +
+  scale_y_discrete("You", lim=rev(unique(alt16$owner))) +
+  theme(legend.position = 'none',panel.grid.minor=element_line(colour='white'),
+        axis.text.x=element_text(angle=45,hjust=1,size=12),
+        axis.text.y=element_text(size=12)) +
+  ggtitle("Records in Alternate Universes", sub = "2016 Season")
+
+print(plot16)
+```
+
+```{r}
+alt15 <- alt_univ %>% filter(year == 2015)
+
+plot15 <- ggplot(data = alt15,
+               aes(x=schedule,y=owner,label=record)) + 
+  theme_bw() + 
+  geom_text(aes(size=4)) +
+  scale_x_discrete("Hypothetical Schedule Rather Than Yours") +
+  scale_y_discrete("You", lim=rev(unique(alt15$owner))) +
+  theme(legend.position = 'none',panel.grid.minor=element_line(colour='white'),
+        axis.text.x=element_text(angle=45,hjust=1,size=12),
+        axis.text.y=element_text(size=12)) +
+  ggtitle("Records in Alternate Universes", sub = "2015 Season")
+
+print(plot15)
+```
+
+```{r}
+alt14 <- alt_univ %>% filter(year == 2014)
+
+plot14 <- ggplot(data = alt14,
+               aes(x=schedule,y=owner,label=record)) + 
+  theme_bw() + 
+  geom_text(aes(size=4)) +
+  scale_x_discrete("Hypothetical Schedule Rather Than Yours") +
+  scale_y_discrete("You", lim=rev(unique(alt14$owner))) +
+  theme(legend.position = 'none',panel.grid.minor=element_line(colour='white'),
+        axis.text.x=element_text(angle=45,hjust=1,size=12),
+        axis.text.y=element_text(size=12)) +
+  ggtitle("Records in Alternate Universes", sub = "2014 Season")
+
+print(plot14)
+```
+
+```{r}
+alt13 <- alt_univ %>% filter(year == 2013)
+
+plot13 <- ggplot(data = alt13,
+               aes(x=schedule,y=owner,label=record)) + 
+  theme_bw() + 
+  geom_text(aes(size=4)) +
+  scale_x_discrete("Hypothetical Schedule Rather Than Yours") +
+  scale_y_discrete("You", lim=rev(unique(alt13$owner))) +
+  theme(legend.position = 'none',panel.grid.minor=element_line(colour='white'),
+        axis.text.x=element_text(angle=45,hjust=1,size=12),
+        axis.text.y=element_text(size=12)) +
+  ggtitle("Records in Alternate Universes", sub = "2013 Season")
+
+print(plot13)
+```
+
+```{r}
+alt12 <- alt_univ %>% filter(year == 2012)
+
+plot12 <- ggplot(data = alt12,
+               aes(x=schedule,y=owner,label=record)) + 
+  theme_bw() + 
+  geom_text(aes(size=4)) +
+  scale_x_discrete("Hypothetical Schedule Rather Than Yours") +
+  scale_y_discrete("You", lim=rev(unique(alt12$owner))) +
+  theme(legend.position = 'none',panel.grid.minor=element_line(colour='white'),
+        axis.text.x=element_text(angle=45,hjust=1,size=12),
+        axis.text.y=element_text(size=12)) +
+  ggtitle("Records in Alternate Universes", sub = "2012 Season")
+
+print(plot12)
+```
+
+```{r}
+alt11 <- alt_univ %>% filter(year == 2011)
+
+plot11 <- ggplot(data = alt11,
+               aes(x=schedule,y=owner,label=record)) + 
+  theme_bw() + 
+  geom_text(aes(size=4)) +
+  scale_x_discrete("Hypothetical Schedule Rather Than Yours") +
+  scale_y_discrete("You", lim=rev(unique(alt11$owner))) +
+  theme(legend.position = 'none',panel.grid.minor=element_line(colour='white'),
+        axis.text.x=element_text(angle=45,hjust=1,size=11),
+        axis.text.y=element_text(size=11)) +
+  ggtitle("Records in Alternate Universes", sub = "2011 Season")
+
+print(plot11)
+```
+
+```{r}
+alt10 <- alt_univ %>% filter(year == 2010)
+
+plot10 <- ggplot(data = alt10,
+               aes(x=schedule,y=owner,label=record)) + 
+  theme_bw() + 
+  geom_text(aes(size=4)) +
+  scale_x_discrete("Hypothetical Schedule Rather Than Yours") +
+  scale_y_discrete("You", lim=rev(unique(alt10$owner))) +
+  theme(legend.position = 'none',panel.grid.minor=element_line(colour='white'),
+        axis.text.x=element_text(angle=45,hjust=1,size=10),
+        axis.text.y=element_text(size=10)) +
+  ggtitle("Records in Alternate Universes", sub = "2010 Season")
+
+print(plot10)
+```
+
+```{r}
+alt09 <- alt_univ %>% filter(year == 2009)
+
+plot09 <- ggplot(data = alt09,
+               aes(x=schedule,y=owner,label=record)) + 
+  theme_bw() + 
+  geom_text(aes(size=4)) +
+  scale_x_discrete("Hypothetical Schedule Rather Than Yours") +
+  scale_y_discrete("You", lim=rev(unique(alt09$owner))) +
+  theme(legend.position = 'none',panel.grid.minor=element_line(colour='white'),
+        axis.text.x=element_text(angle=45,hjust=1,size=09),
+        axis.text.y=element_text(size=09)) +
+  ggtitle("Records in Alternate Universes", sub = "2009 Season")
+
+print(plot09)
+```
