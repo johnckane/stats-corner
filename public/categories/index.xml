@@ -42,7 +42,7 @@
     <item>
       <title>2017</title>
       <link>/categories/2017/</link>
-      <pubDate>Fri, 01 Dec 2017 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 17 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>/categories/2017/</guid>
       <description></description>
@@ -108,6 +108,15 @@
       <pubDate>Fri, 01 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>/categories/records/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Schedule</title>
+      <link>/categories/schedule/</link>
+      <pubDate>Sun, 17 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/schedule/</guid>
       <description></description>
     </item>
     
