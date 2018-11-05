@@ -1,0 +1,294 @@
+---
+title: 'Fantasy Baseball Interlude: Power of Incentives'
+author: ''
+date: '2018-11-04'
+slug: fantasy-baseball-interlude-power-of-incentives
+tags: []
+categories: fantasybaseball
+---
+
+This year for the first time in our fantasy baseball league history we included an obligatory buy-in. The stakes were low, only \$25  per team. To increase season-long engagement we made quarterly payouts of \$25 to the team with the best record that quarter. The final payouts were \$50 to the runner-up and \$100 to the champion.
+
+This is how it played out:
+
+* Q1 Winner - Matovina
+* Q2 Winner - Olson
+* Q3 Winner - Thieneman
+* Q4 Winner - Harrington
+
+* Runner-up - Matovina
+* Champion - Harrington
+
+There are definitely some names on that list that are new to fantasy success. I think the quarterly payouts were able to keep people focused for short six week sprints. Hopefully it would have reignited some teams that lost interest as their own teams cratered through the first few weeks (or months) and they were able to start with that clean slate every 5 weeks. 
+
+History is written by the winners, but what about the losers? Did they also have dollar bills in their eyes as they streamed pitchers on their lunch break? The answers, of course, lie in the data.
+
+```{r, include = FALSE}
+#install.packages("datapasta")
+library(datapasta)
+library(tidyverse)
+library(ggrepel)
+library(lemon)
+```
+
+
+
+```{r, include = FALSE}
+
+data2018 <- 
+  data.frame(stringsAsFactors=FALSE,
+        TEAM = c("Joe Maddon's Used Van Sales", "Back...Back... Back...Gone",
+                 "Team Soft Serve", "Rich Homie Don Mattingly",
+                 "Butter Me Up Buttercup", "The Lollygaggers", "All in the Family",
+                 "Chan Ho Your Park", "Jeter's Gift Baskets", "Pass the PEDs"),
+       TRADE = c(1L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L),
+         ACQ = c(18L, 0L, 23L, 12L, 0L, 71L, 14L, 0L, 22L, 56L),
+        DROP = c(18L, 0L, 23L, 11L, 0L, 71L, 14L, 0L, 21L, 55L),
+    ACTIVATE = c(75L, 1L, 211L, 38L, 0L, 229L, 59L, 0L, 52L, 184L),
+          DL = c(6L, 0L, 9L, 4L, 0L, 8L, 5L, 0L, 5L, 4L),
+    playoffs = c(F,F,T,F,F,T,T,F,T,F)
+)
+data2018$owner <- c("Kane","Harris","Thieneman","Regan","Olson","Harrington","Matovina","McShane","Higdon","Hartman")
+data2018$year <- 2018
+
+data2017 <-
+  data.frame(stringsAsFactors=FALSE,
+          TEAM = c("Joe Maddon's Used Van Sales", "Back...Back... Back...Gone",
+                   "Team Soft Serve", "Rich Homie Don Mattingly",
+                   "Butter Me Up Buttercup", "The Lollygaggers", "All in the Family",
+                   "Chan Ho Your Park", "Jeter's Gift Baskets", "SqueezIt Home"),
+         TRADE = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L),
+           ACQ = c(7L, 59L, 0L, 8L, 7L, 25L, 2L, 5L, 10L, 95L),
+          DROP = c(7L, 59L, 0L, 8L, 6L, 24L, 1L, 4L, 9L, 95L),
+      ACTIVATE = c(106L, 366L, 12L, 34L, 25L, 61L, 3L, 5L, 49L, 246L),
+            DL = c(2L, 14L, 0L, 5L, 3L, 3L, 1L, 1L, 5L, 9L),
+      playoffs = c(F,T,F,F,F,F,F,T,T,T)
+  )
+data2017$owner <- c("Kane","Skrzyszewski","Thieneman","Regan","Olson","Harrington","Matovina","McShane","Higdon","Hartman")
+data2017$year <- 2017
+
+data2016 <-
+  data.frame(stringsAsFactors=FALSE,
+          TEAM = c("Joe Maddon's Used Van Sales", "Don't Bunt Hit Dingers",
+                   "Team Soft Serve", "Rich Homie Don Mattingly",
+                   "Butter Me Up Buttercup", "The Lollygaggers", "All in the Family",
+                   "Chan Ho Your Park", "Jeter's Gift Baskets", "SqueezIt Home"),
+         TRADE = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L),
+           ACQ = c(16L, 38L, 5L, 11L, 15L, 3L, 10L, 1L, 21L, 14L),
+          DROP = c(15L, 38L, 5L, 10L, 14L, 2L, 9L, 0L, 20L, 14L),
+      ACTIVATE = c(182L, 308L, 41L, 29L, 49L, 31L, 45L, 1L, 105L, 111L),
+            DL = c(4L, 7L, 1L, 2L, 5L, 1L, 4L, 1L, 6L, 4L),
+      playoffs = c(T,T,F,T,T,F,F,F,F,F)
+  )
+data2016$owner <- c("Kane","Skrzyszewski","Thieneman","Regan","Olson","Harrington","Matovina","McShane","Higdon","Hartman")
+data2016$year <- 2016
+
+all_data <- bind_rows(data2016,data2017,data2018)
+
+
+data_totals <- all_data %>%
+  group_by(year) %>%
+  summarise(total_TRADE = sum(TRADE),
+            total_ACQ = sum(ACQ),
+            total_DROP = sum(DROP),
+            total_ACTIVATE = sum(ACTIVATE),
+            total_DL = sum(DL))
+
+head(data_totals)
+
+gather_totals <-
+  data_totals %>%
+  gather(key = variable,
+         value = val,
+         -year)
+
+head(gather_totals)
+
+ggplot(data = gather_totals,
+       aes(x = year, y = val)) +
+#  geom_point() +
+#  geom_line() +
+  geom_bar(stat = "identity") +
+#  geom_text(aes(label = val)) +
+  facet_wrap(~variable,scales="free_y",ncol=5) +
+  theme_minimal() +
+  scale_x_continuous("Year",breaks = c(2015,2016,2017,2018,2019), labels = c("","2016","2017","2018","")) +
+  NULL
+```
+
+
+```{r, include = FALSE}
+delta_data <- all_data %>%
+  arrange(owner,year) %>%
+  group_by(owner) %>%
+  mutate(delta_TRADE = TRADE/lag(TRADE) - 1,
+         delta_ACQ = ACQ/lag(ACQ) - 1,
+         delta_DROP = DROP/lag(DROP) - 1,
+         delta_ACTIVATE = ACTIVATE/lag(ACTIVATE) - 1,
+         delta_DL = DL/lag(DL) - 1,
+         owner_year = paste0(owner,year))
+```
+
+
+
+## Available Roster Moves
+
+For whatever reason ESPN tracks roster moves made by each team. Going back to 2016 we have the following data points available:
+
+* Trades
+* DL Assignments
+* Acquisitions
+* Activations
+
+## Trades
+
+Trades have been hard to come by in this league, hardly worth mentioning. This year there were two trades, up from 0 in both 2016 and 2017. That's all there is to say about trades. 
+
+## DL Assignments
+
+This is an easy mark for who is paying attention to their teams over the long term. It is quite easy to start a guy who is hurt or just held out of the lineup for a day or two, but to leave guys in the starting lineup with the bright right "DL" next to their name shows you haven't logged in in a while.
+
+This is also a nosiy metric because you need to have injured players in order to put them on the DL. Despite that I still think there is value in looking at these numbers for this exercise. What does the data reveal? The chart, by owner and year, is below. 
+
+
+```{r, echo = FALSE}
+plot_DL <- ggplot(data = delta_data %>%
+                           filter(!(owner %in% c('Harris','Skrzyszewski'))),
+                   aes(x = year,
+                       y = DL,
+                       group = owner)) +
+  geom_line(linetype='dotted') +
+  geom_point() +
+  facet_wrap(~owner, ncol = 9) +
+    geom_text_repel(data = delta_data %>%
+              filter(!(owner %in% c('Harris','Skrzyszewski')),
+                       year != 2016),
+                       aes(label = ifelse(delta_DL > 0,
+                                          paste0("+",round(100*delta_DL,1),"%"),
+                                          paste0(round(100*delta_DL,1),"%"))),
+              size = 4,
+              force = 3,
+              direction = "y")
+
+plot_DL +
+  theme_minimal() +
+  scale_x_continuous("Year",
+                     breaks = c(2016,2017,2018), 
+                     labels = c("2016","2017","2018"),
+                     lim = c(2015,2019)) +
+  scale_y_continuous("DL Assignments \nYear over year percent change labeled",
+                     breaks = c(0:10),
+                     labels = as.character(c(0:10))) +
+  ggtitle("DL Assignments By Year") +
+  theme(axis.text.x=element_text(angle=45, hjust=1, size = 8))
+```
+
+What this chart (and the ones that follow) indicate are the raw numbers of total roster moves made by each owner along the y-axis with owner specific year over year percent change labeling each point. So to illustrate, in 2016 Harrington made 1 DL assignent then 3 in 2017. That is a 200% year over year increase over 2016. Then in 2018 he made 8 DL assignments, which is a 166.7% increase over 2017.
+
+What these charts hope to show is how the new incentive structure influenced individual owners over their baseline values, as well as how each owner's activity stacks up against the rest of the league. 
+
+So what do we see in this one?
+
+* Harrington and Hartman have both been very active every year. Hartman's engagement with DL assignments actually dropped this year. 
+* We see big jumps this year from Harrington (+167.7%), Kane (+200%), Matovina (+400%), and Thieneman (+Infinity). 
+* Higdon and Regan are active on this front, but are steady year to year. 
+
+## Acquisitions
+
+What's refelcted in this stat are those looking to gain a streaming advantage. Alternatively those who have terrible eyes for talent and need to consistently turnover their team to have any hope of eeking out a victory would also score very highly on this metric.
+
+```{r, echo = FALSE}
+plot_ACQ <- ggplot(data = delta_data %>%
+                           filter(!(owner %in% c('Harris','Skrzyszewski'))),
+                   aes(x = year,
+                       y = ACQ,
+                       group = owner)) +
+  geom_line(linetype='dotted') +
+  geom_point() +
+  facet_wrap(~owner, ncol = 9) +
+    geom_text_repel(data = delta_data %>%
+              filter(!(owner %in% c('Harris','Skrzyszewski')),
+                       year != 2016),
+                       aes(label = ifelse(delta_ACQ > 0,
+                                          paste0("+",round(100*delta_ACQ,1),"%"),
+                                          paste0(round(100*delta_ACQ,1),"%"))),
+              size = 4,
+              force = 3,
+              direction = "y")
+
+plot_ACQ +
+  theme_minimal() +
+  scale_x_continuous("Year",
+                     breaks = c(2016,2017,2018), 
+                     labels = c("2016","2017","2018"),
+                     lim = c(2015,2019)) +
+  scale_y_continuous("Roster Acquisitions \nYear over year percent change labeled") +
+  ggtitle("Roster Acquisitions By Year") +
+  theme(axis.text.x=element_text(angle=45, hjust=1, size = 8))
+```
+
+
+What do I see here?
+
+* Again, Harrington and Hartman are consistently the most active owners with respect to this statistic every year. Hartman especially last year as he chased (and won) the title. 
+* Most owners have a V-shaped graph here, with the exception of McShane and Olson. 
+* Thieneman again clocks in with the infinite percentage gain. Somehow he made 0 roster acquisitions in 2017.
+* McShane and Olson made 0 roster acquisitions this year. 
+
+
+## Roster Activations
+
+We finally come to the key of fantasy baseball, daily dilligence with roster setting. Streaming starting pitchers from your bench, noting off days and last minute scratches from the starting lineup. How did everyone fare?
+
+
+```{r, echo = FALSE}
+plot_ACTIVATE3 <- ggplot(data = delta_data %>%
+                           filter(!(owner %in% c('Harris','Skrzyszewski'))),
+                   aes(x = year,
+                       y = ACTIVATE,
+                       group = owner)) +
+  geom_line(linetype='dotted') +
+  geom_point() +
+  facet_wrap(~owner, ncol = 9) +
+  # geom_text(data = delta_data %>%
+  #             filter(!(owner %in% c('Harris','Skrzyszewski')),
+  #                      year != 2016),
+  #                      aes(label = paste(round(100*delta_ACTIVATE,1),"%")), size = 4) +
+    geom_text_repel(data = delta_data %>%
+              filter(!(owner %in% c('Harris','Skrzyszewski')),
+                       year != 2016),
+                       aes(label = ifelse(delta_ACTIVATE > 0,
+                                          paste0("+",round(100*delta_ACTIVATE,1),"%"),
+                                          paste0(round(100*delta_ACTIVATE,1),"%"))),
+              size = 4,
+              force = 3,
+              direction = "y")
+
+plot_ACTIVATE3 +
+  theme_minimal() +
+  scale_x_continuous("Year",
+                     breaks = c(2016,2017,2018), 
+                     labels = c("2016","2017","2018"),
+                     lim = c(2015,2019)) +
+  scale_y_continuous("Roster Activations \nYear over year percent change labeled") +
+  ggtitle("Roster Activations By Year") +
+  theme(axis.text.x=element_text(angle=45, hjust=1, size = 8))
+```
+
+What do I see here?
+
+* Harrington, Hartman, etc. 
+* Substantial downward trends for several owners (Higon, Kane, Olson).
+* Quadruple digit percentage increases for both Matovina and Thieneman.
+* Only four owners increased the number of activations this year compared to years past. 
+
+
+## Conclusion
+
+* Harrington and Hartman have had a lot of time on their hands for three years running. 
+* Thieneman chased the \$25 payouts mostly through managing a roster rather than turning it over every week. 
+* Matovina was more active than ever, but still less active than other managers.
+* There were no across the board increases in engagement. Only 4 owners made more DL activations, 6 made more roster acquistions, and 4 made more roster activations.
+
+
+  
