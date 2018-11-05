@@ -2,52 +2,52 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Records on Stats Corner</title>
-    <link>/categories/records/</link>
+    <link>http://www.statscorner.com/categories/records/</link>
     <description>Recent content in Records on Stats Corner</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
     <lastBuildDate>Fri, 01 Dec 2017 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/records/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://www.statscorner.com/categories/records/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>The Single Game Points Record Championship Belt</title>
-      <link>/2017/12/01/the-single-game-points-record-championship-belt/</link>
+      <link>http://www.statscorner.com/2017/12/01/the-single-game-points-record-championship-belt/</link>
       <pubDate>Fri, 01 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>/2017/12/01/the-single-game-points-record-championship-belt/</guid>
+      <guid>http://www.statscorner.com/2017/12/01/the-single-game-points-record-championship-belt/</guid>
       <description>Welcome back to Stats Corner posts for the 2017 season! Better late than never. This is the first post on a new platform, as you can see. I have purchased the domain www.statscorner.com.
 I’ve gone back and incorporated posts from previous years dating back to 2014. You can find through the home page. Links to both the Advanced Standings and Record Book appear on the left hand side. So if nothing else statscorner.</description>
     </item>
     
     <item>
       <title>Season Finale</title>
-      <link>/2015/12/26/season-finale/</link>
+      <link>http://www.statscorner.com/2015/12/26/season-finale/</link>
       <pubDate>Sat, 26 Dec 2015 00:00:00 +0000</pubDate>
       
-      <guid>/2015/12/26/season-finale/</guid>
+      <guid>http://www.statscorner.com/2015/12/26/season-finale/</guid>
       <description>A New Points Record RJ set a new points record against Hartman in the toilet bowl semi-final. I thought he was a shoe-in for last place this year. His team stinks. But he shattered Hartman’s record against Hartman! That should teach Hartman never to set records again. So here is what the updated leaderboard looks like for most points in a game:
   Owner Team Year Week Points    Thieneman 12.</description>
     </item>
     
     <item>
       <title>Calm Down Tim</title>
-      <link>/2015/11/12/calm-down-tim/</link>
+      <link>http://www.statscorner.com/2015/11/12/calm-down-tim/</link>
       <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
       
-      <guid>/2015/11/12/calm-down-tim/</guid>
+      <guid>http://www.statscorner.com/2015/11/12/calm-down-tim/</guid>
       <description>Thanks Tim for the idea on the league message board for this post. I figure I’ll address it head on. For those of you who don’t know, even though to have clicked on this link you must have seen that he posted something, this is what he said:
  Can we get something on the likelihood that a team sets the single season point record and misses the playoffs?! Because it looks like we’re heading that way[.</description>
     </item>
     
     <item>
       <title>Week 4</title>
-      <link>/2014/09/23/week-4/</link>
+      <link>http://www.statscorner.com/2014/09/23/week-4/</link>
       <pubDate>Tue, 23 Sep 2014 00:00:00 +0000</pubDate>
       
-      <guid>/2014/09/23/week-4/</guid>
+      <guid>http://www.statscorner.com/2014/09/23/week-4/</guid>
       <description>A bit belated but the annual statistical update has arrived.
 Note: You too can have this data. Find the game data here.If you want to play around with owner totals you’ll need to fold in the information found here. I retain all editing privileges but you can play around with the data at your leisure. I hope to update the spreadsheets weekly. In due time you will be able to find all data and R code on github.</description>
     </item>

@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Draft on Stats Corner</title>
-    <link>/categories/draft/</link>
+    <link>http://www.statscorner.com/categories/draft/</link>
     <description>Recent content in Draft on Stats Corner</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
     <lastBuildDate>Sat, 12 Sep 2015 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/categories/draft/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://www.statscorner.com/categories/draft/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Keeper Analysis</title>
-      <link>/2015/09/12/keeper-analysis/</link>
+      <link>http://www.statscorner.com/2015/09/12/keeper-analysis/</link>
       <pubDate>Sat, 12 Sep 2015 00:00:00 +0000</pubDate>
       
-      <guid>/2015/09/12/keeper-analysis/</guid>
+      <guid>http://www.statscorner.com/2015/09/12/keeper-analysis/</guid>
       <description>Stats Corner There are three types of owners in our league:
  The owner who is plotting his keepers before the end of the previous regular season (Regan, Ready, Harrington, Olson, D’Skae).
  The owner who starts thinking sometime during the summer who he’s going to keep (Kane, McShane, Hartman, Higdon).
@@ -27,10 +27,10 @@
     
     <item>
       <title>Scoring the Draft</title>
-      <link>/2015/09/05/scoring-the-draft/</link>
+      <link>http://www.statscorner.com/2015/09/05/scoring-the-draft/</link>
       <pubDate>Sat, 05 Sep 2015 00:00:00 +0000</pubDate>
       
-      <guid>/2015/09/05/scoring-the-draft/</guid>
+      <guid>http://www.statscorner.com/2015/09/05/scoring-the-draft/</guid>
       <description>Welcome back to Stats Corner for the 2015 Season!
 This place has a new look, a new location on the internet and new ideas. I will no longer be restricted to message board posts. Bear with me as the style evolves. Here in Week 1 I want to focus on content and content only. Future posts should have a better style.
 Scoring the Draft Coming out of Draft Day I’m sure most of you were feeling pretty good.</description>
