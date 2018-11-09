@@ -2,41 +2,41 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Taking Questions on Stats Corner</title>
-    <link>http://www.statscorner.com/tags/taking-questions/</link>
+    <link>/tags/taking-questions/</link>
     <description>Recent content in Taking Questions on Stats Corner</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
     <lastBuildDate>Wed, 30 Nov 2016 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://www.statscorner.com/tags/taking-questions/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/taking-questions/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Taking Questions Week 12</title>
-      <link>http://www.statscorner.com/2016/11/30/taking-questions-week-12/</link>
+      <link>/2016/11/30/taking-questions-week-12/</link>
       <pubDate>Wed, 30 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/2016/11/30/taking-questions-week-12/</guid>
+      <guid>/2016/11/30/taking-questions-week-12/</guid>
       <description>“In honor of my 0.3 win over RJ, what is the smallest margin of victory we’ve had since the move to decimal scoring?” Back in 2009 before we had decimal scoring we had two ties, Ready and Shokunbi tied at 97 in Week 4 then Kane and Ready tied in week 11 at 123.
 In 2010 we went to decimal scoring and have had 12 games decided by less than a point, or almost two per season.</description>
     </item>
     
     <item>
       <title>Taking Questions Week 11</title>
-      <link>http://www.statscorner.com/2016/11/26/taking-questions-week-11/</link>
+      <link>/2016/11/26/taking-questions-week-11/</link>
       <pubDate>Sat, 26 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/2016/11/26/taking-questions-week-11/</guid>
+      <guid>/2016/11/26/taking-questions-week-11/</guid>
       <description>External link to interactive post</description>
     </item>
     
     <item>
       <title>Taking Questions Week 10</title>
-      <link>http://www.statscorner.com/2016/11/19/taking-questions-week-10/</link>
+      <link>/2016/11/19/taking-questions-week-10/</link>
       <pubDate>Sat, 19 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/2016/11/19/taking-questions-week-10/</guid>
+      <guid>/2016/11/19/taking-questions-week-10/</guid>
       <description>Does Hartman Have a Shot at the Proportional Wins (PW) Record? Let’s take a look at the leaderboard of most PW through 10 weeks.
   Year Owner PW Through 10 Weeks PW Season Total All Time Rank    2011 Shokunbi 7.45 10.09 1  2014 Skrzyszewski 7.45 9.45 2  2013 Ready 7.18 9.18 4  2016 Hartman 7.09 NA NA  2015 Harrington 6.91 8.55 8  2009 Regan 6.</description>
     </item>

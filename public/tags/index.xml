@@ -2,148 +2,157 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Stats Corner</title>
-    <link>http://www.statscorner.com/tags/</link>
+    <link>/tags/</link>
     <description>Recent content in Tags on Stats Corner</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
     <lastBuildDate>Tue, 14 Oct 2014 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://www.statscorner.com/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>2014</title>
-      <link>http://www.statscorner.com/tags/2014/</link>
+      <link>/tags/2014/</link>
       <pubDate>Tue, 14 Oct 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/2014/</guid>
+      <guid>/tags/2014/</guid>
       <description></description>
     </item>
     
     <item>
       <title>2015</title>
-      <link>http://www.statscorner.com/tags/2015/</link>
+      <link>/tags/2015/</link>
       <pubDate>Sat, 26 Dec 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/2015/</guid>
+      <guid>/tags/2015/</guid>
       <description></description>
     </item>
     
     <item>
       <title>2016</title>
-      <link>http://www.statscorner.com/tags/2016/</link>
+      <link>/tags/2016/</link>
       <pubDate>Sat, 10 Dec 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/2016/</guid>
+      <guid>/tags/2016/</guid>
       <description></description>
     </item>
     
     <item>
       <title>2017</title>
-      <link>http://www.statscorner.com/tags/2017/</link>
+      <link>/tags/2017/</link>
       <pubDate>Sun, 17 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/2017/</guid>
+      <guid>/tags/2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Draft</title>
-      <link>http://www.statscorner.com/tags/draft/</link>
+      <link>/tags/draft/</link>
       <pubDate>Sat, 12 Sep 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/draft/</guid>
+      <guid>/tags/draft/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Fantasybaseball</title>
+      <link>/tags/fantasybaseball/</link>
+      <pubDate>Sun, 04 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/fantasybaseball/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Harrington</title>
-      <link>http://www.statscorner.com/tags/harrington/</link>
+      <link>/tags/harrington/</link>
       <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/harrington/</guid>
+      <guid>/tags/harrington/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Keepers</title>
-      <link>http://www.statscorner.com/tags/keepers/</link>
+      <link>/tags/keepers/</link>
       <pubDate>Sat, 12 Sep 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/keepers/</guid>
+      <guid>/tags/keepers/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Playoffs</title>
-      <link>http://www.statscorner.com/tags/playoffs/</link>
+      <link>/tags/playoffs/</link>
       <pubDate>Sat, 10 Dec 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/playoffs/</guid>
+      <guid>/tags/playoffs/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Probability</title>
-      <link>http://www.statscorner.com/tags/probability/</link>
+      <link>/tags/probability/</link>
       <pubDate>Tue, 07 Oct 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/probability/</guid>
+      <guid>/tags/probability/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Projections</title>
-      <link>http://www.statscorner.com/tags/projections/</link>
+      <link>/tags/projections/</link>
       <pubDate>Tue, 14 Oct 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/projections/</guid>
+      <guid>/tags/projections/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Proportional Wins</title>
-      <link>http://www.statscorner.com/tags/proportional-wins/</link>
+      <link>/tags/proportional-wins/</link>
       <pubDate>Sat, 26 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/proportional-wins/</guid>
+      <guid>/tags/proportional-wins/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Records</title>
-      <link>http://www.statscorner.com/tags/records/</link>
-      <pubDate>Fri, 01 Dec 2017 00:00:00 +0000</pubDate>
+      <link>/tags/records/</link>
+      <pubDate>Thu, 08 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/records/</guid>
+      <guid>/tags/records/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Schedule</title>
-      <link>http://www.statscorner.com/tags/schedule/</link>
+      <link>/tags/schedule/</link>
       <pubDate>Sun, 17 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/schedule/</guid>
+      <guid>/tags/schedule/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Shokunbi</title>
-      <link>http://www.statscorner.com/tags/shokunbi/</link>
+      <link>/tags/shokunbi/</link>
       <pubDate>Sat, 26 Dec 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/shokunbi/</guid>
+      <guid>/tags/shokunbi/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Taking Questions</title>
-      <link>http://www.statscorner.com/tags/taking-questions/</link>
+      <link>/tags/taking-questions/</link>
       <pubDate>Wed, 30 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/tags/taking-questions/</guid>
+      <guid>/tags/taking-questions/</guid>
       <description></description>
     </item>
     

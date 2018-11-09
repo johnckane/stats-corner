@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>2014 on Stats Corner</title>
-    <link>http://www.statscorner.com/categories/2014/</link>
+    <link>/categories/2014/</link>
     <description>Recent content in 2014 on Stats Corner</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
     <lastBuildDate>Tue, 14 Oct 2014 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://www.statscorner.com/categories/2014/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/2014/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Week 7</title>
-      <link>http://www.statscorner.com/2014/10/14/week-7/</link>
+      <link>/2014/10/14/week-7/</link>
       <pubDate>Tue, 14 Oct 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/2014/10/14/week-7/</guid>
+      <guid>/2014/10/14/week-7/</guid>
       <description>Welcome to a very special Stats Corner.
 In light of recent emails I felt I should dedicate this week’s post to non-traditional students and the SAT. The National College Review Board has kept statistics on non-traditional students(defined as age 25+ at time of enrolment) since 1983 and…
 Just kidding.
@@ -26,30 +26,30 @@ This week is special because I’m focusing not on historical game data from our
     
     <item>
       <title>Week 6</title>
-      <link>http://www.statscorner.com/2014/10/07/week-6/</link>
+      <link>/2014/10/07/week-6/</link>
       <pubDate>Tue, 07 Oct 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/2014/10/07/week-6/</guid>
+      <guid>/2014/10/07/week-6/</guid>
       <description>We return to Stats Corner.
 How many points does it take to win every week? We all acknowledge that it comes down to a little bit of luck. It’s whomever the schedule gods default you to year over year the same week. Take Matovina this past week. Historically he’s averaged 91.1 points per game, however he threw down 124.5 against RJ (6th highest in franchise history) but runs into the buzzsaw of RJ’s finest performance yet.</description>
     </item>
     
     <item>
       <title>Week 5</title>
-      <link>http://www.statscorner.com/2014/09/29/week-5/</link>
+      <link>/2014/09/29/week-5/</link>
       <pubDate>Mon, 29 Sep 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/2014/09/29/week-5/</guid>
+      <guid>/2014/09/29/week-5/</guid>
       <description>Welcome back to Stats Corner.
 I won’t try and pretend that the inspiration of this weekly Message Board Post isn’t the “Skeptical Football” column found weekly on fivethirtyeight.com. Despite its flaws it provides interesting insights into the NFL. In the inaugural column this year the author Benjamin Morris (twitter handle @skepticalsports, I reccommend you follow) created a heat map/matrix of records and historicalplayoff probabilities. Link. This week I bring that to you for Bad Newzs.</description>
     </item>
     
     <item>
       <title>Week 4</title>
-      <link>http://www.statscorner.com/2014/09/23/week-4/</link>
+      <link>/2014/09/23/week-4/</link>
       <pubDate>Tue, 23 Sep 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/2014/09/23/week-4/</guid>
+      <guid>/2014/09/23/week-4/</guid>
       <description>A bit belated but the annual statistical update has arrived.
 Note: You too can have this data. Find the game data here.If you want to play around with owner totals you’ll need to fold in the information found here. I retain all editing privileges but you can play around with the data at your leisure. I hope to update the spreadsheets weekly. In due time you will be able to find all data and R code on github.</description>
     </item>

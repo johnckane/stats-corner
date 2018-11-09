@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Harrington on Stats Corner</title>
-    <link>http://www.statscorner.com/categories/harrington/</link>
+    <link>/categories/harrington/</link>
     <description>Recent content in Harrington on Stats Corner</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
     <lastBuildDate>Thu, 12 Nov 2015 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://www.statscorner.com/categories/harrington/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/harrington/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Calm Down Tim</title>
-      <link>http://www.statscorner.com/2015/11/12/calm-down-tim/</link>
+      <link>/2015/11/12/calm-down-tim/</link>
       <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://www.statscorner.com/2015/11/12/calm-down-tim/</guid>
+      <guid>/2015/11/12/calm-down-tim/</guid>
       <description>Thanks Tim for the idea on the league message board for this post. I figure I’ll address it head on. For those of you who don’t know, even though to have clicked on this link you must have seen that he posted something, this is what he said:
  Can we get something on the likelihood that a team sets the single season point record and misses the playoffs?! Because it looks like we’re heading that way[.</description>
     </item>
