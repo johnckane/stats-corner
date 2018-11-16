@@ -1,0 +1,333 @@
+---
+title: 'Week 11 Record Watch'
+author: 'John Kane'
+date: '2018-11-08'
+slug: week-11-record-watch
+categories:
+  - Records
+tags:
+  - Records
+---
+
+```{r, include=F,echo=F}
+library(googlesheets)
+library(xml2)
+library(httr)
+library(curl)
+library(shiny)
+library(dplyr)
+library(reshape2)
+library(tidyr)
+library(readr)
+library(magrittr)
+library(stringr)
+library(ggplot2)
+library(gganimate)
+library(tweenr)
+library(knitr)
+library(ggrepel)
+
+workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
+
+owner <- workbook %>% gs_read(ws = "Owner-Team Name")
+games <- workbook %>% gs_read(ws = "Regular Season Games")
+
+owner_games <- left_join(games,owner,by=c("year","team"))
+owner_games$week <- as.character(owner_games$week)
+owner_games$game <- as.character(owner_games$game)
+owner_games$game_id <- as.character(owner_games$game_id)
+
+
+data <- arrange(owner_games,game_id,points)
+data$W <- rep(0,dim(data)[1])
+data$L <- rep(0,dim(data)[1])
+data$T <- rep(0,dim(data)[1])
+data$PA <- rep(0,dim(data)[1])
+data$result <- rep(" ",dim(data)[1])
+data$opponent <- rep(" ",dim(data)[1])
+games_played <- data %>% filter(points > 0)
+### Loop to determine winners, and points against
+for(i in seq(from=1,to=dim(games_played)[1],by=2)){
+  
+  games_played$PA[i]   <- games_played$points[i+1]
+  games_played$PA[i+1] <- games_played$points[i]
+  
+  games_played$opponent[i] <- games_played$owner[i+1]
+  games_played$opponent[i+1] <- games_played$owner[i]
+  
+  if(games_played$points[i] < games_played$points[i+1]){
+    games_played$L[i] <- 1
+    games_played$W[i+1] <- 1
+    games_played$result[i] <- "L"
+    games_played$result[i+1] <- "W"
+    
+  }
+  if(games_played$points[i] == games_played$points[i+1]){
+    games_played$T[i] <- 1
+    games_played$T[i+1] <- 1
+    games_played$result[i] <- "T"
+    games_played$result[i+1] <- "T"
+  }
+  
+}
+
+
+games_played <- games_played %>%
+  arrange(year,week,desc(points)) %>%
+  group_by(year,week) %>%
+  mutate(rk = rank(points,ties.method="min"),
+         opp_rk = rank(PA,ties.method="min")) 
+
+# Now to calculate and add up proportional wins
+games_played$pw<- ifelse(games_played$year==2009,(games_played$rk-1)/9,(games_played$rk-1)/11)
+games_played$opp_pw <- ifelse(games_played$year==2009,(games_played$opp_rk-1)/9,(games_played$opp_rk-1)/11)
+games_played$year_owner <- paste0(games_played$year," ",games_played$owner)
+```
+
+
+```{r, eval = F, echo = F, include = F}
+# some analysis
+games_played %>%
+  group_by(year_owner) %>%
+  arrange(as.numeric(week)) %>%
+  mutate(cum_wins = cumsum(W)) %>%
+  ungroup() %>%
+  group_by(week) %>%
+  filter(cum_wins == max(cum_wins)) %>%
+  select(year,week,year_owner,cum_wins)
+```
+
+Another week, another check-in on potential records being set. The post last week successfully jinxed Hartman as he lost for the first time. My playoff and BYE probabilities are again calculable. 
+
+## Total Points
+
+
+```{r, echo = F}
+week_num <- 10
+
+total <-
+games_played %>%
+  group_by(year_owner) %>%
+  arrange(as.numeric(week)) %>%
+  mutate(cum_points = cumsum(points)) 
+
+top10 <-
+  total %>%
+  ungroup() %>%
+  filter(as.numeric(week) == 13) %>% 
+  arrange(desc(cum_points)) %>%
+  slice(1:10)
+
+
+through_week <-
+  games_played%>%
+  filter(as.numeric(week) <= week_num) %>%
+  group_by(year_owner) %>%
+  arrange(as.numeric(week)) %>%
+  mutate(cum_points = cumsum(points)) 
+
+through_week_top10 <- 
+  through_week %>%
+  ungroup() %>%
+  filter(as.numeric(week) == week_num) %>%
+  arrange(desc(cum_points)) %>%
+  slice(1:10) %>%
+  filter(year == 2018)
+
+
+
+
+
+
+plot <- ggplot(data = total %>% ungroup %>% inner_join(top10, by = "year_owner") %>% filter(as.numeric(week.x) >= week_num),
+               aes(x = as.numeric(week.x), y = cum_points.x, group = year_owner, label = year_owner, colour = year_owner))
+plot + 
+  geom_point(pch = 1) +
+  geom_line(linetype = 'dotted') +
+  geom_text_repel(data = total %>% ungroup() %>% inner_join(top10, by = "year_owner") %>% filter(as.numeric(week.x) == 13),
+                  aes(x = as.numeric(week.x), y = cum_points.x),
+                  nudge_x = 1.5,
+                  direction = "y",
+                  segment.alpha = 0) +
+  geom_point(data = through_week %>% ungroup() %>% inner_join(through_week_top10, by = "year_owner") %>% filter(as.numeric(week.x) == week_num),
+             aes(x = as.numeric(week.x), y = cum_points.x, group = year_owner),
+             colour = 'red') +
+  #geom_line(data = through_week %>% ungroup() %>% inner_join(through_week_top10, by = "year_owner"),
+  #          aes(x = as.numeric(week.x), y = cum_points.x, group = year_owner),
+  #          colour = 'red') +
+  geom_text_repel(data = through_week %>% ungroup() %>% inner_join(through_week_top10, by = "year_owner") %>% filter(as.numeric(week.x) == week_num),
+                  aes(x = as.numeric(week.x), y = cum_points.x),
+                  nudge_x = -1,
+                  #nudge_y = 100,
+                  #direction = "y",
+                  #segment.alpha = 0,
+                  colour = 'red') +
+  ggtitle("Top 10 Single Season Point Leaders",
+          sub = paste0("Point Totals Through ",as.character(week_num)," Weeks; 2018 Teams in Red")) +
+  scale_y_continuous("Cumulative Points", lim = c(1000,1650)) +
+  scale_x_continuous("Week", lim = c(8,18),
+                     breaks = c(10,11,12,13),
+                     labels = c("10","11","12","13")) +
+#  theme(legend.position = 'none') +
+  theme_minimal() +
+  guides(fill=FALSE, color=FALSE)
+
+```
+
+Hartman still comfortably ahead. Both D'Skae and Harrington also remain on the board, separated by a mere 3.2 points.
+
+## Proportional Wins
+
+
+
+```{r, echo = F}
+week_num <- 10
+
+total <-
+games_played %>%
+  group_by(year_owner) %>%
+  arrange(as.numeric(week)) %>%
+  mutate(cum_pw= cumsum(pw)) 
+
+top10 <-
+  total %>%
+  ungroup() %>%
+  filter(as.numeric(week) == 13) %>% 
+  arrange(desc(cum_pw)) %>%
+  slice(1:10)
+
+
+through_week <-
+  games_played%>%
+  filter(as.numeric(week) <= week_num) %>%
+  group_by(year_owner) %>%
+  arrange(as.numeric(week)) %>%
+  mutate(cum_pw = cumsum(pw)) 
+
+through_week_top10 <- 
+  through_week %>%
+  ungroup() %>%
+  filter(as.numeric(week) == week_num) %>%
+  arrange(desc(cum_pw)) %>%
+  slice(1:10) %>%
+  filter(year == 2018)
+
+
+
+
+
+
+plot <- ggplot(data = total %>% ungroup %>% inner_join(top10, by = "year_owner") %>% filter(as.numeric(week.x) >= week_num),
+               aes(x = as.numeric(week.x), y = cum_pw.x, group = year_owner, label = year_owner, colour = year_owner))
+plot + 
+  geom_point(pch = 1) +
+  geom_line(linetype = 'dotted') +
+  geom_text_repel(data = total %>% ungroup() %>% inner_join(top10, by = "year_owner") %>% filter(as.numeric(week.x) == 13),
+                  aes(x = as.numeric(week.x), y = cum_pw.x),
+                  nudge_x = 1.5,
+                  direction = "y",
+                  segment.alpha = 0) +
+  geom_point(data = through_week %>% ungroup() %>% inner_join(through_week_top10, by = "year_owner") %>% filter(as.numeric(week.x) == week_num),
+             aes(x = as.numeric(week.x), y = cum_pw.x, group = year_owner),
+             colour = 'red') +
+  #geom_line(data = through_week %>% ungroup() %>% inner_join(through_week_top10, by = "year_owner"),
+  #          aes(x = as.numeric(week.x), y = cum_pw.x, group = year_owner),
+  #          colour = 'red') +
+  geom_text_repel(data = through_week %>% ungroup() %>% inner_join(through_week_top10, by = "year_owner") %>% filter(as.numeric(week.x) == week_num),
+                  aes(x = as.numeric(week.x), y = cum_pw.x),
+                  nudge_x = -1,
+                  #nudge_y = 100,
+                  #direction = "y",
+                  #segment.alpha = 0,
+                  colour = 'red') +
+  ggtitle("Top 10 Single Season PW Leaders",
+          sub = paste0("PW Totals Through ",as.character(week_num)," Weeks; 2018 Teams in Red")) +
+  scale_y_continuous("Cumulative PW", lim = c(5,11)) +
+  scale_x_continuous("Week", lim = c(8,18),
+                     breaks = c(10,11,12,13),
+                     labels = c("10","11","12","13")) +
+  theme_minimal() +
+  guides(fill=FALSE, color=FALSE)
+  
+```
+
+The gap is narrowing here but Hartman still has a comfortable lead through 10 weeks of play. Harrington also makes an appearance. 
+
+## (Un)luck
+
+
+
+```{r, echo = F}
+week_num <- 10
+
+total <-
+games_played %>%
+  group_by(year_owner) %>%
+  mutate(luck = W - pw) %>%
+  arrange(as.numeric(week)) %>%
+  mutate(cum_luck= cumsum(luck)) 
+
+top10 <-
+  total %>%
+  ungroup() %>%
+  filter(as.numeric(week) == 13) %>% 
+  arrange(cum_luck) %>%
+  slice(1:10)
+
+
+through_week <-
+  games_played%>%
+  filter(as.numeric(week) <= week_num) %>%
+  group_by(year_owner) %>%
+  mutate(luck = W - pw) %>%
+  arrange(as.numeric(week)) %>%
+  mutate(cum_luck = cumsum(luck)) 
+
+through_week_top10 <- 
+  through_week %>%
+  ungroup() %>%
+  filter(as.numeric(week) == week_num) %>%
+  arrange(cum_luck) %>%
+  slice(1:10) %>%
+  filter(year == 2018)
+
+
+
+
+
+
+plot <- ggplot(data = total %>% ungroup %>% inner_join(top10, by = "year_owner") %>% filter(as.numeric(week.x) >= week_num),
+               aes(x = as.numeric(week.x), y = cum_luck.x, group = year_owner, label = year_owner, colour = year_owner))
+plot + 
+  geom_point(pch = 1) +
+  geom_line(linetype = 'dotted') +
+  geom_text_repel(data = total %>% ungroup() %>% inner_join(top10, by = "year_owner") %>% filter(as.numeric(week.x) == 13),
+                  aes(x = as.numeric(week.x), y = cum_luck.x),
+                  nudge_x = 1.5,
+                  direction = "y",
+                  segment.alpha = 0) +
+  geom_point(data = through_week %>% ungroup() %>% inner_join(through_week_top10, by = "year_owner") %>% filter(as.numeric(week.x) == week_num),
+             aes(x = as.numeric(week.x), y = cum_luck.x, group = year_owner),
+             colour = 'red') +
+  #geom_line(data = through_week %>% ungroup() %>% inner_join(through_week_top10, by = "year_owner"),
+  #          aes(x = as.numeric(week.x), y = cum_luck.x, group = year_owner),
+  #          colour = 'red') +
+  geom_text_repel(data = through_week %>% ungroup() %>% inner_join(through_week_top10, by = "year_owner") %>% filter(as.numeric(week.x) == week_num),
+                  aes(x = as.numeric(week.x), y = cum_luck.x),
+                  nudge_x = -1,
+                  #nudge_y = 100,
+                  #direction = "y",
+                  #segment.alpha = 0,
+                  colour = 'red') +
+  ggtitle("Top? 10 Most Unlucky Teams",
+          sub = paste0("Luck Totals Through ",as.character(week_num)," Weeks; 2018 Teams in Red")) +
+  scale_y_continuous("Cumulative Luck", lim = c(-4,0)) +
+  scale_x_continuous("Week", lim = c(8,18),
+                     breaks = c(10,11,12,13),
+                     labels = c("10","11","12","13")) +
+  theme(legend.position = 'none') +
+  theme_minimal() +
+  guides(fill=FALSE, color=FALSE)
+```
+
+Harrington still about as unlucky as 2012 Higdon through 10 weeks. But he would have to suffer some bad losses the rest of the way to claim this ignoble crown. 
