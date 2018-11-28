@@ -1,7 +1,7 @@
 ---
 title: 'Week 11 Record Watch'
 author: 'John Kane'
-date: '2018-11-08'
+date: '2018-11-15'
 slug: week-11-record-watch
 categories:
   - Records
