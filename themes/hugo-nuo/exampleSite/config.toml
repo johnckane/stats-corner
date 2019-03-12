@@ -1,9 +1,8 @@
-baseURL = "http://localhost:1313"
+baseURL = ""
 languageCode = "en"
 title = "Hugo Blog"
 theme = "hugo-nuo"
 enableRobotsTXT = true
-pygmentsuseclasses = true
 PygmentsCodeFences = true
 canonifyurls = true
 
@@ -14,7 +13,7 @@ disqusShortname = "disqus_shortname"
 googleAnalytics = "UA-XXXXXXXX-X"
 
 # Copyright of your post
-copyright = "© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce."
+copyright = "© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you wish to quote or reproduce."
 
 # Initial site menu, you can extend menu with content.
 [[menu.main]]
@@ -29,10 +28,17 @@ copyright = "© This post is licensed under a Creative Commons Attribution-NonCo
   identifier = "works"
   url = "https://github.com/laozhu"
 
+[[menu.main]]
+  name = "Tags"
+  weight = 30
+  identifier = "tags"
+  url = "/tags/"
+
 # Add your own params here
 [params]
   author = "Ritchie Zhu"
-  avatar = "/img/avatar.jpg"
+  bg = "images/grey-prism.svg"
+  avatar = "images/avatar.png"
   seotitle = "Hugo Blog (SEO Version)"
   subtitle = "~ Keep It Simple & Stupid ~"
   description = "Hugo is one of the most popular open-source static site generators. With its amazing speed and flexibility, Hugo makes building websites fun again."
@@ -44,7 +50,7 @@ copyright = "© This post is licensed under a Creative Commons Attribution-NonCo
   twitter = "twitter_username"
   linkedin = "linkedin_username"
   weibo = "weibo_username"
-  wechat= "/img/qrcode.jpg" # Replace with your wechat qrcode image
+  wechat= "images/qrcode.jpg"  # Replace with your wechat qrcode image
   # facebook = "facebook_username"
   # google = "googlplus_id_number"
   # instagram = "instagram_username"
@@ -60,6 +66,13 @@ copyright = "© This post is licensed under a Creative Commons Attribution-NonCo
   # zhihu = "zhihu_username"
   # douban = "douban_username"
   # bilibili = "bilibili_id_number"
+  # stackoverflow = "laozhu"
+  # codesandbox = "melaozhu"
+  # npm = "laozhu"
+  # reddit = "melaozhu"
+
+  # Overrid theme styles in this file
+  # customStyle = "styles/custom.scss"
 
   # Changyan Comments (China Only)
   changyan = false

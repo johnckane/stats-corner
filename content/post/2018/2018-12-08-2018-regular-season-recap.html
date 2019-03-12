@@ -1,0 +1,77 @@
+---
+title: '2018 Regular Season Recap'
+author: 'John Kane'
+date: '2018-12-08'
+slug: 2018-regular-season-recap
+categories:
+  - Records
+tags:
+  - Records
+---
+
+
+
+<div id="points" class="section level2">
+<h2>Points</h2>
+<pre class="r"><code>games_played %&gt;%
+  group_by(year,owner) %&gt;%
+  summarise(total_points = sum(points)) %&gt;%
+  ungroup() %&gt;%
+  group_by(owner) %&gt;%
+  arrange(desc(total_points)) %&gt;%
+  mutate(owner_rank = row_number()) %&gt;%
+  arrange(owner_rank)</code></pre>
+<pre><code>## # A tibble: 118 x 4
+## # Groups:   owner [13]
+##     year owner        total_points owner_rank
+##    &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt;      &lt;int&gt;
+##  1  2018 Hartman             1726.          1
+##  2  2011 Shokunbi            1615.          1
+##  3  2015 Harrington          1581.          1
+##  4  2013 Ready               1577.          1
+##  5  2018 Skrzyszewski        1574.          1
+##  6  2009 Regan               1494           1
+##  7  2011 Olson               1478           1
+##  8  2018 Harris              1476.          1
+##  9  2018 Higdon              1476.          1
+## 10  2009 McShane             1439           1
+## # … with 108 more rows</code></pre>
+<pre class="r"><code>games_played %&gt;%
+  group_by(year) %&gt;%
+  summarise(total_points = sum(points)) %&gt;%
+  ggplot(data = .,
+         aes(x = year, y = total_points)) +
+  geom_bar(stat = &quot;identity&quot;)</code></pre>
+<p><img src="/post/2018/2018-12-08-2018-regular-season-recap_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="total-points" class="section level2">
+<h2>Total Points</h2>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<pre><code>## geom_path: Each group consists of only one observation. Do you need to
+## adjust the group aesthetic?</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_text_repel).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_text_repel).</code></pre>
+<p><img src="/post/2018/2018-12-08-2018-regular-season-recap_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Hartman couldn’t quite pull off setting the 13 game points record after only 12 weeks of play. He needs all of 17 points to set a new record while D’Skae looks primed to crack the top five and Harrington the top ten. Higdon has fallen off the list.</p>
+</div>
+<div id="proportional-wins" class="section level2">
+<h2>Proportional Wins</h2>
+<div id="the-good" class="section level3">
+<h3>The Good</h3>
+<p><img src="/post/2018/2018-12-08-2018-regular-season-recap_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Hartman had a rough Week 12, only outscoring 3 other teams (and losing to Shokunbi) for 0.27 PW. He has now fallen behind 2011 Shokunbi on this metric. The best he can do is tie Ola’s 2011 team by scoring the most points this week.</p>
+</div>
+<div id="the-bad" class="section level3">
+<h3>The Bad</h3>
+<p>New this week is checking in on the other side of the spectrum, historically low PW. This one snuck up on me.</p>
+<p><img src="/post/2018/2018-12-08-2018-regular-season-recap_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Thieneman is in really bad shape here. He needs to outscore at least 10 teams just to tie both 2016 Ready and his 2015 team for the lowest PW in a single season, otherwise he’ll have it all to himself. No one likely remembers this, but in my Week 5 Power Rankings I predicted RJ would become the first team in league history to start 3-0 and miss the playoffs. That’s at least one thing I got right this year.</p>
+</div>
+</div>
+<div id="unluck" class="section level2">
+<h2>(Un)luck</h2>
+<p><img src="/post/2018/2018-12-08-2018-regular-season-recap_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Harrington appears to be out of the woods, at least on this metric. He is heading towards a top 10 season points finish but needs to win this week and get some help to make the playoffs.</p>
+</div>

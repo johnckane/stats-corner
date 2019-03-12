@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8" />
+
+  
+  <title>2018 Regular Season Recap</title>
+
+  
+  
+
+
+
+
+  
+  <meta name="author" content="John Kane" />
+  <meta name="description" content="Points games_played %&amp;gt;% group_by(year,owner) %&amp;gt;% summarise(total_points = sum(points)) %&amp;gt;% ungroup() %&amp;gt;% group_by(owner) %&amp;gt;% arrange(desc(total_points)) %&amp;gt;% mutate(owner_rank = row_number()) %&amp;gt;% arrange(owner_rank) ## # A tibble: 118 x 4 ## # Groups: owner [13] ## year owner total_points owner_rank ## &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt; ## 1 2018 Hartman 1726. 1 ## 2 2011 Shokunbi 1615. 1 ## 3 2015 Harrington 1581. 1 ## 4 2013 Ready 1577. 1 ## 5 2018 Skrzyszewski 1574." />
+
+  
+  
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@gohugoio" />
+    <meta name="twitter:title" content="2018 Regular Season Recap" />
+    <meta name="twitter:description" content="Points games_played %&amp;gt;% group_by(year,owner) %&amp;gt;% summarise(total_points = sum(points)) %&amp;gt;% ungroup() %&amp;gt;% group_by(owner) %&amp;gt;% arrange(desc(total_points)) %&amp;gt;% mutate(owner_rank = row_number()) %&amp;gt;% arrange(owner_rank) ## # A tibble: 118 x 4 ## # Groups: owner [13] ## year owner total_points owner_rank ## &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt; ## 1 2018 Hartman 1726. 1 ## 2 2011 Shokunbi 1615. 1 ## 3 2015 Harrington 1581. 1 ## 4 2013 Ready 1577. 1 ## 5 2018 Skrzyszewski 1574." />
+    <meta name="twitter:image" content="https://www.statscorner.com/img/avatar.jpg" />
+  
+
+
+
+
+<meta name="generator" content="Hugo 0.54.0" />
+
+
+<link rel="canonical" href="https://www.statscorner.com/2018/12/08/2018-regular-season-recap/" />
+<link rel="alternative" href="https://www.statscorner.com/index.xml" title="Stats Corner" type="application/atom+xml" />
+
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+
+
+<meta name="robots" content="index,follow" />
+<meta name="referrer" content="origin-when-cross-origin" />
+
+<meta name="msvalidate.01" content="22596E34341DD1D17D6022C44647E587" />
+
+
+
+
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Stats Corner" />
+<meta name="msapplication-tooltip" content="Stats Corner" />
+<meta name='msapplication-navbutton-color' content="#5fbf5e" />
+<meta name="msapplication-TileColor" content="#5fbf5e" />
+<meta name="msapplication-TileImage" content="/img/tile-image-windows.png" />
+
+
+
+<link rel="apple-touch-icon" href="https://www.statscorner.com/img/touch-icon-apple.png" />
+<link rel="mask-icon" href="https://www.statscorner.com/img/safari-pinned-tab.svg" color="#5fbf5e" />
+
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
+
+<link rel="stylesheet" href="https://www.statscorner.com/css/bundle.css" />
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdn.bootcss.com/video.js/6.2.8/ie8/videojs-ie8.min.js"></script>
+  <![endif]-->
+
+<!--[if lte IE 11]>
+    <script src="//cdn.bootcss.com/classlist/1.1.20170427/classList.min.js"></script>
+  <![endif]-->
+
+
+<script src="//cdn.bootcss.com/object-fit-images/3.2.3/ofi.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/smooth-scroll/12.1.4/js/smooth-scroll.polyfills.min.js"></script>
+
+
+</head>
+  <body>
+    
+    <div class="suspension">
+      <a title="Go to top" class="to-top is-hide"><span class="icon icon-up"></span></a>
+      
+        
+        <a title="Go to comments" class="to-comment" href="#disqus_thread"><span class="icon icon-comment"></span></a>
+        
+      
+    </div>
+    
+    
+  <header class="site-header">
+  <img class="avatar" src="./media/stats-corner-logo4.png" alt="Avatar">
+  
+  <h2 class="title">Stats Corner</h2>
+  
+  <p class="subtitle"></p>
+  <button class="menu-toggle" type="button">
+    <span class="icon icon-menu"></span>
+  </button>
+  <nav class="site-menu collapsed">
+    <h2 class="offscreen">Main Menu</h2>
+    <ul class="menu-list">
+      
+      
+      
+      
+        <li class="menu-item  is-active"><a href="https://www.statscorner.com/">Home</a></li>
+      
+        <li class="menu-item "><a href="http://ec2-54-213-112-234.us-west-2.compute.amazonaws.com:3838/stats-corner/advanced-standings/">Advanced Standings</a></li>
+      
+        <li class="menu-item "><a href="http://ec2-54-213-112-234.us-west-2.compute.amazonaws.com:3838/stats-corner/record-book/">Record Book</a></li>
+      
+    </ul>
+  </nav>
+  <nav class="social-menu collapsed">
+    <h2 class="offscreen">Social Networks</h2>
+    <ul class="social-list">
+
+      
+      <li class="social-item">
+        <a href="mailto:stats.corner@gmail.com" title="Email"><span class="icon icon-email"></span></a>
+      </li>
+
+      
+      <li class="social-item">
+        <a href="//github.com/johnckane/stats-corner" title="GitHub"><span class="icon icon-github"></span></a>
+      </li>
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <li class="social-item">
+        <a href="https://www.statscorner.com/index.xml"><span class="icon icon-rss" title="RSS"></span></a>
+      </li>
+
+    </ul>
+  </nav>
+</header>
+
+  <section class="main post-detail">
+    <header class="post-header">
+      <h1 class="post-title">2018 Regular Season Recap</h1>
+      <p class="post-meta">@John Kane · Dec 8, 2018 · 3 min read</p>
+    </header>
+    <article class="post-content">
+
+
+<div id="points" class="section level2">
+<h2>Points</h2>
+<pre class="r"><code>games_played %&gt;%
+  group_by(year,owner) %&gt;%
+  summarise(total_points = sum(points)) %&gt;%
+  ungroup() %&gt;%
+  group_by(owner) %&gt;%
+  arrange(desc(total_points)) %&gt;%
+  mutate(owner_rank = row_number()) %&gt;%
+  arrange(owner_rank)</code></pre>
+<pre><code>## # A tibble: 118 x 4
+## # Groups:   owner [13]
+##     year owner        total_points owner_rank
+##    &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt;      &lt;int&gt;
+##  1  2018 Hartman             1726.          1
+##  2  2011 Shokunbi            1615.          1
+##  3  2015 Harrington          1581.          1
+##  4  2013 Ready               1577.          1
+##  5  2018 Skrzyszewski        1574.          1
+##  6  2009 Regan               1494           1
+##  7  2011 Olson               1478           1
+##  8  2018 Harris              1476.          1
+##  9  2018 Higdon              1476.          1
+## 10  2009 McShane             1439           1
+## # … with 108 more rows</code></pre>
+<pre class="r"><code>games_played %&gt;%
+  group_by(year) %&gt;%
+  summarise(total_points = sum(points)) %&gt;%
+  ggplot(data = .,
+         aes(x = year, y = total_points)) +
+  geom_bar(stat = &quot;identity&quot;)</code></pre>
+<p><img src="https://www.statscorner.com/post/2018/2018-12-08-2018-regular-season-recap_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="total-points" class="section level2">
+<h2>Total Points</h2>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<pre><code>## geom_path: Each group consists of only one observation. Do you need to
+## adjust the group aesthetic?</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_text_repel).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_text_repel).</code></pre>
+<p><img src="https://www.statscorner.com/post/2018/2018-12-08-2018-regular-season-recap_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Hartman couldn’t quite pull off setting the 13 game points record after only 12 weeks of play. He needs all of 17 points to set a new record while D’Skae looks primed to crack the top five and Harrington the top ten. Higdon has fallen off the list.</p>
+</div>
+<div id="proportional-wins" class="section level2">
+<h2>Proportional Wins</h2>
+<div id="the-good" class="section level3">
+<h3>The Good</h3>
+<p><img src="https://www.statscorner.com/post/2018/2018-12-08-2018-regular-season-recap_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Hartman had a rough Week 12, only outscoring 3 other teams (and losing to Shokunbi) for 0.27 PW. He has now fallen behind 2011 Shokunbi on this metric. The best he can do is tie Ola’s 2011 team by scoring the most points this week.</p>
+</div>
+<div id="the-bad" class="section level3">
+<h3>The Bad</h3>
+<p>New this week is checking in on the other side of the spectrum, historically low PW. This one snuck up on me.</p>
+<p><img src="https://www.statscorner.com/post/2018/2018-12-08-2018-regular-season-recap_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Thieneman is in really bad shape here. He needs to outscore at least 10 teams just to tie both 2016 Ready and his 2015 team for the lowest PW in a single season, otherwise he’ll have it all to himself. No one likely remembers this, but in my Week 5 Power Rankings I predicted RJ would become the first team in league history to start 3-0 and miss the playoffs. That’s at least one thing I got right this year.</p>
+</div>
+</div>
+<div id="unluck" class="section level2">
+<h2>(Un)luck</h2>
+<p><img src="https://www.statscorner.com/post/2018/2018-12-08-2018-regular-season-recap_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Harrington appears to be out of the woods, at least on this metric. He is heading towards a top 10 season points finish but needs to win this week and get some help to make the playoffs.</p>
+</div>
+</article>
+    <footer class="post-footer">
+      
+      <ul class="post-tags">
+        
+          <li><a href="https://www.statscorner.com/tags/records"><span class="tag">Records</span></a></li>
+        
+      </ul>
+      
+      <p class="post-copyright">
+        © This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.
+      </p>
+    </footer>
+    
+      <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "disqus_shortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      
+    
+  </section>
+  <footer class="site-footer">
+  <p>© 2017-2019 Stats Corner</p>
+  <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/laozhu/hugo-nuo" target="_blank">Nuo</a>.</p>
+  
+</footer>
+
+
+
+<script async src="//cdn.bootcss.com/video.js/6.2.8/alt/video.novtt.min.js"></script>
+<script async src="//cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\[','\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
+</script>
+
+<script src="https://www.statscorner.com/js/bundle.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-XXXXXXXX-X', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+  </body>
+</html>

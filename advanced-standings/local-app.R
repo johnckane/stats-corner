@@ -243,8 +243,8 @@ server <- shinyServer(function(input, output) {
                 bye_rates %>% rename(bye_p_win = bye_rate),
                 by = c("next_week" = "week", "w_plus_1" = "wins")) %>%
       mutate(bye_leverage = paste0(round(100*(bye_p_win - bye_p_stay),1),"%")) %>% 
-      select(1:8,13,21) %>% 
-      `colnames<-`(c("Owner","W","L","Points","PA","PW","SOS","Luck","Playoff Probability","Playoff Leverage","BYE Probability","BYE Leverage"))
+      select(1:8,13) %>% 
+      `colnames<-`(c("Owner","W","L","Points","PA","PW","SOS","Luck","Playoff Probability"))
   }
   })
   

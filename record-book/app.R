@@ -18,7 +18,7 @@ library(reshape2)
 library(tidyr)
 library(readr)
 library(magrittr)
-
+library(ggplot2)
 workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
 
 last_updated <- workbook$update %>% as.Date(.,format = "%m/%d/&y") %>%
