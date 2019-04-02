@@ -10,7 +10,7 @@ tags:
 
 ---
 
-This year for the first time in our fantasy baseball league history we included an obligatory buy-in. The stakes were low, only \$25  per team. To increase season-long engagement we made quarterly payouts of \$25 to the team with the best record that quarter. The final payouts were \$50 to the runner-up and \$100 to the champion.
+This year for the first time in our fantasy baseball league history we included an obligatory buy-in. The stakes were low, only $25  per team. To increase season-long engagement we made quarterly payouts of \$25 to the team with the best record that quarter. The final payouts were \$50 to the runner-up and \$100 to the champion.
 
 This is how it played out:
 

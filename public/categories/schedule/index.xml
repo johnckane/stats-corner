@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Schedule on Stats Corner</title>
-    <link>https://www.statscorner.com/categories/schedule/</link>
+    <link>/categories/schedule/</link>
     <description>Recent content in Schedule on Stats Corner</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
     <lastBuildDate>Sun, 17 Dec 2017 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://www.statscorner.com/categories/schedule/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/schedule/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Exploring Alternate Universes</title>
-      <link>https://www.statscorner.com/2017/12/17/exploring-alternate-universes/</link>
+      <link>/2017/12/17/exploring-alternate-universes/</link>
       <pubDate>Sun, 17 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://www.statscorner.com/2017/12/17/exploring-alternate-universes/</guid>
+      <guid>/2017/12/17/exploring-alternate-universes/</guid>
       <description>For the first six or so years in the league we defaulted to however ESPN thought best with the schedule. Back in the message board era of Stats Corner I posted a head to head record matrix that showed that some league members had never played each other. It also showed some people play each other too much or too little, depending on whose side you take in the Regan-Harrington beatdown.</description>
     </item>
     
