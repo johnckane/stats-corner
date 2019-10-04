@@ -89,7 +89,7 @@ games_played$opp_pw <- ifelse(games_played$year==2009,(games_played$opp_rk-1)/9,
 g <- function(x){
   
   data_all <- games_played %>% 
-    filter(year != 2009,year!=2018,week<=x) %>%
+    filter(year != 2009,year!=2019,week<=x) %>%
     group_by(year,team,playoffs) %>%
     summarise(wins = sum(W)) %>%
     group_by(wins) %>%
@@ -123,7 +123,7 @@ long_rates <- long_rates %>% mutate(wins_plus_1 = as.numeric(wins) + 1, wins = a
 h <- function(x){
   
   bye_data_all <- games_played %>% 
-    filter(year != 2009,year!=2018,week<=x) %>%
+    filter(year != 2009,year!=2019,week<=x) %>%
     group_by(year,team,bye) %>%
     summarise(wins = sum(W)) %>%
     group_by(wins) %>%
@@ -156,7 +156,7 @@ ui <- shinyUI(fluidPage(
   titlePanel("Bad Newz Advanced Stadings"),
   p(paste0("Last Updated: ",last_updated)),
   a(href= "mailto:Stats.Corner@gmail.com","Stats.Corner@gmail.com"),
-  selectInput("season",label = "Season", choices = c(2009:2018),selected = 2018),
+  selectInput("season",label = "Season", choices = c(2009:2019),selected = 2019),
   dataTableOutput("standings"),
   h4("Glossary"),
   h5("PW (Proportional Wins): The number of wins truly earned, without consideration of scheduled opponents."),
@@ -183,8 +183,8 @@ server <- shinyServer(function(input, output) {
       group_by(owner) %>%
       summarise(W = sum(W),
                 L = sum(L),
-                Points = sum(points),
-                PA = sum(PA),
+                Points = round(sum(points),1),
+                PA = round(sum(PA),1),
                 PW = round(sum(pw),1),
                 SOS = round(sum(opp_pw)/n(),2),
                 Luck = W - PW,
@@ -267,4 +267,3 @@ server <- shinyServer(function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-
