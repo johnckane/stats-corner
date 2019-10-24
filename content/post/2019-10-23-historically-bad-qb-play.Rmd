@@ -18,7 +18,7 @@ Over on the redesigned message board (I've overlooked it at the bottom of the Le
 
 Great question! 
 
-This is both easy and hard to answer. Easy because I've got data for all players/teams going back to 2001 in a tidy database. Hard because I don't know which players were carried on specific rosters or started in specific weeks. Nor does ESPN allow you to go back and check box scores for the history of the league. Also, the 2019 data isn't in that database yet, so we'll rely on data from 2009-2018. I do have our draft data, so can tell which owners drafted certain players. We'll use that as a proxy for playing them. 
+This is both easy and hard to answer. Easy because I've got data for all players/teams going back to 2001 in a tidy database. Hard because I don't know which players were carried on specific rosters or started in specific weeks. Nor does ESPN allow you to go back and check box scores for the history of the league. Also, the 2019 data isn't in that database yet so we'll rely on data from 2009-2018. I do have our draft data and can tell which owners drafted certain players. We'll use that as a proxy for playing them. 
 
 Darnold scored -6.7 points on Monday night, and combined with Wentz for 0.1 (positive) total points from the QB/OP slot. Where does that rank? Let's see.
 
