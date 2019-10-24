@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Stats Corner</title>
@@ -7,46 +7,10 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
-    <lastBuildDate>Tue, 14 Oct 2014 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 23 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>2014</title>
-      <link>/tags/2014/</link>
-      <pubDate>Tue, 14 Oct 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/2014/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>2015</title>
-      <link>/tags/2015/</link>
-      <pubDate>Sat, 26 Dec 2015 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/2015/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>2016</title>
-      <link>/tags/2016/</link>
-      <pubDate>Sat, 10 Dec 2016 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/2016/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>2017</title>
-      <link>/tags/2017/</link>
-      <pubDate>Sun, 17 Dec 2017 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/2017/</guid>
-      <description></description>
-    </item>
     
     <item>
       <title>2019</title>
@@ -58,79 +22,7 @@
     </item>
     
     <item>
-      <title>Draft</title>
-      <link>/tags/draft/</link>
-      <pubDate>Sat, 12 Sep 2015 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/draft/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Fantasybaseball</title>
-      <link>/tags/fantasybaseball/</link>
-      <pubDate>Sun, 04 Nov 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/fantasybaseball/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Harrington</title>
-      <link>/tags/harrington/</link>
-      <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/harrington/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Keepers</title>
-      <link>/tags/keepers/</link>
-      <pubDate>Sat, 12 Sep 2015 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/keepers/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Playoffs</title>
-      <link>/tags/playoffs/</link>
-      <pubDate>Sat, 10 Dec 2016 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/playoffs/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Probability</title>
-      <link>/tags/probability/</link>
-      <pubDate>Tue, 07 Oct 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/probability/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Projections</title>
-      <link>/tags/projections/</link>
-      <pubDate>Tue, 14 Oct 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/projections/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Proportional Wins</title>
-      <link>/tags/proportional-wins/</link>
-      <pubDate>Sat, 26 Nov 2016 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/proportional-wins/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Qbs</title>
+      <title>QBs</title>
       <link>/tags/qbs/</link>
       <pubDate>Wed, 23 Oct 2019 00:00:00 +0000</pubDate>
       
@@ -148,11 +40,74 @@
     </item>
     
     <item>
-      <title>Schedule</title>
+      <title>fantasybaseball</title>
+      <link>/tags/fantasybaseball/</link>
+      <pubDate>Sun, 04 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/fantasybaseball/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>2017</title>
+      <link>/tags/2017/</link>
+      <pubDate>Sun, 17 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/2017/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>schedule</title>
       <link>/tags/schedule/</link>
       <pubDate>Sun, 17 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>/tags/schedule/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>2016</title>
+      <link>/tags/2016/</link>
+      <pubDate>Sat, 10 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Playoffs</title>
+      <link>/tags/playoffs/</link>
+      <pubDate>Sat, 10 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/playoffs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Taking Questions</title>
+      <link>/tags/taking-questions/</link>
+      <pubDate>Wed, 30 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/taking-questions/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Proportional Wins</title>
+      <link>/tags/proportional-wins/</link>
+      <pubDate>Sat, 26 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/proportional-wins/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>2015</title>
+      <link>/tags/2015/</link>
+      <pubDate>Sat, 26 Dec 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/2015/</guid>
       <description></description>
     </item>
     
@@ -166,11 +121,56 @@
     </item>
     
     <item>
-      <title>Taking Questions</title>
-      <link>/tags/taking-questions/</link>
-      <pubDate>Wed, 30 Nov 2016 00:00:00 +0000</pubDate>
+      <title>Harrington</title>
+      <link>/tags/harrington/</link>
+      <pubDate>Thu, 12 Nov 2015 00:00:00 +0000</pubDate>
       
-      <guid>/tags/taking-questions/</guid>
+      <guid>/tags/harrington/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>draft</title>
+      <link>/tags/draft/</link>
+      <pubDate>Sat, 12 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/draft/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>keepers</title>
+      <link>/tags/keepers/</link>
+      <pubDate>Sat, 12 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/keepers/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>2014</title>
+      <link>/tags/2014/</link>
+      <pubDate>Tue, 14 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Projections</title>
+      <link>/tags/projections/</link>
+      <pubDate>Tue, 14 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/projections/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Probability</title>
+      <link>/tags/probability/</link>
+      <pubDate>Tue, 07 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/probability/</guid>
       <description></description>
     </item>
     
