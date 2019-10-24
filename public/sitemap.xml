@@ -108,20 +108,14 @@
   </url>
   
   <url>
-    <loc>/categories/2014/</loc>
-    <lastmod>2014-10-14T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>/tags/2014/</loc>
     <lastmod>2014-10-14T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/2015/</loc>
-    <lastmod>2015-12-26T00:00:00+00:00</lastmod>
+    <loc>/categories/2014/</loc>
+    <lastmod>2014-10-14T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -132,8 +126,8 @@
   </url>
   
   <url>
-    <loc>/categories/2016/</loc>
-    <lastmod>2016-12-10T00:00:00+00:00</lastmod>
+    <loc>/categories/2015/</loc>
+    <lastmod>2015-12-26T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -144,8 +138,8 @@
   </url>
   
   <url>
-    <loc>/categories/2017/</loc>
-    <lastmod>2017-12-17T00:00:00+00:00</lastmod>
+    <loc>/categories/2016/</loc>
+    <lastmod>2016-12-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -156,13 +150,19 @@
   </url>
   
   <url>
-    <loc>/categories/2019/</loc>
-    <lastmod>2019-10-23T00:00:00+00:00</lastmod>
+    <loc>/categories/2017/</loc>
+    <lastmod>2017-12-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/2019/</loc>
+    <lastmod>2019-10-23T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/2019/</loc>
     <lastmod>2019-10-23T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -174,20 +174,14 @@
   </url>
   
   <url>
-    <loc>/categories/draft/</loc>
-    <lastmod>2015-09-12T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>/tags/draft/</loc>
     <lastmod>2015-09-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/fantasybaseball/</loc>
-    <lastmod>2018-11-04T00:00:00+00:00</lastmod>
+    <loc>/categories/draft/</loc>
+    <lastmod>2015-09-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -198,8 +192,8 @@
   </url>
   
   <url>
-    <loc>/categories/harrington/</loc>
-    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
+    <loc>/categories/fantasybaseball/</loc>
+    <lastmod>2018-11-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -210,8 +204,8 @@
   </url>
   
   <url>
-    <loc>/categories/keepers/</loc>
-    <lastmod>2015-09-12T00:00:00+00:00</lastmod>
+    <loc>/categories/harrington/</loc>
+    <lastmod>2015-11-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -222,13 +216,19 @@
   </url>
   
   <url>
-    <loc>/categories/playoffs/</loc>
-    <lastmod>2016-12-10T00:00:00+00:00</lastmod>
+    <loc>/categories/keepers/</loc>
+    <lastmod>2015-09-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/playoffs/</loc>
+    <lastmod>2016-12-10T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/playoffs/</loc>
     <lastmod>2016-12-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -240,25 +240,25 @@
   </url>
   
   <url>
-    <loc>/categories/probability/</loc>
-    <lastmod>2014-10-07T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>/tags/probability/</loc>
     <lastmod>2014-10-07T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/projections/</loc>
-    <lastmod>2014-10-14T00:00:00+00:00</lastmod>
+    <loc>/categories/probability/</loc>
+    <lastmod>2014-10-07T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/projections/</loc>
+    <lastmod>2014-10-14T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/projections/</loc>
     <lastmod>2014-10-14T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -270,20 +270,14 @@
   </url>
   
   <url>
-    <loc>/categories/qbs/</loc>
-    <lastmod>2019-10-23T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>/tags/qbs/</loc>
     <lastmod>2019-10-23T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/records/</loc>
-    <lastmod>2018-11-27T00:00:00+00:00</lastmod>
+    <loc>/categories/qbs/</loc>
+    <lastmod>2019-10-23T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -294,8 +288,8 @@
   </url>
   
   <url>
-    <loc>/categories/schedule/</loc>
-    <lastmod>2017-12-17T00:00:00+00:00</lastmod>
+    <loc>/categories/records/</loc>
+    <lastmod>2018-11-27T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -306,13 +300,19 @@
   </url>
   
   <url>
-    <loc>/categories/shokunbi/</loc>
-    <lastmod>2015-12-26T00:00:00+00:00</lastmod>
+    <loc>/categories/schedule/</loc>
+    <lastmod>2017-12-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/shokunbi/</loc>
+    <lastmod>2015-12-26T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/shokunbi/</loc>
     <lastmod>2015-12-26T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -330,14 +330,14 @@
   </url>
   
   <url>
-    <loc>/categories/taking-questions/</loc>
-    <lastmod>2016-11-19T00:00:00+00:00</lastmod>
+    <loc>/tags/taking-questions/</loc>
+    <lastmod>2016-11-30T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/taking-questions/</loc>
-    <lastmod>2016-11-30T00:00:00+00:00</lastmod>
+    <loc>/categories/taking-questions/</loc>
+    <lastmod>2016-11-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
