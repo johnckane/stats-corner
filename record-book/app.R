@@ -114,7 +114,7 @@ btm10_single_game_points <-
 top10_season_points <-
   games_played %>%
   group_by(owner,year) %>%
-  summarise(total_points = sum(points)) %>%
+  summarise(total_points = round(sum(points),1)) %>%
   ungroup() %>%
   arrange(desc(total_points)) %>%
   slice(1:10) %>%
@@ -130,7 +130,7 @@ if(max_week_in_max_year==13){
   btm10_season_points <-
     games_played  %>%
     group_by(owner,year) %>%
-    summarise(total_points = sum(points)) %>%
+    summarise(total_points = round(sum(points),1)) %>%
     ungroup() %>%
     arrange(total_points) %>%
     slice(1:10) %>%
@@ -141,7 +141,7 @@ if(max_week_in_max_year != 13){
     games_played  %>%
     filter(year != max_year) %>%
     group_by(owner,year) %>%
-    summarise(total_points = sum(points)) %>%
+    summarise(total_points = round(sum(points),1)) %>%
     ungroup() %>%
     arrange(total_points) %>%
     slice(1:10) %>%
@@ -358,7 +358,7 @@ games_played %>%
             total_pw = round(sum(pw),1),
             total_max_pw = sum(max_pw),
             total_min_pw = sum(min_pw),
-            total_points = sum(points)) %>%
+            total_points = round(sum(points),1)) %>%
   mutate(win_pct = paste0(round(100*total_w/total_games,1),"%"),
          pw_pct = round(13*total_pw/total_games,1),
          ppg = round(total_points/total_games,1))

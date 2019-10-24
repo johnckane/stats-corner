@@ -1,0 +1,168 @@
+---
+title: "Historically Bad QB Play"
+author: "John Kane"
+date: '2019-10-23'
+cover: /images/cover.jpg
+slug: historically-bad-qb-play
+tags:
+- '2019'
+- QBs
+categories:
+- '2019'
+- QBs
+---
+
+Over on the redesigned message board (I've overlooked it at the bottom of the League Home page all season) Tim asks:
+
+> Can I get some kind of stats corner research to see if Darnold just posted the worst game in the history of this league? And also has a 2 QB team ever ended up with less points than the 0.1 wentz and Darnold combined for? I’ll hang up and listen
+
+Great question! 
+
+This is both easy and hard to answer. Easy because I've got data for all players/teams going back to 2001 in a tidy database. Hard because I don't know which players were carried on specific rosters or started in specific weeks. Nor does ESPN allow you to go back and check box scores for the history of the league. Also, the 2019 data isn't in that database yet, so we'll rely on data from 2009-2018. I do have our draft data, so can tell which owners drafted certain players. We'll use that as a proxy for playing them. 
+
+Darnold scored -6.7 points on Monday night, and combined with Wentz for 0.1 (positive) total points from the QB/OP slot. Where does that rank? Let's see.
+
+## Worst Game in the History of the League
+
+```{r,include = FALSE,warning=FALSE}
+library(RMySQL)
+library(tidyverse)
+library(lubridate)
+library(DBI)
+library(pool)
+load("/home/john/projects/fantasy-football/data/points_week_data.Rda")
+load("/home/john/projects/fantasy-football/data/bn-draft-data/draft_data.Rda")
+pool <- dbPool(drv = RMySQL::MySQL(), 
+               dbname = "armchair_analysis", 
+               host = "localhost", 
+               username = "john", 
+               port = 3306, 
+               unix.sock = "/var/run/mysqld/mysqld.sock")
+players <- dbGetQuery(con = pool, "SELECT * FROM player")
+analysis_data <-
+  points_week_data %>%
+  left_join(players %>% select(player,fname,lname,pos1), by = "player") %>%
+  filter(year >= 2009, week <= 16) %>%
+  left_join(.,draft_data %>% select(player_code,owner,year), by = c("player"="player_code","year"))
+```
+
+
+```{r, include=FALSE,eval=FALSE}
+analysis_data %>%
+  arrange(points)
+```
+
+The bottom 78 performances are all by defenses so throw those out. For those interested the all time worst performance was the Titans 2013 Week 14 performance where they registered -12 points. The worst performance by a team that was drafted is a tie between the 2018 Week 1 Saints (Thieneman) and the 2018 Week 11 Eagles (Regan) who registered -11 points.
+
+#### Non D/STs
+
+Once we limit ourselves to non defenses here's the list. 
+
+```{r,echo=F}
+analysis_data %>%
+  filter(is.na(pos1)==F) %>%
+  arrange(points) %>%
+  mutate(player_name = paste(fname," ",lname)) %>%
+  select(9,8,2,3,4) %>%
+  slice(1:10) %>%
+  knitr::kable()
+```
+
+I doubt Peterman started for anyone back in 2017 after signing as a free agent. But did Ready start John Skelton back in 2012? If not Darnold would take the spot as likey the worst performance ever. As it stands it is the fourth worst by a non-D/ST across the entirity of the NFL from 2009-2018.
+
+#### Drafted players only:
+
+Here's the same ordering, but only including players who were drafted:
+
+```{r, echo = F}
+analysis_data %>%
+  filter(is.na(pos1)==F,is.na(owner)==F) %>%
+  arrange(points) %>%
+  mutate(player_name = paste(fname," ",lname)) %>%
+  select(9,8,3,2,4) %>%
+  slice(1:10) %>%
+  knitr::kable()
+```
+
+Who is Joe Adams? Why did Hartman draft him in 2012?
+
+## Worst 2-QB Combination
+
+This is a tougher problem, because here we can't be sure if two QBs were starting for the same team during the week.
+
+As an exercise take a look at all **possible** terrible combinations. It's unlikely (and verified by me) that none in the top 10 were drafted by the same owner.
+
+
+```{r, echo = FALSE}
+analysis_data %>%
+  filter(pos1 == 'QB',points!=0) %>%
+  group_by(year,week) %>%
+  arrange(points) %>%
+  slice(1:2) %>%
+  mutate(players = ifelse(row_number() == 1,
+                      paste0(fname," ",lname," and ",lead(fname)," ",lead(lname)),
+                      ifelse(row_number() == 2,
+                         paste0(lag(fname)," ",lag(lname)," and ",fname," ",lname),
+                         NA)),
+         points1 = ifelse(row_number() == 1,
+                          points,
+                          lag(points)),
+         points2 = ifelse(row_number() == 2,
+                          points,
+                          lead(points)),
+         owners = ifelse(row_number() == 1,
+                      paste0(owner," and ",lead(owner)),
+                      ifelse(row_number() == 2,
+                         paste0(lag(owner)," and ",owner),
+                         NA)))%>%
+  ungroup() %>%
+  group_by(year,week,players,points1,points2) %>%
+  summarise(total_points = sum(points)) %>%
+  arrange(total_points) %>%
+  select(1,2,3,6,4,5) %>%
+  ungroup() %>%
+  slice(1:10) %>%
+  knitr::kable()
+```
+
+That's a gnarly list. Todd Collins and Matt Moore weren't starting (or being drafted) for anyone in Week 5 in 2010.
+
+#### Drafted by the same owner
+
+How about worst combination when the two QBs were at least drafted by the same owner? Can't tell if they started for that owner that week though. 
+
+```{r, echo = F}
+analysis_data %>%
+  filter(is.na(owner) == FALSE) %>%
+  filter(pos1 == 'QB') %>%
+  group_by(year,week,owner) %>%
+  arrange(points) %>%
+  slice(1:2) %>% 
+  mutate(players = ifelse(row_number() == 1,
+                      paste0(fname," ",lname," and ",lead(fname)," ",lead(lname)),
+                      ifelse(row_number() == 2,
+                         paste0(lag(fname)," ",lag(lname)," and ",fname," ",lname),
+                         NA)),
+         points1 = ifelse(row_number() == 1,
+                          points,
+                          lag(points)),
+         points2 = ifelse(row_number() == 2,
+                          points,
+                          lead(points))) %>%
+  filter(grepl(pattern = "and NA",x = players)==FALSE) %>%
+  group_by(year,week,owner,players,points1,points2) %>%
+  summarise(total_points = sum(points)) %>%
+  arrange(total_points) %>%
+  ungroup() %>% 
+  select(3,1,2,4,7,5,6) %>%
+  slice(1:10) %>%
+  knitr::kable()
+```
+
+The Darnold/Wentz combo of 0.1 is good enough for #1 on this list! Way to go Tim! But you also held the #1 spot on this list before that, so, yeah. 
+
+## Conclusion
+
+Darnold scored -6.7 points on Monday night, and unless Ready started John Skelton back in Week 10 2014 it is likely the worst performance by any single player in Bad Newz.
+
+The combination of Darnold and Wentz netted 0.1 total points for Harrington from his QBs. He breaks his own record set by Tim Tebow and Matt Stafford all the way back in Week 1 2010. 
