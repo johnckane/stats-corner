@@ -137,7 +137,7 @@ owner %>%
 
 
 
-## 10. RJ's Team RJT3
+## 10. RJ's Team RJT3 (3-6)
 
 A resurgent Matt Stafford and Ryan "Yes I'm still in the league" Fitzpatrick land RJ at #10. 
 
@@ -198,7 +198,7 @@ summary2$start <- str_locate(summary$team_year_week,'-')[,1]
 summary2$team <- str_sub(summary$team_year_week,1,summary2$start-1)
 ```
 
-```{r}
+```{r, include = T, echo = F}
 summary2 %>%
   select(1,8,3,4,5,6) %>%
   `colnames<-`(c("Owner", "Team", "Points","Weeks with Record","First Week","Last Week")) %>%
@@ -206,13 +206,13 @@ summary2 %>%
 ```
 
 
-## 9. Tough ACTin TinACTIN
+## 9. Tough ACTin TinACTin (2-7)
 
-Higdon has been hampered by Drew Brees' injury most of the year.
+Higdon has been hampered by Drew Brees' injury most of the year with just about no time left to salvage his season. The only Top-20 players at their positions starting for this squad are Prescott (5), Carson (10), Hockinson (16, he's a TE FYI), and Justin Tucker (4). There are still 6 other roster spots to fill. 
 
-Higdon's stat: Did You Know that Higdon is the only muliple winner and multiple loser in league history?
+Higdon's stat: Did You Know that Higdon is one of two multiple winners and multiple losers in league history? The other is McShane.
 
-```{r}
+```{r, echo = F, include = T}
 owner %>%
   filter(year < 2019) %>%
   mutate(title = ifelse(place == 1,1,0),
@@ -222,14 +222,22 @@ owner %>%
   summarise(sum_titles = sum(title),
             sum_last = sum(last_place),
             total = sum(title) + sum(last_place)) %>%
-  arrange(desc(total)) #%>%
-  # `colnames<-`(c("Owner","Year","Luck","Wins")) %>%
+  arrange(desc(sum_titles),desc(total)) %>%
+  select(1:3) %>%
+  `colnames<-`(c("Owner","Titles","Last Place Finishes")) %>%
+  kable()
 ```
 
 
 ## 8. Boats and RPOs (3-6)
 
-He's got Dalvin Cook (#2 RB) but he also plays a lot of Sam Darnold and Baker Mayfield
+He's got Dalvin Cook (#2 RB) but he also plays a lot of Sam Darnold and Baker Mayfield.
+
+A few weeks back on Stats Corner we looked at how Tim set the record for fewest combined points.
+
+Here, let's look at MOST combined points by QBs drafted by the same team in a given week.
+
+
 
 ## 7. Urban Fervor (2-7)
 
@@ -252,15 +260,45 @@ games_played %>%
 ```
 
 
-## 6. Dinosaur Train
+## 6. Dinosaur Train (6-3)
 
-## 5. 3 Blind Mice
+## 5. 3 Blind Mice (5-4)
 
-## 4. Viking Land Bound
+A little bit of a slow start for 3 Blind Mice. Injuries to Barkely and Mahomes have cost him. Both are healthy now, and he also has Aaron Rodgers. I'm saying Hartman makes a run to the playoffs.
 
-## 3. Anchor Arms
+Hartman has been on a roll the last few years. Twice in the previous three full seasons he has challenged for the most PW and most points single season record. He came up short both seasons, registering 10.0 PW both times, just shy of Shokunbi's 2011 record of 10.1. He did set the single season points record last year, and has the #'s 1 and 3 spots on that list.
 
-## 2. Whats a ZJ?
+Have we ever seen a three year stretch like that before? Calculate all possible consecutive three season totals, and rank them. Here's the result. For Hartman it all comes down to what happened in 2017.
+
+
+```{r}
+games_played %>%
+  filter(as.numeric(week) <= 13 & year < 2019) %>%
+  group_by(year,owner) %>%
+  summarise(total_pw = sum(pw)) %>%
+  ungroup() %>%
+  group_by(owner) %>%
+  arrange(year) %>%
+  mutate(three_year_roll_sum = RcppRoll::roll_sum(total_pw, 3, align = "right", fill = NA)) %>%
+  filter(is.na(three_year_roll_sum) == F) %>%
+  arrange(desc(three_year_roll_sum)) %>%
+  mutate(years = paste0(year-2,", ",year-1,", ",year),
+         three_year_roll_sum = round(three_year_roll_sum,1)) %>%
+  ungroup() %>%
+  slice(1:10) %>%
+  select(2,5,4) %>%
+  `colnames<-`(c("Owner","Years","3 Year PW total")) %>%
+  kable()
+```
+
+
+
+
+## 4. Viking Land Bound (7-2)
+
+## 3. Anchor Arms (8-1)
+
+## 2. Whats a ZJ? (6-3)
 
 Ultimately the Pat's D will need play QBs other than old Big Ben, Josh Rosen, Ryan Fitzpatrick, Luke Falk, Josh Allen, Matt Barkley, Colt Mccoy, Daniel Jones, Sam Darnold, and Baker Mayfield. We saw what happened last week against Lamar Jackson and they put up a pedestrain three points.
 
@@ -284,4 +322,92 @@ owner_games %>%
   ggtitle("Bad Newz Career Regulaar Season Points Leaderboard",sub = "Through Week 9, 2019")
 ```
 
-## 1. Joe Buck Yourself
+## 1. Joe Buck Yourself (7-2)
+
+2 top-10 Qbs, 3 top-15 WRs, and a top-10 RB land D'Skae at #1. 
+
+D'Skae is arguably the best regular season owner in the league. Leading all others on a per-game basis in both PW/13 and PPG. 
+
+```{r}
+games_played %>%
+  filter(year <= 2019 & as.numeric(week) <= 13) %>%
+  group_by(owner) %>%
+  summarise(avg_pw = mean(pw),
+            avg_points = mean(points)) %>%
+  mutate(pw_13 = round(13*avg_pw,1)) %>%
+  arrange(desc(pw_13)) %>%
+  select(owner,pw_13,avg_points) %>%
+ `colnames<-`(c("Owner","PW/13","PPG")) %>%
+  kable()
+  
+```
+
+
+But he doesn't have a title. In fact
+
+Limit the playoff results to all games where the championship is still a viable option. 
+
+How's he do in the playoffs? 
+```{r, include = T, echo = F}
+## Need to assin 
+games_that_count <-
+playoff_games %>%
+  filter((week == "R1" & game %in% c('BYE','W1','W2')) |
+         (week == "R2" & game %in% c('W1','W2')) |
+         (week == "R3" & game %in% c('W1'))) %>%
+  arrange(year,week,game,points)  %>%
+  mutate(points = ifelse(is.na(points),0,points))
+
+games_that_count$W <- rep(0,dim(games_that_count)[1])
+games_that_count$L <- rep(0,dim(games_that_count)[1])
+games_that_count$T <- rep(0,dim(games_that_count)[1])
+
+
+for(i in seq(from=1,to=dim(games_that_count)[1],by=2)){
+  
+
+  if(games_that_count$game[i] == 'BYE'){
+    games_that_count$W[i] <- 1
+    games_that_count$W[i+1] <- 1
+  }
+  else{
+    if(games_that_count$points[i] < games_that_count$points[i+1]){
+      games_that_count$L[i] <- 1
+      games_that_count$W[i+1] <- 1
+    }
+    if(games_that_count$points[i] > games_that_count$points[i+1]){
+      games_that_count$W[i] <- 1
+      games_that_count$L[i+1] <- 1
+    }
+    if(games_that_count$points[i] == games_that_count$points[i+1]){
+      games_that_count$T[i] <- 1
+      games_that_count$T[i+1] <- 1
+    }
+  }
+  
+}
+
+games_that_count %>%
+  group_by(year,week) %>%
+  arrange(desc(points)) %>%
+  mutate(rank = row_number(),
+         total = n()) %>%
+  filter(!is.na(points)) %>%
+  mutate(pw = ifelse(year == 2009 & week == 'R1', (4-rank)/3,(total-rank)/(total-1))) %>%
+  ungroup() %>%
+  left_join(owner %>% select(owner,year,team), by = c('year','team')) %>%
+  group_by(owner) %>%
+  summarise(games = n(),
+            total_pw = round(sum(pw),1),
+            total_wins = sum(W),
+            mean_points = round(mean(points),1)) %>%
+  mutate(playoff_luck = round(total_wins - total_pw,1)) %>%
+  arrange(desc(mean_points)) %>%
+  select(1,5,2,4,3,6) %>%
+  `colnames<-`(c("Owner","PPG","Games","Playoff Wins","Playoff PW","Playoff Luck")) %>%
+  kable()
+  
+```
+
+
+I'm calling (jinxing) it right now, this is the year D'Skae gets his title.
