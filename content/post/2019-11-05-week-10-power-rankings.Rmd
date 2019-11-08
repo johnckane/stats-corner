@@ -86,17 +86,15 @@ games_played$opp_pw <- ifelse(games_played$year==2009,(games_played$opp_rk-1)/9,
 games_played$year_owner <- paste0(games_played$year," ",games_played$owner)
 ```
 
-
+A Stats Corner themed Power Rankings. In a very particular order. Here we go:
 
 ## 12. No One Drafts Like Papa (1-8)
 
-Joe D. has struggled his first year in Bad Newz. Should we cut him some slack? What amounts to essentially a 2-QB league could take some time adjusting to if you're not familiar with what it takes.
+Joe D. has struggled his first year in Bad Newz. Should we cut him some slack? What amounts to essentially a 2-QB league could take some time adjusting to if you're not familiar with it. At the draft he went $177 strong on David Johnson and Joe Mixon. Neither of whom are in his starting lineup at the moment. 
 
-At the draft he went for $177 on David Johnson and Joe Mixon. Neither of whom are in his starting lineup at the moment. 
+To see how Joe D. stacks up against other owners' debut seasons lets look at aggregate performance through nine weeks for each owner their first year.
 
-So for Joe D's stat let's take a look at how other owners have fared their first year in the league through 9 weeks.
-
-```{r}
+```{r, echo = F, include = T}
 owner %>% 
   group_by(owner) %>% 
   filter(year == min(year)) %>%
@@ -115,17 +113,17 @@ owner %>%
   kable()
 ```
 
+Yep, Joe D. is at the bottom.
+
 Joe D, setting the bar low for new members to Bad Newz since 2019. 
 
 ## 11. Loafs 'n Jugs (4-5)
 
-It's hard to imagine any other season where Olson warranted a #11 ranking this late into the season. Olson historically has been consistently good. Maybe Olson is living in the past with Cam Newton and Todd Gurley. He may counter he is looking towards the future starting Dwayne Haskins at OP. 
+It's hard to imagine any other season where Olson warranted a #11 ranking this late into the year. Maybe Olson is living in the past with Cam Newton and Todd Gurley. He may counter he is looking towards the future starting Dwayne Haskins at OP. 
 
-In what is a down year for Luke, let's reflect on how good he's been historically. 
+In what is a down year for Luke let's take a moment to appreciate how consistently good he's been. Here's a list of the most playoff appearances in league history by owner. 
 
-Playoff Appearance leaderboard
-
-```{r}
+```{r, echo = F, include = T}
 owner %>%
   filter(year < 2019) %>%
   group_by(owner) %>%
@@ -139,13 +137,11 @@ owner %>%
 
 ## 10. RJ's Team RJT3 (3-6)
 
-A resurgent Matt Stafford and Ryan "Yes I'm still in the league" Fitzpatrick land RJ at #10. 
+A resurgent Matt Stafford and Fitzmagic land RJ at #10. 
 
-RJ has not had much success in Bad News through the years. He leads the league in 24 career low score of the week performances, balanced against only 2 high scoreof the week performances.
+RJ has not had much success in Bad News through the years. He leads the league with 24 weekly low scores balanced against only 2 weekly high scores.
 
-But do you know RJ has the single game record for most points in a game? Back in Round 2 of the 2015 playoffs RJ dropped 192.6 points on Hartman. What's more, he's held the single game point record for longer than anyone else to ever hold the record, over 3.5 years!
-
-
+But do you know RJ has the single game record for most points in a game? Back in Round 2 of the 2015 playoffs RJ dropped 192.6 points on Hartman. What's more, he's held the single game point record for longer than anyone else to ever hold the record, over 3.5 years! Here's a chronological list of any team to ever hold the single points record. 
 
 ```{r, echo= F, include = F}
 
@@ -208,9 +204,9 @@ summary2 %>%
 
 ## 9. Tough ACTin TinACTin (2-7)
 
-Higdon has been hampered by Drew Brees' injury most of the year with just about no time left to salvage his season. The only Top-20 players at their positions starting for this squad are Prescott (5), Carson (10), Hockinson (16, he's a TE FYI), and Justin Tucker (4). There are still 6 other roster spots to fill. 
+Higdon has been hampered by Drew Brees' injury most of the year with just about no time left to salvage his season. The only Top-20 players at their positions starting for this squad are Prescott (5), Carson (10), Hockinson (16, he's a TE), and Justin Tucker (4). There are still 6 other roster spots to fill. 
 
-Higdon's stat: Did You Know that Higdon is one of two multiple winners and multiple losers in league history? The other is McShane.
+Did You Know that Higdon is one of two multiple winners and multiple losers in league history? The other is McShane.
 
 ```{r, echo = F, include = T}
 owner %>%
@@ -231,47 +227,114 @@ owner %>%
 
 ## 8. Boats and RPOs (3-6)
 
-He's got Dalvin Cook (#2 RB) but he also plays a lot of Sam Darnold and Baker Mayfield.
+He's got Dalvin Cook (#2 RB) but he also plays a lot of Sam Darnold and Baker Mayfield. Halloween may be over but Darnold will be seeing ghosts for a while I predict. 
 
-A few weeks back on Stats Corner we looked at how Tim set the record for fewest combined points.
+A [few weeks back on Stats Corner](https://www.statscorner.com/2019/10/23/historically-bad-qb-play/) we looked at how Tim likely set the record for fewest combined points by two Quarterbacks in league history, with 0.1 total between Carson Wentz and Sam Darnold.
 
-Here, let's look at MOST combined points by QBs drafted by the same team in a given week.
+Here, let's look at the __most__ combined points by QBs drafted by the same team in a given week.
 
+```{r,echo = F, include = T, warning = F, message = F}
+library(RMySQL)
+library(tidyverse)
+library(lubridate)
+library(DBI)
+library(pool)
+load("/home/john/projects/fantasy-football/data/points_week_data.Rda")
+load("/home/john/projects/fantasy-football/data/bn-draft-data/draft_data.Rda")
+pool <- dbPool(drv = RMySQL::MySQL(), 
+               dbname = "armchair_analysis", 
+               host = "localhost", 
+               username = "john", 
+               port = 3306, 
+               unix.sock = "/var/run/mysqld/mysqld.sock")
+players <- dbGetQuery(con = pool, "SELECT * FROM player")
+analysis_data <-
+  points_week_data %>%
+  left_join(players %>% select(player,fname,lname,pos1), by = "player") %>%
+  filter(year >= 2009, week <= 16) %>%
+  left_join(.,draft_data %>% select(player_code,owner,year), by = c("player"="player_code","year"))
+analysis_data %>%
+  filter(is.na(owner) == FALSE) %>%
+  filter(pos1 == 'QB') %>%
+  group_by(year,week,owner) %>%
+  arrange(desc(points)) %>%
+  slice(1:2) %>% 
+  mutate(players = ifelse(row_number() == 1,
+                      paste0(fname," ",lname," and ",lead(fname)," ",lead(lname)),
+                      ifelse(row_number() == 2,
+                         paste0(lag(fname)," ",lag(lname)," and ",fname," ",lname),
+                         NA)),
+         points1 = round(
+           ifelse(row_number() == 1,
+                          points,
+                          lag(points)),
+           1),
+         points2 = round(ifelse(row_number() == 2,
+                          points,
+                          lead(points)),
+                         1)) %>%
+  filter(grepl(pattern = "and NA",x = players)==FALSE) %>%
+  group_by(year,week,owner,players,points1,points2) %>%
+  summarise(total_points = round(sum(points),1)) %>%
+  arrange(desc(total_points)) %>%
+  ungroup() %>% 
+  select(3,1,2,4,7,5,6) %>%
+  slice(1:10) %>%
+  `colnames<-`(c("Owner","Year","Week","Players","Total Points","Player 1 Points","Player 2 Points")) %>%
+  knitr::kable()
+```
 
+Harrington logs 5 of the Top-10 spots. Some fun names in there, too. Eli and Derek Carr? Geno Smith? Joe Flacco?
 
 ## 7. Urban Fervor (2-7)
 
-It takes a lot of nerve for me to rank myself 7th clocking in at a 2-7 record. But the schedule has cost me 3 wins this year.
+It takes a lot of nerve for me to rank myself 7th clocking in at a 2-7 record. But the schedule has cost me 3 wins this year. I should be battling for a playoff spot. Instead I'm trying to avoid the 11-12 matchup in the playoffs.
 
-How bad can it get? Here's the Unluck Leaderboard through 9 weeks in league history. 
+How bad can it get? Here's the Season Unluck Leaderboard frin 2009-2018. 
 
-I should be battling for a playoff spot. Instead I'm trying to avoid the 11-12 matchup in the playoffs.
-
-```{r}
+```{r,echo = F, include = T}
 games_played %>%
-  filter(as.numeric(week) <= 9) %>%
+  filter(year <= 2018) %>%
   mutate(Luck = W - pw) %>%
   group_by(owner,year) %>%
   summarise(total_luck = round(sum(Luck),1),
             total_wins = sum(W)) %>%
   arrange(total_luck) %>%
   `colnames<-`(c("Owner","Year","Luck","Wins")) %>%
+  ungroup() %>%
+  slice(1:10) %>%
   kable()
 ```
 
 
 ## 6. Dinosaur Train (6-3)
 
+Matt Mat is poised to make the playoffs for only the third time. He's got 2 Top-10 RBs, 3 Top-20 WRs, and the #1 TE. The only thing holding this team back is Mitch Trubisky. 
+
+This is in fact Matt Mat's strongest performance __ever__ through 9 weeks. Barely edging out his 2016 squad in PW and cracking the 1000-point barrier for the first time. 
+
+```{r,echo = F, include = T}
+games_played %>%
+  filter(owner == 'Matovina', as.numeric(week) <= 9, year <= 2019) %>%
+  group_by(year) %>%
+  summarise(total_pw = round(sum(pw),1),
+            total_points = round(sum(points),1)) %>%
+  arrange(desc(total_pw)) %>%
+  `colnames<-`(c("Year","PW","Total Points")) %>%
+  kable()
+```
+
+
 ## 5. 3 Blind Mice (5-4)
 
 A little bit of a slow start for 3 Blind Mice. Injuries to Barkely and Mahomes have cost him. Both are healthy now, and he also has Aaron Rodgers. I'm saying Hartman makes a run to the playoffs.
 
-Hartman has been on a roll the last few years. Twice in the previous three full seasons he has challenged for the most PW and most points single season record. He came up short both seasons, registering 10.0 PW both times, just shy of Shokunbi's 2011 record of 10.1. He did set the single season points record last year, and has the #'s 1 and 3 spots on that list.
+Hartman has been on a roll the last few years. Twice in the previous three full seasons he has challenged for the most PW and most points single season record. He came up short both seasons, registering 10.0 PW both times, just shy of Shokunbi's 2011 record of 10.1. He did set the single season points record last year, and has the number 1 and 3 spots on that list.
 
-Have we ever seen a three year stretch like that before? Calculate all possible consecutive three season totals, and rank them. Here's the result. For Hartman it all comes down to what happened in 2017.
+Have we ever seen a three year stretch like that before? We'll calculate all possible consecutive three season totals, and rank them. Here's the result. For Hartman it all comes down to what happened in 2017.
 
 
-```{r}
+```{r, echo = F, include = T}
 games_played %>%
   filter(as.numeric(week) <= 13 & year < 2019) %>%
   group_by(year,owner) %>%
@@ -291,12 +354,53 @@ games_played %>%
   kable()
 ```
 
-
-
+2017 was a rough year, apparently.
 
 ## 4. Viking Land Bound (7-2)
 
+McShane has four Top-5 players at four different positions positions: Jackson (QB, 3), Ekeler (RB, 4), Kupp (WR, 5), and Kittle (TE, 4). He's got a strong squad. 
+
+McShane's got two titles. How do those title teams stack up against the rest? 
+
+```{r,echo = F, include = T}
+games_played %>%
+  filter(year <= 2018 & as.numeric(week) <= 13 & place == 1) %>%
+  group_by(owner,year) %>%
+  summarise(total_pw = round(sum(pw),1)) %>%
+  arrange(desc(total_pw)) %>%
+  `colnames<-`(c("Owner","Year","PW")) %>%
+   kable()
+  
+```
+
+McShane's 2017 team clocking in at a respectable 7.4 wins, just about middle of the pack. How did the 2012 team even make the playoffs? They were a full 1.5 PW behind the next-worst regular season champion, 2009 Higdon.
+
 ## 3. Anchor Arms (8-1)
+
+This is only Ken's fourth year in the league but after a slow start in 2016 he's picking up steam. This year he's riding two Top-5 RBs (McCaffrey and Henry) to prime position to securing a first round playoff BYE. 
+
+I sometimes feel bad for Ken (and Joe D. now) when displaying these stats. Being behind so many seasons puts them at a disadvantage for all cumulative stat aggregates.
+
+Through Week 9 2019 Ken has 48 games under his belt in the league. To even things out a little for Ken, here's how he ranks in some important stats after 48 regular season games. 
+
+```{r,echo = F, include = T}
+games_played %>%
+  filter(owner != "D'Agostino" &
+           ((year==2019 & as.numeric(week) <= 9) |
+           (year<=2019))) %>%
+  group_by(owner) %>%
+  arrange(year,week) %>%
+  slice(1:48) %>%
+  summarise(wins = sum(W),
+            pw = round(sum(pw),1),
+            points = sum(points)) %>%
+  arrange(desc(pw)) %>%
+  `colnames<-`(c("Owner","Wins","PW","Points")) %>%
+   kable()
+```
+
+I feel a little better for him now. He's ahead of Hartman, Matovina, and Thieneman at this point of their careers.
+
 
 ## 2. Whats a ZJ? (6-3)
 
@@ -306,7 +410,7 @@ Regan is in serious trouble if something happens to Deshaun Watson (Daniel Jones
 
 This may have gone unappreciated by most, but just a few weeks ago Regan became the first owner in Bad Newz history to eclipse the 15,000 point mark. He remains the only one several weeks later, about 500 points of second place Hartman.
 
-```{r}
+```{r,echo = F, include = T}
 owner_games %>%
   filter(as.numeric(week) <= 13) %>%
   group_by(owner) %>%
@@ -319,6 +423,8 @@ owner_games %>%
   geom_text(aes(x = reorder(owner, total_points),
                 y = total_points + 1000,
                 label = total_points)) +
+  scale_y_continuous("") +
+  scale_x_discrete("") +
   ggtitle("Bad Newz Career Regulaar Season Points Leaderboard",sub = "Through Week 9, 2019")
 ```
 
@@ -326,14 +432,14 @@ owner_games %>%
 
 2 top-10 Qbs, 3 top-15 WRs, and a top-10 RB land D'Skae at #1. 
 
-D'Skae is arguably the best regular season owner in the league. Leading all others on a per-game basis in both PW/13 and PPG. 
+D'Skae is arguably the best regular season owner in the league. Leading all others on a the per-game basis stats of both PW/13 and PPG. 
 
-```{r}
+```{r,echo = F, include = T}
 games_played %>%
   filter(year <= 2019 & as.numeric(week) <= 13) %>%
   group_by(owner) %>%
   summarise(avg_pw = mean(pw),
-            avg_points = mean(points)) %>%
+            avg_points = round(mean(points),1)) %>%
   mutate(pw_13 = round(13*avg_pw,1)) %>%
   arrange(desc(pw_13)) %>%
   select(owner,pw_13,avg_points) %>%
@@ -343,11 +449,9 @@ games_played %>%
 ```
 
 
-But he doesn't have a title. In fact
+But he doesn't have a title. How could that be? Has he played poorly in the playoffs?
 
-Limit the playoff results to all games where the championship is still a viable option. 
-
-How's he do in the playoffs? 
+For this analysis we'll limit all playoff games to contests where the championship is in contention. We'll also count BYEs as wins. 
 ```{r, include = T, echo = F}
 ## Need to assin 
 games_that_count <-
@@ -355,8 +459,7 @@ playoff_games %>%
   filter((week == "R1" & game %in% c('BYE','W1','W2')) |
          (week == "R2" & game %in% c('W1','W2')) |
          (week == "R3" & game %in% c('W1'))) %>%
-  arrange(year,week,game,points)  %>%
-  mutate(points = ifelse(is.na(points),0,points))
+  arrange(year,week,game,points)  
 
 games_that_count$W <- rep(0,dim(games_that_count)[1])
 games_that_count$L <- rep(0,dim(games_that_count)[1])
@@ -400,7 +503,7 @@ games_that_count %>%
   summarise(games = n(),
             total_pw = round(sum(pw),1),
             total_wins = sum(W),
-            mean_points = round(mean(points),1)) %>%
+            mean_points = round(mean(points, rm.na = T),1)) %>%
   mutate(playoff_luck = round(total_wins - total_pw,1)) %>%
   arrange(desc(mean_points)) %>%
   select(1,5,2,4,3,6) %>%
@@ -409,5 +512,4 @@ games_that_count %>%
   
 ```
 
-
-I'm calling (jinxing) it right now, this is the year D'Skae gets his title.
+He doesn't get there as frequently as say, Regan or Olson, but when he gets there he puts up big numbers. Right up there with owners with multiple titles. He'll be headed back to the playoffs this year, so I'm calling (jinxing) it right now: this is the year D'Skae gets his title.
