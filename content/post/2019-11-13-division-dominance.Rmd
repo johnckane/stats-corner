@@ -1,0 +1,125 @@
+---
+title: "Division Dominance"
+author: "John Kane"
+date: '2019-11-14'
+slug: division-dominance
+tags: []
+categories: []
+---
+
+```{r, include = F, echo = F}
+## Load Data
+library(googlesheets)
+library(xml2)
+library(httr)
+library(curl)
+library(shiny)
+library(dplyr)
+library(reshape2)
+library(tidyr)
+library(readr)
+library(magrittr)
+library(stringr)
+library(ggplot2)
+library(gganimate)
+library(tweenr)
+library(knitr)
+library(ggrepel)
+
+workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
+
+owner <- workbook %>% gs_read(ws = "Owner-Team Name")
+games <- workbook %>% gs_read(ws = "Regular Season Games")
+
+owner_games <- left_join(games,owner,by=c("year","team"))
+owner_games$week <- as.character(owner_games$week)
+owner_games$game <- as.character(owner_games$game)
+owner_games$game_id <- as.character(owner_games$game_id)
+
+
+data <- arrange(owner_games,game_id,points)
+data$W <- rep(0,dim(data)[1])
+data$L <- rep(0,dim(data)[1])
+data$TIE <- rep(0,dim(data)[1])
+data$PA <- rep(0,dim(data)[1])
+data$result <- rep(" ",dim(data)[1])
+data$opponent <- rep(" ",dim(data)[1])
+data$oppenent_division <- rep(" ", dim(data)[1])
+games_played <- data %>% filter(points > 0)
+### Loop to determine winners, and points against
+for(i in seq(from=1,to=dim(games_played)[1],by=2)){
+  
+  games_played$PA[i]   <- games_played$points[i+1]
+  games_played$PA[i+1] <- games_played$points[i]
+  
+  games_played$opponent[i] <- games_played$owner[i+1]
+  games_played$opponent[i+1] <- games_played$owner[i]
+  
+  games_played$opponent_division[i] <- games_played$division[i+1]
+  games_played$opponent_division[i+1] <- games_played$division[i]
+  
+  
+  if(games_played$points[i] < games_played$points[i+1]){
+    games_played$L[i] <- 1
+    games_played$W[i+1] <- 1
+    games_played$result[i] <- "L"
+    games_played$result[i+1] <- "W"
+    
+  }
+  if(games_played$points[i] == games_played$points[i+1]){
+    games_played$TIE[i] <- 1
+    games_played$TIE[i+1] <- 1
+    games_played$result[i] <- "T"
+    games_played$result[i+1] <- "T"
+  }
+  
+}
+
+
+games_played <- games_played %>%
+  arrange(year,week,desc(points)) %>%
+  group_by(year,week) %>%
+  mutate(rk = rank(points,ties.method="min"),
+         opp_rk = rank(PA,ties.method="min")) 
+
+# Now to calculate and add up proportional wins
+games_played$pw<- ifelse(games_played$year==2009,(games_played$rk-1)/9,(games_played$rk-1)/11)
+games_played$opp_pw <- ifelse(games_played$year==2009,(games_played$opp_rk-1)/9,(games_played$opp_rk-1)/11)
+games_played$year_owner <- paste0(games_played$year," ",games_played$owner)
+```
+
+James writes,
+
+
+> Hey John, have we ever had such a strong division in the league? With Ken, Matt, and I sitting at 21-6 overall, I was wondering if that is heading towards the best division winning percentage ever?
+
+Good question James. Over a week has passed since McShane asked that question, and the teams in the division went 1-2 in Week 10 so they now sit at 22-8, good for a 0.733 winning percentage.
+
+
+Here's the all-time leaderboard, with 2019 teams reflected through 10 weeks of play. 
+
+```{r, echo = F, include = T}
+division_members <-
+  owner %>%
+  ungroup() %>%
+  arrange(year,division,owner) %>%
+  group_by(year,division) %>%
+  summarize(members = str_c(owner, collapse = ", ")) %>%
+  select(year,division,members)
+games_played %>%
+  ungroup() %>%
+  filter(year < 2019 | (year == 2019 & as.numeric(week) <= 10)) %>%
+  group_by(year,division) %>%
+  summarise(total_wins = sum(W),
+            total_losses = sum(L),
+            total_ties = sum(TIE)) %>%
+  mutate(win_pct = round(total_wins/(total_wins+total_losses+total_ties),3)) %>%
+  mutate(record = paste(total_wins,total_losses,total_ties,sep="-")) %>%
+  arrange(desc(win_pct)) %>%
+  left_join(division_members, by = c("year","division")) %>%
+  select(year,division,members,record,win_pct) %>%
+  `colnames<-`(c("Year", "Division", "Members","Record","Winning %")) %>%
+  kable()
+```
+
+With three teams and three weeks to play there are 9 more games for division "189." Harris plays McShane in Week 12 and then Harris plays Matovina in Week 13 so there are two guaranteed losses on the schedule for the division. To secure the best Division winning percentage the rest of the way they'll need to 5-2 in those other games.
