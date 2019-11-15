@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>keepers on Stats Corner</title>
-    <link>https://www.statscorner.com/tags/keepers/</link>
+    <link>/tags/keepers/</link>
     <description>Recent content in keepers on Stats Corner</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
     <lastBuildDate>Sat, 12 Sep 2015 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://www.statscorner.com/tags/keepers/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/keepers/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Keeper Analysis</title>
-      <link>https://www.statscorner.com/2015/09/12/keeper-analysis/</link>
+      <link>/2015/09/12/keeper-analysis/</link>
       <pubDate>Sat, 12 Sep 2015 00:00:00 +0000</pubDate>
       
-      <guid>https://www.statscorner.com/2015/09/12/keeper-analysis/</guid>
+      <guid>/2015/09/12/keeper-analysis/</guid>
       <description>Stats Corner There are three types of owners in our league:
  The owner who is plotting his keepers before the end of the previous regular season (Regan, Ready, Harrington, Olson, D’Skae).
  The owner who starts thinking sometime during the summer who he’s going to keep (Kane, McShane, Hartman, Higdon).
