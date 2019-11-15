@@ -3,8 +3,12 @@ title: "Division Dominance"
 author: "John Kane"
 date: '2019-11-14'
 slug: division-dominance
-tags: []
-categories: []
+tags: 
+- '2019'
+- Divisions
+categories: 
+- '2019'
+- Divisions
 ---
 
 ```{r, include = F, echo = F}
