@@ -8,7 +8,7 @@
 # library(tidyr,lib.loc = "/home/ubuntu/R/x86_64-pc-linux-gnu-library/3.4")
 # library(readr,lib.loc = "/home/ubuntu/R/x86_64-pc-linux-gnu-library/3.4")
 
-library(googlesheets)
+library(googlesheets4)
 library(xml2)
 library(httr)
 library(curl)
@@ -19,16 +19,30 @@ library(tidyr)
 library(readr)
 library(magrittr)
 library(ggplot2)
-workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
+library(DT)
 
-last_updated <- workbook$update %>% as.Date(.,format = "%m/%d/&y") %>%
-  as.character() %>%
-  strptime(., "%Y-%m-%d", tz = "GMT") %>%
-  format(., "%B %d, %Y")
+# workbook <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
+# workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
 
-owner <- workbook %>% gs_read(ws = "Owner-Team Name")
-games <- workbook %>% gs_read(ws = "Regular Season Games")
-playoff_games <- workbook %>% gs_read(ws = "Playoff Games")
+last_updated <- NA
+# last_updated <- workbook$update %>% as.Date(.,format = "%m/%d/&y") %>%
+#   as.character() %>%
+#   strptime(., "%Y-%m-%d", tz = "GMT") %>%
+#   format(., "%B %d, %Y")
+
+owner <-googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/edit#gid=2",
+                                  sheet = "Owner-Team Name")
+games <-googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/edit#gid=7",
+                                  sheet = "Regular Season Games")
+games$week_txt <- unlist(games$week_txt)
+playoff_games <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/edit#gid=11",
+                                           sheet = "Playoff Games")
+
+# metadata <- sheets_get("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/edit#gid=2")
+
+# owner <- workbook %>% gs_read(ws = "Owner-Team Name")
+# games <- workbook %>% gs_read(ws = "Regular Season Games")
+# playoff_games <- workbook %>% gs_read(ws = "Playoff Games")
 
 owner_games <- left_join(games,owner,by=c("year","team"))
 owner_games$week <- as.character(owner_games$week)
@@ -123,8 +137,8 @@ top10_season_points <-
 
 ### Fewest Points
 #### If there have been 13 weeks include most recent year
-max_year <- max(games_played $year)
-max_week_in_max_year <- max(games_played$week[which(games_played$year == max_year)])
+max_year <- max(games_played$year)
+max_week_in_max_year <- max(as.numeric(games_played$week)[games_played$year == max_year])
 
 if(max_week_in_max_year==13){
   btm10_season_points <-
@@ -274,7 +288,7 @@ if(max_week_in_max_year==13){
       group_by(owner,year) %>%
       summarise(total_w = sum(W)) %>%
       ungroup() %>%
-      filter(total_w < no10_btm)
+      filter(total_w < no10_btm) %>%
       arrange(total_w) %>%
       `colnames<-`(c("Owner","Year","Total Wins"))
     
@@ -437,21 +451,21 @@ ui <- shinyUI(fluidPage(
 # The output is a table...
 server <- shinyServer(function(input, output) {
   
-  output$top10_single_game_points <- renderDataTable({top10_single_game_points},options = list(paging = FALSE, searching = FALSE, ordering = F))
-  output$btm10_single_game_points <- renderDataTable({btm10_single_game_points},options = list(paging = FALSE, searching = FALSE, ordering = F))
+  output$top10_single_game_points <- renderDataTable(top10_single_game_points,options = list(paging = FALSE, searching = FALSE, ordering = F))
+  output$btm10_single_game_points <- renderDataTable(btm10_single_game_points,options = list(paging = FALSE, searching = FALSE, ordering = F))
   
-  output$top10_season_points <- renderDataTable({top10_season_points},options = list(paging = FALSE, searching = FALSE,ordering = F))
-  output$top10_season_pw <- renderDataTable({top10_season_pw},options = list(paging = FALSE, searching = FALSE,ordering = F))
-  output$top10_season_w <- renderDataTable({top10_season_w},options = list(paging = FALSE, searching = FALSE,ordering = F))
+  output$top10_season_points <- renderDataTable(top10_season_points,options = list(paging = FALSE, searching = FALSE,ordering = F))
+  output$top10_season_pw <- renderDataTable(top10_season_pw,options = list(paging = FALSE, searching = FALSE,ordering = F))
+  output$top10_season_w <- renderDataTable(top10_season_w,options = list(paging = FALSE, searching = FALSE,ordering = F))
   
-  output$btm10_season_points <- renderDataTable({btm10_season_points},options = list(paging = FALSE, searching = FALSE, ordering = F))
-  output$btm10_season_pw <- renderDataTable({btm10_season_pw},options = list(paging = FALSE, searching = FALSE, ordering = F))
-  output$btm10_season_w <- renderDataTable({btm10_season_w},options = list(paging = FALSE, searching = FALSE, ordering = F))
+  output$btm10_season_points <- renderDataTable(btm10_season_points,options = list(paging = FALSE, searching = FALSE, ordering = F))
+  output$btm10_season_pw <- renderDataTable(btm10_season_pw,options = list(paging = FALSE, searching = FALSE, ordering = F))
+  output$btm10_season_w <- renderDataTable(btm10_season_w,options = list(paging = FALSE, searching = FALSE, ordering = F))
   
   
-  output$career_game <- renderDataTable({career_game},options = list(paging = FALSE, searching = FALSE))
-  output$career_totals <- renderDataTable({career_totals},options = list(paging = FALSE, searching = FALSE))
-  output$career_h2h <-renderPlot({plot(h2h_plot)})
+  output$career_game <- renderDataTable(career_game,options = list(paging = FALSE, searching = FALSE))
+  output$career_totals <- renderDataTable(career_totals,options = list(paging = FALSE, searching = FALSE))
+  output$career_h2h <-renderPlot(plot(h2h_plot))
 })
 
 # Run the application 

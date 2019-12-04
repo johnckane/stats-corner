@@ -124,8 +124,9 @@ top10_season_points <-
 
 ### Fewest Points
 #### If there have been 13 weeks include most recent year
-max_year <- max(games_played $year)
-max_week_in_max_year <- max(games_played$week[which(games_played$year == max_year)])
+max_year <- max(games_played$year)
+max_week_in_max_year <- max(as.numeric(games_played$week)[games_played$year == max_year])
+print(max_week_in_max_year)
 
 if(max_week_in_max_year==13){
   btm10_season_points <-
@@ -275,8 +276,8 @@ if(max_week_in_max_year==13){
       group_by(owner,year) %>%
       summarise(total_w = sum(W)) %>%
       ungroup() %>%
-      filter(total_w < no10_btm)
-    arrange(total_w) %>%
+      filter(total_w < no10_btm) %>%
+      arrange(total_w) %>%
       `colnames<-`(c("Owner","Year","Total Wins"))
     
   }
