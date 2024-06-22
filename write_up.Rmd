@@ -1,0 +1,98 @@
+---
+title: "Playoff Preview"
+author: "Stats Corner"
+date: "12/13/2015"
+output: html_document
+---
+```{r, echo=FALSE, message=FALSE}
+library(knitr)
+library(googleVis)
+library(dplyr)
+chances <- read.csv("/home/john/stats-corner/content/post/2015/playoff_preview.csv", 
+                    header = TRUE, stringsAsFactors = FALSE)
+```
+
+## Shout Out
+Congrats to [Himmy Tarr](https://www.facebook.com/tim.harrington.716?fref=ts), the only one to submit an answer to my trivia question last week. Jason Kidd is #2 all-time in both assists **and** steals. However when I wrote I had steals in mind. Nice job Tim. Also, Tim didn't break the points record __and__ made the playoffs. So all his fears were for naught. 
+
+## Playoff Probabilities
+Playoff season is here. That means another round of interpreting ESPN's questionable tie-breaking rules, disappointments for D'Skae and Dan Ready and the #4 seed attempting to get off the schnide of having never won a first round game (it's true). But this year who actually is the #4 seed? Tim who took Olson's spot? Matovina? We need the commish to weigh in. 
+
+In an effort to predict how teams will fare, I've incorporated the methodology I used to project win totals for this season to simulate probabilistically the outcome of the playoffs.  
+
+### Not so fast
+Many of you could rightly be saying to yourself, 
+
+> "This sounds luck a load of bunk. Stats Corner is always throwing around these metrics, are they even accurate? Or is this just like ESPN's QBR, which says [Charlie Batch played the greatest game of all time.](http://profootballtalk.nbcsports.com/2015/11/19/charlie-batchs-186-yard-two-pick-game-has-espns-best-qbr-ever/)" - You
+
+To hold myself accountable to that block quote I went back and simulated the playoff chances for each team for each of the seasons from 2010-2014. Each season's playoffs were simulated 100 times. What you see below are the number of times that team finished in each place. We can compare those simulated results to how things actually went to see if I'm just waisting your time. The results are here to show how well this method works. 
+
+#### 2010
+```{r results='asis',echo=FALSE,message=FALSE}
+s10 <- filter(chances, year == 2010) %>% arrange(place) %>% select(-year)
+colnames(s10) <- c("Owner","Place","1st Place %","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th")
+s10 <- gvisTable(s10)
+op <- options(gvis.plot.tag='chart')
+print(s10,'chart')
+```
+
+#### 2011
+```{r results='asis',echo=FALSE,message=FALSE}
+s11 <- filter(chances, year == 2011) %>% arrange(place) %>% select(-year)
+colnames(s11) <- c("Owner","Place","1st Place %","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th")
+s11 <- gvisTable(s11)
+op <- options(gvis.plot.tag='chart')
+print(s11,'chart')
+```
+
+#### 2012
+```{r results='asis',echo=FALSE,message=FALSE}
+s12 <- filter(chances, year == 2012) %>% arrange(place) %>% select(-year)
+colnames(s12) <- c("Owner","Place","1st Place %","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th")
+s12 <- gvisTable(s12)
+op <- options(gvis.plot.tag='chart')
+print(s12,'chart')
+```
+
+#### 2013
+```{r results='asis',echo=FALSE,message=FALSE}
+s13 <- filter(chances, year == 2013) %>% arrange(place) %>% select(-year)
+colnames(s13) <- c("Owner","Place","1st Place %","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th")
+s13 <- gvisTable(s13)
+op <- options(gvis.plot.tag='chart')
+print(s13,'chart')
+```
+
+#### 2014
+```{r results='asis',echo=FALSE,message=FALSE}
+s14 <- filter(chances, year == 2014) %>% arrange(place) %>% select(-year)
+colnames(s14) <- c("Owner","Place","1st Place %","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th")
+s14 <- gvisTable(s14)
+op <- options(gvis.plot.tag='chart')
+print(s14,'chart')
+```
+
+#### What Do These Past Results Tell Us?
+* Only twice has my most likely team to get 1st actually gotten first.
+* The lowest pre-playoff probability any future champion had of getting first was 13 (Olson in 2010).
+* In a several situations (e.g. Regan last year) a team was the most likely team to finish in two places (1st and 3rd in this example).
+* By year, if we mark each prediction a success if the team with highest chance of finishing in a certain place actually finished in that place we get these grades:
+    + 2010: 6/12
+    + 2011: 2/12
+    + 2012: 2/12
+    + 2012: 2/12
+    + 2013: 2/12
+    + 2014: 3/12
+* The immediately preceding bullet may look bad, but that's much better than random selecting spots I think. I may work out that math later this week and post an update.
+
+
+## 2015 Playoff Simulation Results
+Without further adieu, the results from this year's simulation. It's close at the top, and you should expect one or two of these to be right on. Good luck to all teams. 
+
+```{r results='asis',echo=FALSE,message=FALSE}
+s15 <- filter(chances, year == 2015) %>% arrange(place) %>% select(-year)
+colnames(s15) <- c("Owner","Place","1st Place %","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th")
+s15 <- gvisTable(s15)
+op <- options(gvis.plot.tag='chart')
+print(s15,'chart')
+```

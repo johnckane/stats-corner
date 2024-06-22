@@ -1,4 +1,4 @@
-library(googlesheets)
+library(googlesheets4)
 library(xml2)
 library(httr)
 library(curl)
@@ -10,15 +10,17 @@ library(readr)
 
 
 
-workbook <- gs_url("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/pubhtml")
+workbook <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/edit#gid=2")
 
 last_updated <- workbook$update %>% as.Date(.,format = "%m/%d/&y") %>%
   as.character() %>%
   strptime(., "%Y-%m-%d", tz = "GMT") %>%
   format(., "%B %d, %Y")
-
-owner <- workbook %>% gs_read(ws = "Owner-Team Name")
-games <- workbook %>% gs_read(ws = "Regular Season Games")
+gs4_deauth()
+owner <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/edit#gid=2",
+                                   sheet = "Owner-Team Name")
+games <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1c24qtCDF6MnL1I-nNG2ovymFB3fYj1NsWpLe3SGCbJs/edit#gid=2",
+                                   sheet = "Regular Season Games")
 
 owner_games <- left_join(games,owner,by=c("year","team"))
 
@@ -95,7 +97,7 @@ g <- function(x){
 }
 
 
-full_data <- rbind(g(1),g(2),g(3),g(4),g(5),g(6),g(7),g(8),g(9),g(10),g(11),g(12),g(13))
+full_data <- rbind(g(1),g(2),g(3),g(4),g(5),g(6),g(7),g(8),g(9),g(10),g(11),g(12),g(13),g(14))
 
 rate_matrix <- dcast(full_data,week~wins,value.var='playoff_rate')
 
@@ -128,7 +130,7 @@ h <- function(x){
   return(bye_data_summary)
 }
 
-bye_data <- rbind(h(1),h(2),h(3),h(4),h(5),h(6),h(7),h(8),h(9),h(10),h(11),h(12),h(13))
+bye_data <- rbind(h(1),h(2),h(3),h(4),h(5),h(6),h(7),h(8),h(9),h(10),h(11),h(12),h(13),h(14))
 
 bye_rates <- bye_data %>% select(5,1,4)
 
@@ -142,7 +144,7 @@ ui <- shinyUI(fluidPage(
      titlePanel("Bad Newz Advanced Stadings"),
      p(paste0("Last Updated: ",last_updated)),
      a(href= "mailto:Stats.Corner@gmail.com","Stats.Corner@gmail.com"),
-     selectInput("season",label = "Season", choices = c(2009:2019),selected = 2019),
+     selectInput("season",label = "Season", choices = c(2009:2021),selected = 2021),
      dataTableOutput("standings"),
      h4("Glossary"),
      h5("PW (Proportional Wins): The number of wins truly earned, without consideration of scheduled opponents."),
@@ -254,3 +256,96 @@ server <- shinyServer(function(input, output) {
 # Run the application 
 shinyApp(ui = ui, server = server)
 
+
+
+
+
+
+
+
+  data_season <- filter(games_played, year == 2021)
+  
+  data_season_summary <- data_season %>%
+      group_by(owner) %>%
+      summarise(W = sum(W),
+                L = sum(L),
+                Points = round(sum(points),1),
+                PA = round(sum(PA),1),
+                PW = round(sum(pw),1),
+                SOS = round(sum(opp_pw)/n(),2),
+                Luck = W - PW) %>%
+      arrange(desc(PW))
+  
+  knitr::kable(data_season_summary)
+  
+  
+  data_season_summary2 <- reactive({
+    left_join(data_season_summary(),
+              long_rates,
+              by = c("week","W" = "wins")) %>%
+      mutate(next_week= this_week() + 1, 
+             playoff_prob = paste0(round(100*prob,1),"%"))
+  })
+  
+  
+  
+  
+  data_season_summary3 <- reactive({
+    if(this_week() != 13){
+      data_season_summary2() %>%
+        mutate(w_plus_1 = W + 1) %>%
+        left_join(.,
+                  long_rates,
+                  by = c("next_week" = "week","W" = "wins")) %>% 
+        rename(p_stay = prob.y) %>%
+        left_join(.,
+                  long_rates,
+                  by = c("next_week" = "week","w_plus_1" = "wins")) %>%
+        rename(p_win = prob) %>%
+        mutate(leverage = paste0(round(100*(p_win - p_stay),1),"%"),
+               this_week = next_week - 1) %>% 
+        left_join(.,
+                  bye_rates %>% mutate(bye_rate = paste0(round(100*bye_rate,1),"%")),
+                  by = c("this_week" = "week","W" = "wins")) %>%
+        left_join(.,
+                  bye_rates %>% rename(bye_p_stay = bye_rate),
+                  by = c("next_week" = "week", "W" = "wins")) %>%
+        left_join(.,
+                  bye_rates %>% rename(bye_p_win = bye_rate),
+                  by = c("next_week" = "week", "w_plus_1" = "wins")) %>%
+        mutate(bye_leverage = paste0(round(100*(bye_p_win - bye_p_stay),1),"%")) %>% 
+        select(1:8,13,19,21,24) %>% 
+        `colnames<-`(c("Owner","W","L","Points","PA","PW","SOS","Luck","Playoff Probability","Playoff Leverage","BYE Probability","BYE Leverage"))
+    }
+    else if(this_week() == 13){ #Here we don't include leveage statistics
+      data_season_summary2() %>%
+        mutate(w_plus_1 = W + 1) %>%
+        left_join(.,
+                  long_rates,
+                  by = c("next_week" = "week","W" = "wins")) %>% 
+        rename(p_stay = prob.y) %>%
+        left_join(.,
+                  long_rates,
+                  by = c("next_week" = "week","w_plus_1" = "wins")) %>%
+        rename(p_win = prob) %>%
+        mutate(leverage = paste0(round(100*(p_win - p_stay),1),"%"),
+               this_week = next_week - 1) %>% 
+        left_join(.,
+                  bye_rates %>% mutate(bye_rate = paste0(round(100*bye_rate,1),"%")),
+                  by = c("this_week" = "week","W" = "wins")) %>%
+        left_join(.,
+                  bye_rates %>% rename(bye_p_stay = bye_rate),
+                  by = c("next_week" = "week", "W" = "wins")) %>%
+        left_join(.,
+                  bye_rates %>% rename(bye_p_win = bye_rate),
+                  by = c("next_week" = "week", "w_plus_1" = "wins")) %>%
+        mutate(bye_leverage = paste0(round(100*(bye_p_win - bye_p_stay),1),"%")) %>% 
+        select(1:8,13) %>% 
+        `colnames<-`(c("Owner","W","L","Points","PA","PW","SOS","Luck","Playoff Probability"))
+    }
+  })
+  
+  output$standings <- renderDataTable({data_season_summary3()},
+                                      options = list(paging = FALSE, searching = FALSE))
+  
+})

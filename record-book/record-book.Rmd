@@ -1,14 +1,11 @@
-# library(googlesheets,lib.loc = "/home/ubuntu/R/x86_64-pc-linux-gnu-library/3.4")
-# library(xml2,lib.loc = "/home/ubuntu/R/x86_64-pc-linux-gnu-library/3.4")
-# library(httr,lib.loc = "/home/ubuntu/R/x86_64-pc-linux-gnu-library/3.4")
-# library(curl,lib.loc = "/home/ubuntu/R/x86_64-pc-linux-gnu-library/3.4")
-# library(shiny,lib.loc = "/home/ubuntu/R/x86_64-pc-linux-gnu-library/3.4")
-# library(dplyr,lib.loc = "/home/ubuntu/R/x86_64-pc-linux-gnu-library/3.4")
-# library(reshape2,lib.loc = "/home/ubuntu/R/x86_64-pc-linux-gnu-library/3.4")
-# library(tidyr,lib.loc = "/home/ubuntu/R/x86_64-pc-linux-gnu-library/3.4")
-# library(readr,lib.loc = "/home/ubuntu/R/x86_64-pc-linux-gnu-library/3.4")
-
+---
+title: "Bad Newz Record Book"
+output: html_document
+date: "Through 2022 Season"
+---
+```{r, include = FALSE}
 library(googlesheets4)
+library(DT)
 library(xml2)
 library(httr)
 library(curl)
@@ -414,62 +411,65 @@ h2h_plot <- ggplot(rivalry_data, aes(x=Opponent,y=owner,label=record)) +
   theme(legend.position = 'none',panel.grid.minor=element_line(colour='white'),
         axis.text.x=element_text(angle=45,hjust=1,size=12),
         axis.text.y=element_text(size=12))
+```
 
+## {.tabset}
 
-# Define UI for application that draws a histogram
-ui <- shinyUI(fluidPage(
-  titlePanel("Bad Newz Record Book"),
-  #p(paste0("Last Updated: ",last_updated)),
-  a(href= "mailto:Stats.Corner@gmail.com","Stats.Corner@gmail.com"),
-  mainPanel(
-    tabsetPanel(
-      tabPanel("Single Game",
-        tabsetPanel(
-          tabPanel("Most Points",dataTableOutput("top10_single_game_points")),
-          tabPanel("Fewest Points",dataTableOutput("btm10_single_game_points"))
-        )
-      ),
-      tabPanel("Single Season",
-        tabsetPanel(
-          tabPanel("Most Points",dataTableOutput("top10_season_points")),
-          tabPanel("Fewest Points",dataTableOutput("btm10_season_points")),
-          tabPanel("Most Proportional Wins",dataTableOutput("top10_season_pw")),
-          tabPanel("Fewest Proportional Wins",dataTableOutput("btm10_season_pw")),
-          tabPanel("Most Wins",dataTableOutput("top10_season_w")),
-          tabPanel("Fewest Wins",dataTableOutput("btm10_season_w"))
-        )
-      ),
-      tabPanel("Career",
-        tabsetPanel(
-          tabPanel("Per Game",dataTableOutput("career_game")),
-          tabPanel("Total",dataTableOutput("career_totals")),
-          tabPanel("Head to Head Records",plotOutput("career_h2h"))
-        )         
-      )
-  )
-)
-)
-)
-# The output is a table...
-server <- shinyServer(function(input, output) {
-  
-  output$top10_single_game_points <- renderDataTable(top10_single_game_points,options = list(paging = FALSE, searching = FALSE, ordering = F))
-  output$btm10_single_game_points <- renderDataTable(btm10_single_game_points,options = list(paging = FALSE, searching = FALSE, ordering = F))
-  
-  output$top10_season_points <- renderDataTable(top10_season_points,options = list(paging = FALSE, searching = FALSE,ordering = F))
-  output$top10_season_pw <- renderDataTable(top10_season_pw,options = list(paging = FALSE, searching = FALSE,ordering = F))
-  output$top10_season_w <- renderDataTable(top10_season_w,options = list(paging = FALSE, searching = FALSE,ordering = F))
-  
-  output$btm10_season_points <- renderDataTable(btm10_season_points,options = list(paging = FALSE, searching = FALSE, ordering = F))
-  output$btm10_season_pw <- renderDataTable(btm10_season_pw,options = list(paging = FALSE, searching = FALSE, ordering = F))
-  output$btm10_season_w <- renderDataTable(btm10_season_w,options = list(paging = FALSE, searching = FALSE, ordering = F))
-  
-  
-  output$career_game <- renderDataTable(career_game,options = list(paging = FALSE, searching = FALSE))
-  output$career_totals <- renderDataTable(career_totals,options = list(paging = FALSE, searching = FALSE))
-  output$career_h2h <-renderPlot(plot(h2h_plot))
-})
+### Single Game {.tabset}
+#### Most Points
+```{r, echo = FALSE}
+DT::datatable(top10_single_game_points, options = list(paging = FALSE))
+```
+#### Fewest Points
+```{r, echo = FALSE}
+DT::datatable(btm10_single_game_points, options = list(paging = FALSE))
+```
+### {-}
+### Single Season {.tabset}
+#### Most Points
+```{r, echo = FALSE}
+DT::datatable(top10_season_points, options = list(paging = FALSE))
+```
+#### Fewest Points
+```{r, echo = FALSE}
+DT::datatable(btm10_season_points, options = list(paging = FALSE))
+```
+####
+#### Most PW
+```{r, echo = FALSE}
+DT::datatable(top10_season_pw, options = list(paging = FALSE))
+```
+####
+#### Fewest PW
+```{r, echo = FALSE}
+DT::datatable(btm10_season_pw, options = list(paging = FALSE))
+```
+####
+#### Most Wins
+```{r, echo= FALSE}
+DT::datatable(top10_season_w, options = list(paging = FALSE))
+```
+#### Fewest Wins
+```{r, echo = FALSE}
+DT::datatable(btm10_season_w, options = list(paging = FALSE))
+```
 
-# Run the application 
-shinyApp(ui = ui, server = server)
+### {-}
+#### 
 
+### Career {.tabset}
+#### Per Game Averages
+```{r, echo = FALSE}
+DT::datatable(career_game, options = list(paging = FALSE))
+```
+#### Totals
+```{r, echo = FALSE}
+DT::datatable(career_totals, options = list(paging = FALSE))  
+```
+#### Head to Head Records
+```{r, echo = FALSE}
+h2h_plot
+```
+
+### {-}
+## {-}
